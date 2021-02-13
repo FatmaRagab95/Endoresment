@@ -12,8 +12,7 @@
 
 <template>
 <div id="app">
-<div :class='user ? "page-container expand" : ""'>
-    <side-bar v-if='user' :username='user.FullName'></side-bar>
+<div :class='user ? "page-container" : ""'>
     <div :class='user ? "main-contnet" : ""'>
         <upper-nav v-if='user' :username='user.FullName'></upper-nav>
         <router-view/>

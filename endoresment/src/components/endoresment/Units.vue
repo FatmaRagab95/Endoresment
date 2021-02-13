@@ -133,7 +133,7 @@ export default {
             search:'',
             filtered: [],
             shify:'',
-            apiUrl: "http://localhost:62477/endoresment/dist/",
+            apiUrl: "http://localhost:49638/endoresment/dist/",
         }
     },
     methods: {

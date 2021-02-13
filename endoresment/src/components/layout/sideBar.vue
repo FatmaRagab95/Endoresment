@@ -1,5 +1,5 @@
 <template>
-  <div class="sideBar" id="app_general">
+  <div class="sideBar collapsed" id="app_general">
     <i class="fa fa-times close-btn hidden"></i>
     <div class="app-logo text-center">
       <img class="img-fluid" alt="logo" src="../../assets/layout/img/logo.png" />

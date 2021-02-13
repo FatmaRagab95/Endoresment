@@ -91,7 +91,7 @@ export default {
                 Transfer_Out:0,
                 Total_Census:0
             },
-            apiUrl: "http://localhost:62477/endoresment/dist/",
+            apiUrl: "http://localhost:49638/endoresment/dist/",
         }
     },
     created () {
