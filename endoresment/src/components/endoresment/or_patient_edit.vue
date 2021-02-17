@@ -1,7 +1,7 @@
 <template>
-    <div class="or_patient">
+    <div class="or_patient_edit">
         <div class='internal-page'>
-                <form @submit.prevent='InsertPatient'>
+                <form>
                     <div class="custom-form  pt-3">
                         <div class="cu-container">
                             <div class="cu-form-group special">
@@ -13,7 +13,7 @@
                                     <div class="col-md-6">
                                         <div class="cu-field">
                                             <h3 class="cu-label">
-                                                <label>Name of procedure :</label>
+                                                <label>Name of Procedure :</label>
                                             </h3>
                                             <div class="f-select">
                                                 <select class="form-control form-control-sm" required>
@@ -199,7 +199,7 @@
                                                     <div class="cu-field">
                                                         
                                                     <h3 class="cu-label">
-                                                        <label>Select Consultant:</label>
+                                                        <label>Select doctors:</label>
                                                     </h3>
                                                         <input id="doctor1" type="checkbox" name="doctor" value="1"
                                                         v-model='selectPatient' required>
@@ -297,7 +297,7 @@ export default {
 </script>
 
 <style scoped>
-.or_patient {
+.or_patient_edit {
     background-color:#f6f8fb;
     background-attachment: fixed;
     background-repeat: no-repeat;
@@ -308,7 +308,7 @@ export default {
     overflow: hidden;
     min-height:100vh;
 }
-.or_patient::before {
+.or_patient_edit::before {
     content:'';
     position: absolute;
     left:0%;
@@ -319,7 +319,7 @@ export default {
     background:url('../../assets/layout/img/left.png') left no-repeat fixed;
     background-size:contain;
 }
-.or_patient::after {
+.or_patient_edit::after {
     content:'';
     position: absolute;
     right:0%;
@@ -335,7 +335,8 @@ export default {
     background-color: transparent;
     border:none;
     text-align: initial;
-}.custom-form .cu-form-group.special {
+}
+.custom-form .cu-form-group.special {
     margin: 60px auto;
     max-width:1100px;
     box-shadow: 0 0 50px #eee;

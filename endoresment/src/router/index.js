@@ -13,6 +13,9 @@ import editShiftDetials from "@/components/endoresment/editShiftDetials";
 import insertPatientData from "@/components/endoresment/insertPatientData";
 import patientData from "@/components/endoresment/patientData";
 import or_patient from "@/components/endoresment/or_patient";
+import or_patient_edit from "@/components/endoresment/or_patient_edit";
+import OR from "@/components/endoresment/OR";
+import OR_details from "@/components/endoresment/OR_details";
 
 Vue.use(Router);
 
@@ -124,6 +127,33 @@ const router = new Router({
          cat: "Endoresment",
        },
      },
+     {
+        path: "/or_patient_edit:id",
+        name: "Edit Procedure",
+        component: or_patient_edit,
+        meta: {
+          requiresAuth: true,
+          cat: "Endoresment",
+        },
+      },
+     {
+        path: "/OR",
+        name: "OR",
+        component: OR,
+        meta: {
+          requiresAuth: true,
+          cat: "Endoresment",
+        },
+      },
+      {
+         path: "/OR_details:id",
+         name: "OR Details",
+         component: OR_details,
+         meta: {
+           requiresAuth: true,
+           cat: "Endoresment",
+         },
+       },
    
   ],
 });
