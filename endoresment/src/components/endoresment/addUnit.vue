@@ -172,9 +172,10 @@
 <script>
 export default {
     name:'addUnit',
+    props: ['link'],
     data() {
         return {
-            apiUrl: "http://localhost:52861/endoresment/dist/",
+            apiUrl: `http://localhost:${this.link}/endoresment/dist/`,
             date: new Date(new Date().getTime() + (10000 * 60 * 6)).toISOString().substr(0,10),
             Nurses:[],
             Units:[],

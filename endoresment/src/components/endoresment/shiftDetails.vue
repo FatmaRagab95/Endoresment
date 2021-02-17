@@ -71,11 +71,12 @@
 <script>
 export default {
     name:'shiftDetials',
+    props: ['link'],
     data() {
         return {
             UnitDash:[],
             shiftId:this.$route.params.id,
-            apiUrl: "http://localhost:52861/endoresment/dist/",
+            apiUrl: `http://localhost:${this.link}/endoresment/dist/`,
         }
     },
     created () {

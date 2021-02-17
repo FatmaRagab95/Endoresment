@@ -135,6 +135,7 @@
 <script>
 export default {
     name:'Units',
+    props: ['link'],
     data() {
         return {
             patients: [],
@@ -144,7 +145,7 @@ export default {
             filtered: [],
 
             Shift:'',
-            apiUrl: "http://localhost:49638/endoresment/dist/",
+            apiUrl: `http://localhost:${this.link}/endoresment/dist/`,
         }
     },
     methods: {

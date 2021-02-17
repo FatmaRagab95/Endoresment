@@ -177,12 +177,8 @@ export default {
       Nurses: [],
       getUnitsData: [],
       shiftId: this.$route.params.id,
-<<<<<<< HEAD
-      apiUrl: "http://localhost:49638/endoresment/dist/",
-=======
-      apiUrl: "http://localhost:52861/endoresment/dist/",
->>>>>>> 4576a0ad5b1c8a8504d7cc3c90a8c950d8804d96
-    };
+      apiUrl: `http://localhost:${this.link}/endoresment/dist/`,
+    }
   },
   methods: {
     editShift: function (shift) {
