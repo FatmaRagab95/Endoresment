@@ -12,6 +12,7 @@ import shiftDetails from "@/components/endoresment/shiftDetails";
 import editShiftDetials from "@/components/endoresment/editShiftDetials";
 import patientData from "@/components/endoresment/patientData";
 import insertPatientData from "@/components/endoresment/insertPatientData";
+import patientData from "@/components/endoresment/patientData";
 
 Vue.use(Router);
 
@@ -113,6 +114,7 @@ const router = new Router({
         requiresAuth: true,
         cat: "Endoresment",
       },
+    },
     },
    
   ],
