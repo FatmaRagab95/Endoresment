@@ -151,7 +151,7 @@ public partial class _editShiftDetials : System.Web.UI.Page
 
         using (
             SqlCommand cmd =
-                new SqlCommand("update Endorsement_UnitsDashboard set Unit_name=@Unit_name, Shift=@Shift, Total_Census=@Total_Census, Received=@Received, Shift_date=@Shift_date, Transfer_In=@Transfer_In, Transfer_Out=@Transfer_Out, Admission=@Admission, Endorsing_ChargeNurse=@Endorsing_ChargeNurse, Receive_ChargeNurse=@Receive_ChargeNurse where ID = @ID;",
+                new SqlCommand("update Endorsement_UnitsDashboard set Unit_name=@Unit_name, Shift=@Shift, Total_Census=@Total_Census, Received=@Received, Shift_date=@Shift_date, Transfer_In=@Transfer_In, Transfer_Out=@Transfer_Out, Admission=@Admission, Endorsing_ChargeNurse_id=@Endorsing_ChargeNurse_id, Receive_ChargeNurse_id=@Receive_ChargeNurse_id where ID = @ID;",
                     con)
         )
         {
@@ -167,12 +167,12 @@ public partial class _editShiftDetials : System.Web.UI.Page
 
             cmd
                 .Parameters
-                .AddWithValue("@Endorsing_ChargeNurse",
-                detail.Endorsing_ChargeNurse);
+                .AddWithValue("@Endorsing_ChargeNurse_id",
+                detail.Endorsing_ChargeNurse_id);
             cmd
                 .Parameters
-                .AddWithValue("@Receive_ChargeNurse",
-                detail.Receive_ChargeNurse);
+                .AddWithValue("@Receive_ChargeNurse_id",
+                detail.Receive_ChargeNurse_id);
 
             cmd.ExecuteNonQuery();
         }
@@ -200,10 +200,10 @@ public partial class _editShiftDetials : System.Web.UI.Page
                     Transfer_In = Convert.ToInt32(idr["Transfer_In"]),
                     Transfer_Out = Convert.ToInt32(idr["Transfer_Out"]),
                     Admission = Convert.ToInt32(idr["Admission"]),
-                    Endorsing_ChargeNurse =
-                        Convert.ToString(idr["Endorsing_ChargeNurse"]),
-                    Receive_ChargeNurse =
-                        Convert.ToString(idr["Receive_ChargeNurse"])
+                    Endorsing_ChargeNurse_id =
+                        Convert.ToInt32(idr["Endorsing_ChargeNurse_id"]),
+                    Receive_ChargeNurse_id =
+                        Convert.ToInt32(idr["Receive_ChargeNurse_id"])
                 });
         }
         return ShiftDetailsI;
@@ -229,8 +229,120 @@ public partial class _editShiftDetials : System.Web.UI.Page
 
         public int? Admission { get; set; }
 
-        public string Endorsing_ChargeNurse { get; set; }
+        public int? Endorsing_ChargeNurse_id { get; set; }
 
-        public string Receive_ChargeNurse { get; set; }
+        public int? Receive_ChargeNurse_id { get; set; }
+    }
+
+    // get Nurses
+    [WebMethod]
+    public static string getNursesData()
+    {
+        string config =
+            Convert.ToString(ConfigurationManager.ConnectionStrings["dbcon"]);
+        List<Nurses> Nurses = new List<Nurses>();
+
+        SqlConnection con = new SqlConnection(config);
+
+        con.Open();
+
+        using (
+            SqlCommand cmd =
+                new SqlCommand("select * from adminusers where Role_id = 17",
+                    con)
+        )
+        {
+            SqlDataReader idr = cmd.ExecuteReader();
+
+            if (idr.HasRows)
+            {
+                Nurses = populateNursesLisst(idr, con);
+            }
+        }
+
+        con.Close();
+
+        return JsonConvert.SerializeObject(Nurses);
+    }
+
+    public static List<Nurses>
+    populateNursesLisst(SqlDataReader idr, SqlConnection con)
+    {
+        List<Nurses> NursesI = new List<Nurses>();
+
+        while (idr.Read())
+        {
+            NursesI
+                .Add(new Nurses {
+                    Emp_ID =
+                        idr["Emp_ID"] != DBNull.Value
+                            ? Convert.ToInt32(idr["Emp_ID"])
+                            : 0,
+                    FullName = Convert.ToString(idr["FullName"])
+                });
+        }
+
+        return NursesI;
+    }
+
+    public class Nurses
+    {
+        public int? Emp_ID { get; set; }
+
+        public string FullName { get; set; }
+    }
+
+    // get units
+    [WebMethod]
+    public static string getUnitsData()
+    {
+        string config =
+            Convert.ToString(ConfigurationManager.ConnectionStrings["dbcon"]);
+        List<Units> Units = new List<Units>();
+
+        SqlConnection con = new SqlConnection(config);
+
+        con.Open();
+
+        using (SqlCommand cmd = new SqlCommand("select * from Units", con))
+        {
+            SqlDataReader idr = cmd.ExecuteReader();
+
+            if (idr.HasRows)
+            {
+                Units = populateUnitsLisst(idr, con);
+            }
+        }
+
+        con.Close();
+
+        return JsonConvert.SerializeObject(Units);
+    }
+
+    public static List<Units>
+    populateUnitsLisst(SqlDataReader idr, SqlConnection con)
+    {
+        List<Units> UnitsI = new List<Units>();
+
+        while (idr.Read())
+        {
+            UnitsI
+                .Add(new Units {
+                    U_id =
+                        idr["U_id"] != DBNull.Value
+                            ? Convert.ToInt32(idr["U_id"])
+                            : 0,
+                    U_name = Convert.ToString(idr["U_name"])
+                });
+        }
+
+        return UnitsI;
+    }
+
+    public class Units
+    {
+        public int? U_id { get; set; }
+
+        public string U_name { get; set; }
     }
 }

@@ -95,8 +95,12 @@ const router = new Router({
         cat: "Endoresment",
       },
     },
+<<<<<<< HEAD
     /*
     {
+=======
+   {
+>>>>>>> 4576a0ad5b1c8a8504d7cc3c90a8c950d8804d96
       path: "/patientData",
       name: "Patient Data",
       component: patientData,

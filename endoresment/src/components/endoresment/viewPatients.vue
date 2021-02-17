@@ -48,7 +48,7 @@ export default {
     data() {
         return {
             patients: [],
-            apiUrl: "http://localhost:49638/endoresment/dist/",
+            apiUrl: "http://localhost:52861/endoresment/dist/",
         }
     },
     created() {
