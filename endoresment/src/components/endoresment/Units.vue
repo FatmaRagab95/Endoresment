@@ -143,8 +143,8 @@ export default {
             search:'',
             filtered: [],
 
-            shify:'',
-            apiUrl: "http://localhost:52861/endoresment/dist/",
+            Shift:'',
+            apiUrl: "http://localhost:49638/endoresment/dist/",
         }
     },
     methods: {
