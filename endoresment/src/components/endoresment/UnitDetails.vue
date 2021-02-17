@@ -88,6 +88,7 @@
 <script>
 export default {
   name: "UnitDetails",
+  props: ['link'],
   data() {
     return {
       UnitsDash: [],
@@ -99,12 +100,12 @@ export default {
         Transfer_Out: 0,
         Total_Census: 0,
       },
-      apiUrl: "http://localhost:52861/endoresment/dist/",
+      apiUrl: `http://localhost:${this.link}/endoresment/dist/`,
     };
   },
   created() {
     let that = this;
-
+    
     //get Units dahsboard
     $.ajax({
       type: "POST",

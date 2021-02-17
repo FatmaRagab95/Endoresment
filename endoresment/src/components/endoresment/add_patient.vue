@@ -173,9 +173,10 @@
 <script>
 export default {
     name:'addPatient',
+    props: ['link'],
     data() {
         return {
-            apiUrl: "http://localhost:52861/endoresment/dist/",
+            apiUrl: `http://localhost:${this.link}/endoresment/dist/`,
             Branches:[],
             Units:[],
             Rooms:[],

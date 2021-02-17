@@ -16,16 +16,6 @@
                         <div class='outer'>
                             <div class='inner bg-white shadow text-center'>
 
-                                <span class='num'>{{sumDash('Received')}}</span>
-                                Received
-
-                            </div>
-                        </div>
-                    </div>
-                    <div class="">
-                        <div class='outer'>
-                            <div class='inner bg-white shadow text-center'>
-
                                 <span class='num'>{{sumDash('Total_Census')}}</span>
                                 Total Census
 
@@ -37,7 +27,27 @@
                             <div class='inner bg-white shadow text-center'>
 
                                 <span class='num'>{{sumDash('Admission')}}</span>
-                                Admission
+                                Admission  
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="">
+                        <div class='outer'>
+                            <div class='inner bg-white shadow text-center'>
+
+                                <span class='num'>{{sumDash('Admission')}}</span>
+                                Discharge 
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="">
+                        <div class='outer'>
+                            <div class='inner bg-white shadow text-center'>
+
+                                <span class='num'>{{sumDash('Admission')}}</span>
+                                ER
 
                             </div>
                         </div>
@@ -47,7 +57,7 @@
                             <div class='inner bg-white shadow text-center'>
 
                                 <span class='num'>{{sumDash('Transfer_In')}}</span>
-                                Transfer In
+                                OR
 
                             </div>
                         </div>
@@ -57,7 +67,7 @@
                             <div class='inner bg-white shadow text-center'>
 
                                 <span class='num'>{{sumDash('Transfer_Out')}}</span>
-                                Transfer Out
+                                Death
 
                             </div>
                         </div>
@@ -125,6 +135,7 @@
 <script>
 export default {
     name:'Units',
+    props: ['link'],
     data() {
         return {
             patients: [],
@@ -132,14 +143,16 @@ export default {
             UnitsDash: [],
             search:'',
             filtered: [],
-            shify:'',
-            apiUrl: "http://localhost:52861/endoresment/dist/",
+
+            Shift:'',
+            apiUrl: `http://localhost:${this.link}/endoresment/dist/`,
         }
     },
     methods: {
         sumDash(column) {
             return this.UnitsDash.reduce((a,b) => a + b[column], 0)
         },
+
         filterDash(column,id) {
              let data = this.UnitsDash.filter(x => x.Unit_id == id).length > 0 ?
                                 this.UnitsDash.filter(x => x.Unit_id == id) : 0;
@@ -176,7 +189,7 @@ export default {
             dataType: "json",
             success: function (data) {
                 that.UnitsDash = JSON.parse(data.d);
-                if (new Date().getHours() < 19) {
+                if (new Date().getHours() < 19 && new Date().getHours() >= 8) {
                     that.Shift = 'Day';
                     that.UnitsDash.map(x => {
                         if (x.Shift.trim() == 'Night') {

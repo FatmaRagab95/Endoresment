@@ -171,14 +171,15 @@
 <script>
 export default {
   name: "editShiftDetials",
+  props: ['link'],
   data() {
     return {
       UnitDash: [],
       Nurses: [],
       getUnitsData: [],
       shiftId: this.$route.params.id,
-      apiUrl: "http://localhost:52861/endoresment/dist/",
-    };
+      apiUrl: `http://localhost:${this.link}/endoresment/dist/`,
+    }
   },
   methods: {
     editShift: function (shift) {

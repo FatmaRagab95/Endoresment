@@ -342,9 +342,10 @@
 <script>
 export default {
   name: "patientData",
+  props: ['link'],
   data() {
     return {
-      apiUrl: "http://localhost:52861/endoresment/dist/",
+      apiUrl: `http://localhost:${this.link}/endoresment/dist/`,
     };
   },
   methods: {},
