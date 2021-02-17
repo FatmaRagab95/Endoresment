@@ -95,7 +95,7 @@ const router = new Router({
         cat: "Endoresment",
       },
     },
-    {
+   {
       path: "/patientData",
       name: "Patient Data",
       component: patientData,

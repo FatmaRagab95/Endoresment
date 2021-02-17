@@ -13,7 +13,7 @@
                 <div class="shadow-sm bg-light card">
                   <input
                     class="text-secondary pl-3 rounded"
-                    type="text"
+                    type="date"
                     v-model="UnitDash[0].Shift_date"
                   />
                 </div>
@@ -21,11 +21,18 @@
               <li class="text-left">
                 <h5 class="text-info" style="text-decoration: underline">Unit Name</h5>
                 <div class="shadow-sm bg-light card">
-                  <input
+                  <select
                     class="text-secondary pl-3 rounded"
-                    type="text"
                     v-model="UnitDash[0].Unit_name"
-                  />
+                  >
+                    <option
+                      v-for="unit in getUnitsData"
+                      :key="unit.U_id"
+                      :value="unit.U_name"
+                    >
+                      {{ unit.U_name }}
+                    </option>
+                  </select>
                 </div>
               </li>
               <li class="text-left row">
@@ -37,6 +44,7 @@
                     <input
                       class="text-secondary pl-3 rounded"
                       type="number"
+                      min="0"
                       v-model="UnitDash[0].Total_Census"
                     />
                   </div>
@@ -47,6 +55,7 @@
                     <input
                       class="text-secondary pl-3 rounded"
                       type="number"
+                      min="0"
                       v-model="UnitDash[0].Received"
                     />
                   </div>
@@ -56,11 +65,10 @@
               <li class="text-left">
                 <h5 class="text-info" style="text-decoration: underline">Shift</h5>
                 <div class="shadow-sm bg-light card">
-                  <input
-                    class="text-secondary pl-3 rounded"
-                    type="text"
-                    v-model="UnitDash[0].Shift"
-                  />
+                  <select class="text-secondary pl-3 rounded" v-model="UnitDash[0].Shift">
+                    <option value="Day">Day</option>
+                    <option value="Night">Night</option>
+                  </select>
                 </div>
               </li>
             </ul>
@@ -77,6 +85,7 @@
                     <input
                       class="text-secondary pl-3 rounded"
                       type="number"
+                      min="0"
                       v-model="UnitDash[0].Transfer_In"
                     />
                   </div>
@@ -89,6 +98,7 @@
                     <input
                       class="text-secondary pl-3 rounded"
                       type="number"
+                      min="0"
                       v-model="UnitDash[0].Transfer_Out"
                     />
                   </div>
@@ -100,6 +110,7 @@
                   <input
                     class="text-secondary pl-3 rounded"
                     type="number"
+                    min="0"
                     v-model="UnitDash[0].Admission"
                   />
                 </div>
@@ -109,11 +120,18 @@
                   Endorsing Charge Nurse
                 </h5>
                 <div class="shadow-sm bg-light card">
-                  <input
+                  <select
                     class="text-secondary pl-3 rounded"
-                    type="text"
-                    v-model="UnitDash[0].Endorsing_ChargeNurse"
-                  />
+                    v-model="UnitDash[0].Endorsing_ChargeNurse_id"
+                  >
+                    <option
+                      v-for="nurse in Nurses"
+                      :key="nurse.Emp_ID"
+                      :value="nurse.Emp_ID"
+                    >
+                      {{ nurse.FullName }}
+                    </option>
+                  </select>
                 </div>
               </li>
               <li class="text-left">
@@ -121,11 +139,18 @@
                   Receive Charge Nurse
                 </h5>
                 <div class="shadow-sm bg-light card">
-                  <input
+                  <select
                     class="text-secondary pl-3 rounded"
-                    type="text"
-                    v-model="UnitDash[0].Receive_ChargeNurse"
-                  />
+                    v-model="UnitDash[0].Receive_ChargeNurse_id"
+                  >
+                    <option
+                      v-for="nurse in Nurses"
+                      :key="nurse.Emp_ID"
+                      :value="nurse.Emp_ID"
+                    >
+                      {{ nurse.FullName }}
+                    </option>
+                  </select>
                 </div>
               </li>
             </ul>
@@ -149,8 +174,10 @@ export default {
   data() {
     return {
       UnitDash: [],
+      Nurses: [],
+      getUnitsData: [],
       shiftId: this.$route.params.id,
-      apiUrl: "http://localhost:61297/endoresment/dist/",
+      apiUrl: "http://localhost:52861/endoresment/dist/",
     };
   },
   methods: {
@@ -166,8 +193,8 @@ export default {
           Transfer_In: shift.Transfer_In,
           Transfer_Out: shift.Transfer_Out,
           Admission: shift.Admission,
-          Endorsing_ChargeNurse: shift.Endorsing_ChargeNurse,
-          Receive_ChargeNurse: shift.Receive_ChargeNurse,
+          Endorsing_ChargeNurse_id: shift.Endorsing_ChargeNurse_id,
+          Receive_ChargeNurse_id: shift.Receive_ChargeNurse_id,
         };
 
       if (updatedShift.Unit_name === "") {
@@ -196,6 +223,7 @@ export default {
                   icon: "success",
                   dangerMode: true,
                 });
+                location.reload();
               },
             });
           }
@@ -215,6 +243,33 @@ export default {
       dataType: "json",
       success: function (data) {
         that.UnitDash = JSON.parse(data.d);
+        that.UnitDash.map((x) => {
+          x.Shift = x.Shift.trim();
+          x.Shift_date = new Date(x.Shift_date);
+          x.Shift_date = moment(new Date(x.Shift_date)).format().substr(0, 10);
+        });
+      },
+    });
+
+    //get nurses
+    $.ajax({
+      type: "POST",
+      url: that.apiUrl + "endoresment/editShiftDetials.aspx/getNursesData",
+      contentType: "application/json; charset=utf-8",
+      dataType: "json",
+      success: function (data) {
+        that.Nurses = JSON.parse(data.d);
+      },
+    });
+
+    //get units
+    $.ajax({
+      type: "POST",
+      url: that.apiUrl + "endoresment/editShiftDetials.aspx/getUnitsData",
+      contentType: "application/json; charset=utf-8",
+      dataType: "json",
+      success: function (data) {
+        that.getUnitsData = JSON.parse(data.d);
       },
     });
   },
