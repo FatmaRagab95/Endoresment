@@ -171,6 +171,7 @@
 <script>
 export default {
   name: "editShiftDetials",
+  props: ['link'],
   data() {
     return {
       UnitDash: [],

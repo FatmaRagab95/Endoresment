@@ -100,7 +100,7 @@ export default {
         Transfer_Out: 0,
         Total_Census: 0,
       },
-      سapiUrl: `http://localhost:${this.link}/endoresment/dist/`,
+      apiUrl: `http://localhost:${this.link}/endoresment/dist/`,
     };
   },
   created() {
