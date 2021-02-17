@@ -171,17 +171,6 @@
                 </div>
                 <div class="col-md-6">
                   <div class="bg-light p-3 mb-3 w-100 shadow-sm">
-                    <span class="ml-2 font-weight-bold text-dark">Allergy :</span>
-                    <input
-                      class="form-control font-weight-normal text-secondary shadow-sm rounded"
-                      placeholder="Enter Issolation ......"
-                      type="text"
-                    />
-                  </div>
-                </div>
-                <hr />
-                <div class="col-md-6">
-                  <div class="bg-light p-3 mb-3 w-100 shadow-sm">
                     <span class="ml-2 font-weight-bold text-dark">Issolation :</span>
                     <select
                       class="form-control font-weight-normal text-secondary shadow-sm rounded"
@@ -190,16 +179,17 @@
                     </select>
                   </div>
                 </div>
-                <div class="col-md-6">
+                <div class="col-md-12">
                   <div class="bg-light p-3 mb-3 w-100 shadow-sm">
-                    <span class="ml-2 font-weight-bold text-dark">Fall :</span>
-                    <select
-                      class="form-control font-weight-normal text-secondary shadow-sm rounded"
-                    >
-                      <option>....................</option>
-                    </select>
+                    <span class="ml-2 font-weight-bold text-dark">Allergy :</span>
+                    <textarea
+                      class="form-control rounded shadow-sm"
+                      id="exampleFormControlTextarea1"
+                      rows="2"
+                    ></textarea>
                   </div>
                 </div>
+                <hr />
               </div>
             </div>
           </div>
