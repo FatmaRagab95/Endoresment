@@ -12,6 +12,7 @@ import shiftDetails from "@/components/endoresment/shiftDetails";
 import editShiftDetials from "@/components/endoresment/editShiftDetials";
 import insertPatientData from "@/components/endoresment/insertPatientData";
 import patientData from "@/components/endoresment/patientData";
+import or_patient from "@/components/endoresment/or_patient";
 
 Vue.use(Router);
 
@@ -114,6 +115,15 @@ const router = new Router({
         cat: "Endoresment",
       },
     },
+    {
+       path: "/or_patient",
+       name: "Schedule Procedure",
+       component: or_patient,
+       meta: {
+         requiresAuth: true,
+         cat: "Endoresment",
+       },
+     },
    
   ],
 });
