@@ -46,7 +46,7 @@ export default {
         user_name: "",
         pass_word: "",
       },
-      apiUrl: "http://localhost:49638/endoresment/dist/",
+      apiUrl: "http://localhost:52861/endoresment/dist/",
     };
   },
   methods: {
