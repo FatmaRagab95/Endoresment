@@ -14,14 +14,13 @@
     <div :class="user ? 'page-container' : ''">
       <div :class="user ? 'main-contnet' : ''">
         <upper-nav v-if="user" :username="user.FullName"></upper-nav>
-        <router-view :link='link' />
+        <router-view :link="link" />
       </div>
     </div>
   </div>
 </template>
 
 <script>
-
 import "./assets/layout/js/bootstrap-material-datetimepicker.js";
 import "./assets/layout/js/jquery-nice-select.js";
 import "./assets/layout/js/main.js";
@@ -35,7 +34,7 @@ export default {
   data() {
     return {
       user: JSON.parse(localStorage.getItem("user")),
-      link: 49638,
+      link: 52861,
     };
   },
   watch: {
@@ -43,8 +42,7 @@ export default {
       this.user = JSON.parse(localStorage.getItem("user"));
     },
   },
-  created() {
-  },
+  created() {},
 };
 </script>
 

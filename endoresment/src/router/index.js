@@ -11,12 +11,9 @@ import UnitDetails from "@/components/endoresment/UnitDetails";
 import shiftDetails from "@/components/endoresment/shiftDetails";
 import editShiftDetials from "@/components/endoresment/editShiftDetials";
 import insertPatientData from "@/components/endoresment/insertPatientData";
-<<<<<<< HEAD
 import roomDetails from "@/components/endoresment/roomDetails";
-=======
 import patientData from "@/components/endoresment/patientData";
 import or_patient from "@/components/endoresment/or_patient";
->>>>>>> 0778c023755a2976cb92bed4d0ace843048fddff
 
 Vue.use(Router);
 
@@ -119,7 +116,6 @@ const router = new Router({
         cat: "Endoresment",
       },
     },
-<<<<<<< HEAD
    {
       path: "/roomDetails",
       name: "Room Details",
@@ -129,7 +125,6 @@ const router = new Router({
         cat: "Endoresment",
       },
     },
-=======
     {
        path: "/or_patient",
        name: "Schedule Procedure",
@@ -140,7 +135,6 @@ const router = new Router({
        },
      },
    
->>>>>>> 0778c023755a2976cb92bed4d0ace843048fddff
   ],
 });
 
