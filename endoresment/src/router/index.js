@@ -10,7 +10,7 @@ import viewPatients from "@/components/endoresment/viewPatients";
 import UnitDetails from "@/components/endoresment/UnitDetails";
 import shiftDetails from "@/components/endoresment/shiftDetails";
 import editShiftDetials from "@/components/endoresment/editShiftDetials";
-import patientData from "@/components/endoresment/patientData";
+//import patientData from "@/components/endoresment/patientData";
 
 Vue.use(Router);
 
@@ -95,6 +95,7 @@ const router = new Router({
         cat: "Endoresment",
       },
     },
+    /*
     {
       path: "/patientData",
       name: "Patient Data",
@@ -103,7 +104,7 @@ const router = new Router({
         requiresAuth: true,
         cat: "Endoresment",
       },
-    },
+    },*/
    
   ],
 });

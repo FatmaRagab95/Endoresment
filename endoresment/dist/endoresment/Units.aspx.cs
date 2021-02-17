@@ -89,7 +89,7 @@ public partial class _Units : System.Web.UI.Page
 
         con.Open();
 
-        using (SqlCommand cmd = new SqlCommand("SELECT * from Endorsement_UnitsDashboard where convert(varchar(10), Shift_date, 102) = convert(varchar(10), getdate(), 102) and Unit_id in (select U_id from Units where Branch_id = @Branch_id)", con))
+        using (SqlCommand cmd = new SqlCommand("SELECT * from Endorsement_UnitsDashboard where Shift_date >= DATEADD(day,-1, GETDATE()) and Unit_id in (select U_id from Units where Branch_id = @Branch_id) ORDER BY Shift_date DESC", con))
         {
             cmd.Parameters.Add("@Branch_id", SqlDbType.Int).Value = branch.id;
             SqlDataReader idr = cmd.ExecuteReader();

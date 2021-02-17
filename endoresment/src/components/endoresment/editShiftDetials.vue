@@ -13,7 +13,7 @@
                 <div class="shadow-sm bg-light card">
                   <input
                     class="text-secondary pl-3 rounded"
-                    type="text"
+                    type="date"
                     v-model="UnitDash[0].Shift_date"
                   />
                 </div>
@@ -150,7 +150,7 @@ export default {
     return {
       UnitDash: [],
       shiftId: this.$route.params.id,
-      apiUrl: "http://localhost:61297/endoresment/dist/",
+      apiUrl: "http://localhost:49638/endoresment/dist/",
     };
   },
   methods: {

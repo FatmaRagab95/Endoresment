@@ -28,8 +28,7 @@
                                             <td>{{shift.Shift_date.substr(0,10)}}</td>
                                             <td>{{shift.Shift}}</td>
                                             <td><router-link :to='{name:"Shift Details", params: {id:shift.id}}' class='btn btn-sm btn-primary'>Details</router-link></td>
-                                            <td>
-                                                <i class='fa fa-edit bg-success text-white btn-sm btn'></i>
+                                            <td><router-link :to='{name:"Edit Shift Details", params: {id:shift.id}}'><i class='fa fa-edit bg-success text-white btn-sm btn'></i></router-link>
                                                 <i class='fa fa-trash bg-danger text-white btn-sm btn'></i>
                                             </td>
                                         </tr>
@@ -107,8 +106,8 @@ export default {
             success: function (data) {
                 that.UnitsDash = JSON.parse(data.d);
                 that.UnitsDash.map(x => {
-                    let checkDate = x.Shift_date.substr(3,3) + x.Shift_date.substr(0,3) + x.Shift_date.substr(6,4);
-                    if (checkDate == moment(new Date).format('MM/DD/YYYY')) {
+                    let checkDate = x.Shift_date;
+                    if (checkDate == that.UnitsDash[0].Shift_date) {
                        that.todayData = x;
                     } 
                 });
