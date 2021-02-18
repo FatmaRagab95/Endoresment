@@ -2,7 +2,7 @@
   <div class="insertPatientData p-3 text-capitalize">
     <div class="container-fluid mt-2 bg-white pt-3 pb-3 card">
       <div class="container">
-        <div class="row form-group text-center bg-info pt-3 pb-3">
+        <div class="row form-group text-center bg-light pt-3 pb-3">
           <div class="col-md-4">
             <div class="shadow-sm bg-white pt-3 pb-3">
               <span class="text-info">name :</span
