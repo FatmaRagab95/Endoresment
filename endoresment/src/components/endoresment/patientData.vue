@@ -68,6 +68,33 @@
     <div class="container-fluid mt-2 bg-white pt-3 pb-3 card viewPatients">
       <div class="container">
         <div class="row mt-4 text-left">
+          <div class="col-md-4">
+            <div class="form-group bg-light p-3 shadow">
+              <label for="exampleFormControlInput1">select shift date</label>
+              <input type="date" class="form-control" placeholder="name@example.com" />
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="form-group bg-light p-3 shadow">
+              <label for="exampleFormControlSelect1">select shift time</label>
+              <select class="form-control">
+                <option>Day</option>
+                <option>Night</option>
+              </select>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="form-group bg-light pt-4 pb-4 shadow">
+              <button
+                class="btn btn-info pl-3 pr-3"
+                style="margin-left: 50%; transform: translateX(-50%)"
+              >
+                submit shift data
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="row mt-4 text-left">
           <div class="col-xl-8 col-lg-7">
             <div class="card shadow overflow-auto" style="height: 250px">
               <div
