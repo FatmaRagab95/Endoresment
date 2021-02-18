@@ -11,6 +11,7 @@ import UnitDetails from "@/components/endoresment/UnitDetails";
 import shiftDetails from "@/components/endoresment/shiftDetails";
 import editShiftDetials from "@/components/endoresment/editShiftDetials";
 import insertPatientData from "@/components/endoresment/insertPatientData";
+import roomDetails from "@/components/endoresment/roomDetails";
 import patientData from "@/components/endoresment/patientData";
 import or_patient from "@/components/endoresment/or_patient";
 import or_patient_edit from "@/components/endoresment/or_patient_edit";
@@ -113,6 +114,15 @@ const router = new Router({
       path: "/insertPatientData",
       name: "Insert Patient Data",
       component: insertPatientData,
+      meta: {
+        requiresAuth: true,
+        cat: "Endoresment",
+      },
+    },
+   {
+      path: "/roomDetails",
+      name: "Room Details",
+      component: roomDetails,
       meta: {
         requiresAuth: true,
         cat: "Endoresment",

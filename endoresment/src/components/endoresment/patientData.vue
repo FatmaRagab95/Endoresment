@@ -68,6 +68,33 @@
     <div class="container-fluid mt-2 bg-white pt-3 pb-3 card viewPatients">
       <div class="container">
         <div class="row mt-4 text-left">
+          <div class="col-md-4">
+            <div class="form-group bg-light p-3 shadow">
+              <label for="exampleFormControlInput1">select shift date</label>
+              <input type="date" class="form-control" placeholder="name@example.com" />
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="form-group bg-light p-3 shadow">
+              <label for="exampleFormControlSelect1">select shift time</label>
+              <select class="form-control">
+                <option>Day</option>
+                <option>Night</option>
+              </select>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="form-group bg-light pt-4 pb-4 shadow">
+              <button
+                class="btn btn-info pl-3 pr-3"
+                style="margin-left: 50%; transform: translateX(-50%)"
+              >
+                submit shift data
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="row mt-4 text-left">
           <div class="col-xl-8 col-lg-7">
             <div class="card shadow overflow-auto" style="height: 250px">
               <div
@@ -167,9 +194,9 @@
                 </div>
               </div>
               <div class="card-body row">
-                <div class="col-md-12">
+                <div class="col-md-6">
                   <h4 class="font-weight-bold text-dark">
-                    pain level <span class="float-right text-success">20%</span>
+                    pain level <span class="float-right text-success">2</span>
                   </h4>
                   <div class="progress mb-4">
                     <input
@@ -182,22 +209,19 @@
                     />
                   </div>
                 </div>
-
+                <div class="col-md-6">
+                  <div class="bg-light pt-2 pb-2 mb-3 w-100 shadow-sm">
+                    <span class="ml-2 font-weight-bold text-dark">Fall :</span>
+                    <span class="font-weight-normal text-secondary ml-2">Fall ...</span>
+                  </div>
+                </div>
                 <div class="col-md-6">
                   <div class="bg-light pt-2 pb-2 mb-3 w-100 shadow-sm">
                     <span class="ml-2 font-weight-bold text-dark">Diet :</span>
                     <span class="font-weight-normal text-secondary ml-2">Diet ...</span>
                   </div>
                 </div>
-                <div class="col-md-6">
-                  <div class="bg-light pt-2 pb-2 mb-3 w-100 shadow-sm">
-                    <span class="ml-2 font-weight-bold text-dark">Allergy :</span>
-                    <span class="font-weight-normal text-secondary ml-2"
-                      >Allergy ...</span
-                    >
-                  </div>
-                </div>
-                <hr />
+
                 <div class="col-md-6">
                   <div class="bg-light pt-2 pb-2 mb-3 w-100 shadow-sm">
                     <span class="ml-2 font-weight-bold text-dark">Issolation :</span>
@@ -206,10 +230,16 @@
                     >
                   </div>
                 </div>
-                <div class="col-md-6">
-                  <div class="bg-light pt-2 pb-2 mb-3 w-100 shadow-sm">
-                    <span class="ml-2 font-weight-bold text-dark">Fall :</span>
-                    <span class="font-weight-normal text-secondary ml-2">Fall ...</span>
+                <div class="col-md-12">
+                  <div class="bg-light p-3 mb-3 w-100 shadow-sm h-100">
+                    <span class="font-weight-bold text-dark">Allergy :</span>
+                    <span class="font-weight-normal text-secondary ml-2"
+                      >An allergy is an immune system response to a foreign substance
+                      that's not typically harmful to your body. These foreign substances
+                      are called allergens An allergy is an immune system response to a
+                      foreign substance that's not typically harmful to your
+                      body.....</span
+                    >
                   </div>
                 </div>
               </div>
@@ -334,6 +364,47 @@
             </div>
           </div>
         </div>
+        <div class="row mt-4 text-left">
+          <div class="col-md-12">
+            <div class="card shadow overflow-auto" style="height: 200px">
+              <div
+                class="card-header py-3 d-flex flex-row align-items-center justify-content-between"
+              >
+                <h5 class="m-0 font-weight-bold text-info">progress of consultations</h5>
+                <div class="dropdown no-arrow show">
+                  <a
+                    class="fa fa-pencil-square-o text-danger"
+                    href="#"
+                    role="button"
+                    id="dropdownMenuLink"
+                    data-toggle="dropdown"
+                    aria-haspopup="true"
+                    aria-expanded="false"
+                  >
+                  </a>
+                </div>
+              </div>
+              <div class="card-body row m-0">
+                <div class="col-md-12">
+                  <i class="fa fa-circle text-danger small"></i>
+                  Vast amounts of medical information are still recorded as unstructured
+                  text. The knowledge contained in this textual data has a great potential
+                  to
+                  <br />
+                  <i class="fa fa-circle text-success small"></i>
+                  Vast amounts of medical information are still recorded as unstructured
+                  text. The knowledge contained in this textual data has a great potential
+                  to
+                  <br />
+                  <i class="fa fa-circle text-info small"></i>
+                  Vast amounts of medical information are still recorded as unstructured
+                  text. The knowledge contained in this textual data has a great potential
+                  to
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -342,7 +413,7 @@
 <script>
 export default {
   name: "patientData",
-  props: ['link'],
+  props: ["link"],
   data() {
     return {
       apiUrl: `http://localhost:${this.link}/endoresment/dist/`,
