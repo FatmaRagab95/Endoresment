@@ -4,10 +4,10 @@
 
             <h1 class='pt-3 pb-3  border-bottom mainColor'>
                 <i class='ml-3 mr-3 fa fa-hospital-o'></i>
-                Patients List</h1>
+                Cardiology patients list</h1>
 
             <div class='row'>
-                <div class="col-md-4" v-for='patient in patients' :key='patient.id'>
+                <div class="col-md-4" v-for='(patient, i) in patients' :key='patient.id'>
                     <div class='details'>
                         <div class="inner">
                             <h3 class='pb-2'>{{patient.Patient_FullName}} 
@@ -17,7 +17,7 @@
                             </h3>
                             <span class='age badge badge-light border font-weight-normal'>
                                 Age: <span class='text-danger'>{{patient.Age}} </span></span>
-                            <span class='speciality badge font-weight-normal'>{{patient.Specialty}}</span>
+                            <span class='speciality badge font-weight-normal'>{{i % 2 == 0 ? 'Your case' : 'Consultation'}}</span>
                             <div class='row mt-3 p-2 border rounded place'>
                                 <div class="col-6 border-right">
                                     <span>Unit:</span> {{patient.Unit}}
@@ -32,7 +32,7 @@
                             </p>
 
                             <div class='text-right'>
-                                <a href='#' class='btn'>View Details</a>
+                                <router-link :to='{name:"Patient Data", params:{id:patient.id}}' class='btn'>View Details</router-link>
                             </div>
                         </div>
                     </div>
