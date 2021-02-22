@@ -13,33 +13,33 @@
                     <div class='row'>
                         <div class="col-md-6">
                             <div class="info">
-                                <h5><span> <i class='fa fa-user-md'></i> Consultant Doctor:</span> <small>John Doe</small></h5>
+                                <h5><span> <i class='fa fa-user-md'></i> Consultant Doctor:</span> <small>Mohamed Ahmed</small></h5>
                             </div>
                             <div class="info">
-                                <h5><span> <i class='fa fa-user'></i> Patient Full Name:</span> <small>John Doe</small></h5>
+                                <h5><span> <i class='fa fa-user'></i> Patient Full Name:</span> <small>Adel Shereef</small></h5>
                             </div>
                             <div class="info">
-                                <h5><span> <i class='fa fa-heartbeat'></i> Patient Medical Number:</span> <small>John Doe</small></h5>
+                                <h5><span> <i class='fa fa-heartbeat'></i> Patient Medical Number:</span> <small>1425</small></h5>
                             </div>
                             <div class="info">
                                 <h5><span> <i class='fa fa-plus-square'></i> Speciality:</span> <small>Lorem Ipsum</small></h5>
                             </div>
                             <div class="info">
-                                <h5><span> <i class='fa fa-stethoscope '></i> Assistant Doctor:</span> <small>John Doe</small></h5>
+                                <h5><span> <i class='fa fa-stethoscope '></i> Assistant Doctor:</span> <small>Ahmed Saied</small></h5>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="info">
-                                <h5><span> <i class='fa fa-calendar-o'></i> Date:</span> <small>14-2-2021</small></h5>
+                                <h5><span> <i class='fa fa-calendar-o'></i> Date:</span> <small>19-2-2021</small></h5>
                             </div>
                             <div class="info">
-                                <h5><span> <i class='fa fa-clock-o'></i> From:</span> <small>02:00 AM</small></h5>
+                                <h5><span> <i class='fa fa-clock-o'></i> From:</span> <small>02:00 PM</small></h5>
                             </div>
                             <div class="info">
-                                <h5><span> <i class='fa fa-clock-o'></i> To:</span> <small>03:00 AM</small></h5>
+                                <h5><span> <i class='fa fa-clock-o'></i> To:</span> <small>03:00 PM</small></h5>
                             </div>
                             <div class="info">
-                                <h5><span> <i class='fa fa-hospital-o'></i> OR Room:</span> <small>Lorem Ipsum</small></h5>
+                                <h5><span> <i class='fa fa-hospital-o'></i> OR Room:</span> <small>3</small></h5>
                             </div>
                         </div>
                     </div>
@@ -56,12 +56,12 @@
                     <tbody>
                         <tr>
                             <th scope="row">1</th>
-                            <td>Mark</td>
+                            <td>Mohamed Ahmed</td>
                             <td>Chardiology</td>
                         </tr>
                         <tr>
                             <th scope="row">2</th>
-                            <td>Jack</td>
+                            <td>Ahmed Saied</td>
                             <td>Anesthesia </td>
                         </tr>
                     </tbody>
@@ -85,10 +85,6 @@ export default {
 <style scoped>
 .OR_details {
     background-color:#f6f8fb;
-    background-attachment: fixed;
-    background-repeat: no-repeat;
-    background-size:cover;
-    background-position: center;
     position: relative;
     overflow: hidden;
     min-height:100vh;
@@ -101,8 +97,8 @@ export default {
     display: block;
     width: 200px;
     height: 100%;
-    background:url('../../assets/layout/img/left.png') left no-repeat fixed;
-    background-size:contain;
+    background:url('../../assets/layout/img/left.png') left no-repeat ;
+    background-size:100% 100%;
 }
 .OR_details::after {
     content:'';
@@ -112,8 +108,8 @@ export default {
     display: block;
     width: 200px;
     height: 100%;
-    background:url('../../assets/layout/img/right.png') right no-repeat fixed;
-    background-size:contain;
+    background:url('../../assets/layout/img/right.png') right no-repeat;
+    background-size:100% 100%;
 }
 .content {
     position:relative;

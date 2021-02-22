@@ -202,7 +202,7 @@
                                                         <label>Select Consultant:</label>
                                                     </h3>
                                                         <input id="doctor1" type="checkbox" name="doctor" value="1"
-                                                        v-model='selectPatient' required>
+                                                         required>
                                                         <label for="doctor1">
                                                             <div class="cu-input cu-checkbox normal">
                                                                 <div class="contain">
@@ -216,7 +216,7 @@
                                                 <div class="col-lg-3 col-md-6">
                                                     <div class="cu-field">
                                                         <input id="doctor1" type="checkbox" name="doctor" value="2"
-                                                        v-model='selectPatient' required>
+                                                        required>
                                                         <label for="doctor3">
                                                             <div class="cu-input cu-checkbox normal">
                                                                 <div class="contain">
@@ -230,7 +230,7 @@
                                                 <div class="col-lg-3 col-md-6">
                                                     <div class="cu-field">
                                                         <input id="doctor3" type="checkbox" name="doctor" value="3"
-                                                        v-model='selectPatient' required>
+                                                         required>
                                                         <label for="doctor3">
                                                             <div class="cu-input cu-checkbox normal">
                                                                 <div class="contain">
@@ -243,7 +243,7 @@
                                                 </div>
                                                 <div class="col-lg-3 col-md-6">
                                                     <div class="cu-field">
-                                                        <input id="doctor3" type="checkbox" name="doctor" value="3"
+                                                        <input id="doctor3" type="checkbox" name="doctor" value="4"
                                                         v-model='selectPatient' required>
                                                         <label for="doctor3">
                                                             <div class="cu-input cu-checkbox normal">
@@ -299,10 +299,6 @@ export default {
 <style scoped>
 .or_patient {
     background-color:#f6f8fb;
-    background-attachment: fixed;
-    background-repeat: no-repeat;
-    background-size:cover;
-    background-position: center;
     text-align: center;
     position: relative;
     overflow: hidden;
@@ -316,8 +312,8 @@ export default {
     display: block;
     width: 200px;
     height: 100%;
-    background:url('../../assets/layout/img/left.png') left no-repeat fixed;
-    background-size:contain;
+    background:url('../../assets/layout/img/left.png') left no-repeat;
+    background-size:100% 100%;
 }
 .or_patient::after {
     content:'';
@@ -327,8 +323,8 @@ export default {
     display: block;
     width: 200px;
     height: 100%;
-    background:url('../../assets/layout/img/right.png') right no-repeat fixed;
-    background-size:contain;
+    background:url('../../assets/layout/img/right.png') right no-repeat;
+    background-size:100% 100%;
 }
 .custom-form {
     margin: 15px;

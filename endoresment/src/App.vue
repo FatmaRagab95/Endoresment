@@ -34,7 +34,7 @@ export default {
   data() {
     return {
       user: JSON.parse(localStorage.getItem("user")),
-      link: 59677,
+      link: 51026,
     };
   },
   watch: {
@@ -50,35 +50,8 @@ export default {
 .main-contnet {
   margin-top: 60px;
 }
-.ui-datepicker-clear-month {
-  position: absolute;
-  top: 9px;
-  right: 32px;
-  height: 100%;
-  line-height: 100%;
-  display: inline;
-  cursor: pointer;
-  color: red !important;
-}
-.ui-state-active,
-.ui-widget-content .ui-state-active {
-  background: #666 !important;
-  color: #fff !important;
-}
-.ui-datepicker {
-  width: 35em !important;
-  padding: 0.2em 0.2em 0;
-  display: none;
-}
-.ui-datepicker th {
-  padding: 0.4em 0.2em !important;
-}
-.ui-datepicker td a {
-  text-align: center !important;
-}
-.ui-widget {
-  font-family: inherit !important;
-  font-size: 1em !important;
+.badge-success {
+  background-color: #29b770;
 }
 .loader-container {
   background-color: #7da4d0;
@@ -98,7 +71,21 @@ export default {
 .loader-f path {
   fill: #4468d6;
 }
-
+.not-found {
+  max-width: 350px;
+  margin: 60px auto;
+  padding: 15px;
+  color: #666;
+}
+.not-found i {
+  font-size: 3em;
+  display: block;
+  margin: 20px auto;
+}
+.not-found button {
+  max-width: 150px;
+  margin: 30px auto;
+}
 @keyframes loader {
   12.5% {
     transform: rotate(45deg);

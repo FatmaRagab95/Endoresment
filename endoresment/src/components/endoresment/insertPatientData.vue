@@ -1,71 +1,81 @@
 <template>
-  <div class="insertPatientData p-3 text-capitalize">
+  <div class="insertPatientData p-3">
     <div class="container-fluid mt-2 bg-white pt-3 pb-3 card">
-      <div class="container">
-        <div class="row form-group text-center bg-light pt-3 pb-3">
-          <div class="col-md-4">
-            <div class="shadow-sm bg-white pt-3 pb-3">
-              <span class="text-info">name :</span
-              ><span class="ml-2">Rabaa Ali Massoud</span>
+      <div class="container-fluid mt-2 bg-white pt-3 pb-3">
+        <!-- start patient data -->
+        <div class="container" v-if="patientData">
+          <div class="row form-group head-info rounded text-center pt-3 pb-3">
+            <div class="col-md-4">
+              <div class="shadow bg-white rounded pt-3 pb-3">
+                <span class="text-info">Name :</span
+                ><span class="ml-2">{{ patientData.Patient_FullName }}</span>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="shadow bg-white rounded pt-3 pb-3">
+                <span class="text-info">Medical Number :</span
+                ><span class="ml-2">{{ patientData.Medical_Number }}</span>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="shadow bg-white rounded pt-3 pb-3">
+                <span class="text-info">Age:</span
+                ><span class="ml-2">{{ patientData.Age }} years</span>
+              </div>
             </div>
           </div>
-          <div class="col-md-4">
-            <div class="shadow-sm bg-white pt-3 pb-3">
-              <span class="text-info">medical number :</span
-              ><span class="ml-2">4567</span>
-            </div>
-          </div>
-          <div class="col-md-4">
-            <div class="shadow-sm bg-white pt-3 pb-3">
-              <span class="text-info">age:</span><span class="ml-2">35 years</span>
-            </div>
-          </div>
-        </div>
 
-        <div class="row form-group text-center mt-4" style="font-size: 25px">
-          <div class="col-md-4">
-            <span class="pull-left">
-              <span class="text-secondary">unit :</span
-              ><span
-                class="ml-2 badge card badge-success text-uppercase pl-4 pr-4 shadow-sm"
-                >icu</span
-              ></span
-            >
+          <div class="row form-group text-center mt-4" style="font-size: 25px">
+            <div class="col-md-4">
+              <span class="pull-left">
+                <span class="text-secondary">Unit :</span
+                ><span
+                  class="ml-2 badge card badge-success text-uppercase pl-4 pr-4 shadow-sm"
+                  >{{ patientData.Unit }}</span
+                ></span
+              >
+            </div>
+            <div class="col-md-4" style="text-decoration: underline; font-size: 28px">
+              <span class="text-success">Date of admission :</span
+              ><span class="ml-2 text-secondary">{{ patientData.Addmission_date }}</span>
+            </div>
+            <div class="col-md-4">
+              <span class="pull-right">
+                <span class="text-secondary">Room:</span>
+                <span class="ml-2 badge card badge-success pl-4 pr-4 shadow-sm">{{
+                  patientData.Room
+                }}</span>
+              </span>
+            </div>
           </div>
-          <div class="col-md-4" style="text-decoration: underline; font-size: 28px">
-            <span class="text-success">date of admission :</span
-            ><span class="ml-2 text-secondary">25-2-2020</span>
-          </div>
-          <div class="col-md-4">
-            <span class="pull-right">
-              <span class="text-secondary">room:</span>
-              <span class="ml-2 badge card badge-success pl-4 pr-4 shadow-sm">35</span>
-            </span>
+          <hr />
+          <div class="cu-flex form-group">
+            <div class="mt-3">
+              <span class="pull-left bg-white p-3 shadow">
+                <i class="fa fa-address-card-o text-secondary" aria-hidden="true"></i>
+                <span class="ml-2 text-info">Specialty :</span
+                ><span class="ml-2 text-danger">{{ patientData.Specialty }}</span></span
+              >
+            </div>
+            <div class="mt-3">
+              <span class="pull-right bg-white p-3 shadow">
+                <i class="fa fa-user-md text-secondary" aria-hidden="true"></i>
+                <span class="ml-2 text-info">Consultant :</span
+                ><span class="ml-2 text-danger">{{
+                  patientData.Consultant_Name
+                }}</span></span
+              >
+            </div>
           </div>
         </div>
-        <hr />
-        <div class="row form-group">
-          <div class="col-md-4">
-            <span class="pull-left bg-light p-3 shadow-sm">
-              <i class="fa fa-address-card-o text-secondary" aria-hidden="true"></i>
-              <span class="ml-2 text-info">specialty :</span
-              ><span class="ml-2 text-danger">neurosurgery</span></span
-            >
-          </div>
-          <div class="col-md-4 text-center pt-4">
-            ......................................
-          </div>
-          <div class="col-md-4">
-            <span class="pull-right bg-light p-3 shadow-sm">
-              <i class="fa fa-user-md text-secondary" aria-hidden="true"></i>
-              <span class="ml-2 text-info">consultant :</span
-              ><span class="ml-2 text-danger">ahmad mamdouh</span></span
-            >
-          </div>
+        <div class="text-center not-found" v-else>
+          <p><i class="fa fa-warning text-warning"></i> This patient is not found!</p>
+          <p>There is no data found for this IP</p>
         </div>
+        <!-- end patient data -->
       </div>
     </div>
-    <div class="container-fluid mt-2 bg-white pt-3 pb-3 card viewPatients">
+    <div class="container-fluid mt-2 bg-white pt-3 pb-3 card" v-if="patientData">
       <div class="container">
         <div class="row mt-4 text-left">
           <div class="col-xl-8 col-lg-7">
@@ -73,7 +83,7 @@
               <div
                 class="card-header py-3 d-flex flex-row align-items-center justify-content-between"
               >
-                <h6 class="m-0 font-weight-bold text-info">diagnosis</h6>
+                <h5 class="m-0">Diagnosis</h5>
               </div>
               <!-- Card Body -->
               <div class="card-body">
@@ -91,7 +101,7 @@
               <div
                 class="card-header py-3 d-flex flex-row align-items-center justify-content-between"
               >
-                <h6 class="m-0 font-weight-bold text-info">progress notes</h6>
+                <h5 class="m-0">Progress Notes</h5>
               </div>
               <!-- Card Body -->
               <div class="card-body">
@@ -110,27 +120,27 @@
               <div
                 class="card-header py-3 d-flex flex-row align-items-center justify-content-between"
               >
-                <h5 class="m-0 font-weight-bold text-info">medical details</h5>
+                <h5 class="m-0">Medical Details</h5>
               </div>
               <div class="card-body row">
                 <div class="col-md-6">
                   <h4 class="font-weight-bold text-dark mt-3">
-                    pain level <span class="float-right text-success">2</span>
+                    Pain Level <span class="float-right text-success">2</span>
                   </h4>
-                  <div class="progress mb-4">
+                  <div class="progress bg-light mb-4" style="height: 60px">
                     <input
                       class="progress-bar bg-danger w-100"
                       type="range"
                       min="0"
-                      max="100"
-                      step="5"
+                      max="10"
+                      step="1"
                       id="volume"
                     />
                   </div>
                 </div>
 
                 <div class="col-md-6">
-                  <h4 class="font-weight-bold text-dark">fall</h4>
+                  <h4 class="font-weight-bold text-dark">Fall</h4>
                   <div class="mb-4 row">
                     <span class="col-md-6"
                       ><div class="custom-control custom-radio bg-light p-2 text-center">
@@ -200,7 +210,7 @@
               <div
                 class="card-header py-3 d-flex flex-row align-items-center justify-content-between"
               >
-                <h5 class="m-0 font-weight-bold text-info">To Do</h5>
+                <h5 class="m-0">To Do</h5>
               </div>
               <div class="card-body row m-0">
                 <div class="col-md-12">
@@ -218,7 +228,7 @@
               <div
                 class="card-header py-3 d-flex flex-row align-items-center justify-content-between"
               >
-                <h5 class="m-0 font-weight-bold text-info">Follow up</h5>
+                <h5 class="m-0">Follow up</h5>
               </div>
               <div class="card-body row m-0">
                 <div class="col-md-12">
@@ -236,7 +246,7 @@
               <div
                 class="card-header py-3 d-flex flex-row align-items-center justify-content-between"
               >
-                <h5 class="m-0 font-weight-bold text-info">Complications</h5>
+                <h5 class="m-0">Contraptions &amp; Infusions</h5>
               </div>
               <div class="card-body row m-0">
                 <div class="col-md-12">
@@ -254,7 +264,7 @@
               <div
                 class="card-header py-3 d-flex flex-row align-items-center justify-content-between"
               >
-                <h5 class="m-0 font-weight-bold text-info">Routes Plan of Care</h5>
+                <h5 class="m-0">Routise Plan of Care</h5>
                 <div class="dropdown no-arrow show"></div>
               </div>
               <div class="card-body row m-0">
@@ -275,7 +285,7 @@
               <div
                 class="card-header py-3 d-flex flex-row align-items-center justify-content-between"
               >
-                <h5 class="m-0 font-weight-bold text-info">progress of consultations</h5>
+                <h5 class="m-0">Progress of consultations</h5>
               </div>
               <div class="card-body row m-0">
                 <div class="col-md-12">
@@ -289,7 +299,9 @@
             </div>
           </div>
         </div>
-        <button class="btn btn-info pl-5 pr-5 ml-auto mr-auto mt-5 mb-4">submit</button>
+        <div class="text-center">
+          <button class="special-btn">Submit</button>
+        </div>
       </div>
     </div>
   </div>
@@ -302,23 +314,37 @@ export default {
   data() {
     return {
       apiUrl: `http://localhost:${this.link}/endoresment/dist/`,
+      patientData: null,
+      id: this.$route.params.id,
     };
   },
   methods: {},
   created() {
     let that = this;
+    // get patient data
+    $.ajax({
+      type: "POST",
+      url: that.apiUrl + "endoresment/insertPatientData.aspx/getPatientData",
+      data: JSON.stringify({ id: { id: that.id } }),
+      contentType: "application/json; charset=utf-8",
+      dataType: "json",
+      success: function (data) {
+        that.patientData = JSON.parse(data.d)[0];
+      },
+    });
   },
 };
 </script>
 
 <style scoped>
-.viewPatients {
+.insertPatientData {
   min-height: 100vh;
-  background: #fff url("../../assets/layout/img/humaaans-doctors.png") right no-repeat;
-  background-size: contain;
   background-color: #f6f8fb;
-  text-align: center;
   position: relative;
   overflow: hidden;
+  font-size: 16px;
+}
+.head-info {
+  background-color: #f6f8fb;
 }
 </style>
