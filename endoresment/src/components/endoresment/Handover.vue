@@ -6,7 +6,7 @@
             <div class='bg-white shadow table-responsive mb-5' v-for='(unit) in UnitDash' :key='unit.id'>
                 <h4 class='cu-flex p-3 shadow'>
                     <span><i class='fa fa-hospital-o'></i> {{unit.Unit_name}}</span>
-                    <router-link class='btn btn-primary' :to='{name:"Nurses", params:{id:unit.id}}'>Nurses List</router-link>
+                    <router-link class='btn btn-primary' :to='{name:"Nurses", params:{id:unit.Unit_id}}'>Nurses List</router-link>
                 </h4>
                 <div class="scroll-box" v-dragscroll>
                     <table class="table table-bordered" v-if='patientsFollow.length == patients.length'>
