@@ -16,6 +16,7 @@ import or_patient from "@/components/endoresment/or_patient";
 import or_patient_edit from "@/components/endoresment/or_patient_edit";
 import OR from "@/components/endoresment/OR";
 import OR_details from "@/components/endoresment/OR_details";
+import selectUnit from "@/components/endoresment/selectUnit";
 import Handover from "@/components/endoresment/Handover";
 
 Vue.use(Router);
@@ -74,7 +75,7 @@ const router = new Router({
         cat: "Endoresment",
       },
     },
-     {
+    {
       path: "/editShiftDetials/:id",
       name: "Edit Shift Details",
       component: editShiftDetials,
@@ -101,7 +102,7 @@ const router = new Router({
         cat: "Endoresment",
       },
     },
-   {
+    {
       path: "/patientData/:id",
       name: "Patient Data",
       component: patientData,
@@ -110,7 +111,7 @@ const router = new Router({
         cat: "Endoresment",
       },
     },
-   {
+    {
       path: "/insertPatientData/:id",
       name: "Insert Patient Data",
       component: insertPatientData,
@@ -119,8 +120,8 @@ const router = new Router({
         cat: "Endoresment",
       },
     },
-   {
-      path: "/roomDetails",
+    {
+      path: "/roomDetails/:id",
       name: "Room Details",
       component: roomDetails,
       meta: {
@@ -129,42 +130,50 @@ const router = new Router({
       },
     },
     {
-       path: "/or_patient",
-       name: "Schedule Procedure",
-       component: or_patient,
-       meta: {
-         requiresAuth: true,
-         cat: "Endoresment",
-       },
-     },
-     {
-        path: "/or_patient_edit:id",
-        name: "Edit Procedure",
-        component: or_patient_edit,
-        meta: {
-          requiresAuth: true,
-          cat: "Endoresment",
-        },
+      path: "/or_patient",
+      name: "Schedule Procedure",
+      component: or_patient,
+      meta: {
+        requiresAuth: true,
+        cat: "Endoresment",
       },
-     {
-        path: "/OR",
-        name: "OR",
-        component: OR,
-        meta: {
-          requiresAuth: true,
-          cat: "Endoresment",
-        },
+    },
+    {
+      path: "/or_patient_edit:id",
+      name: "Edit Procedure",
+      component: or_patient_edit,
+      meta: {
+        requiresAuth: true,
+        cat: "Endoresment",
       },
-      {
-         path: "/OR_details:id",
-         name: "OR Details",
-         component: OR_details,
-         meta: {
-           requiresAuth: true,
-           cat: "Endoresment",
-         },
-       },
-   
+    },
+    {
+      path: "/OR",
+      name: "OR",
+      component: OR,
+      meta: {
+        requiresAuth: true,
+        cat: "Endoresment",
+      },
+    },
+    {
+      path: "/OR_details:id",
+      name: "OR Details",
+      component: OR_details,
+      meta: {
+        requiresAuth: true,
+        cat: "Endoresment",
+      },
+    },
+    {
+      path: "/selectUnit",
+      name: "select unit",
+      component: selectUnit,
+      meta: {
+        requiresAuth: true,
+        cat: "Endoresment",
+      },
+    },
   ],
 });
 

@@ -34,7 +34,7 @@ export default {
   data() {
     return {
       user: JSON.parse(localStorage.getItem("user")),
-      link: 49638,
+      link: 51026,
     };
   },
   watch: {
@@ -51,7 +51,7 @@ export default {
   margin-top: 60px;
 }
 .badge-success {
-    background-color: #29b770;
+  background-color: #29b770;
 }
 .loader-container {
   background-color: #7da4d0;
@@ -72,19 +72,19 @@ export default {
   fill: #4468d6;
 }
 .not-found {
-  max-width:350px;
-  margin:60px auto;
-  padding:15px;
-  color:#666;
+  max-width: 350px;
+  margin: 60px auto;
+  padding: 15px;
+  color: #666;
 }
 .not-found i {
-  font-size:3em;
-  display:block;
-  margin:20px auto;
+  font-size: 3em;
+  display: block;
+  margin: 20px auto;
 }
 .not-found button {
-  max-width:150px;
-  margin:30px auto;
+  max-width: 150px;
+  margin: 30px auto;
 }
 @keyframes loader {
   12.5% {

@@ -1,83 +1,88 @@
 <template>
   <div class="insertPatientData p-3">
     <div class="container-fluid mt-2 bg-white pt-3 pb-3 card">
-    <div class="container-fluid mt-2 bg-white pt-3 pb-3">
-      <!-- start patient data -->
-      <div class="container" v-if='patientData'>
-        <div class="row form-group head-info rounded text-center pt-3 pb-3">
-          <div class="col-md-4">
-            <div class="shadow bg-white rounded pt-3 pb-3">
-              <span class="text-info">Name :</span
-              ><span class="ml-2">{{patientData.Patient_FullName}}</span>
+      <div class="container-fluid mt-2 bg-white pt-3 pb-3">
+        <!-- start patient data -->
+        <div class="container" v-if="patientData">
+          <div class="row form-group head-info rounded text-center pt-3 pb-3">
+            <div class="col-md-4">
+              <div class="shadow bg-white rounded pt-3 pb-3">
+                <span class="text-info">Name :</span
+                ><span class="ml-2">{{ patientData.Patient_FullName }}</span>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="shadow bg-white rounded pt-3 pb-3">
+                <span class="text-info">Medical Number :</span
+                ><span class="ml-2">{{ patientData.Medical_Number }}</span>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="shadow bg-white rounded pt-3 pb-3">
+                <span class="text-info">Age:</span
+                ><span class="ml-2">{{ patientData.Age }} years</span>
+              </div>
             </div>
           </div>
-          <div class="col-md-4">
-            <div class="shadow bg-white rounded pt-3 pb-3">
-              <span class="text-info">Medical Number :</span
-              ><span class="ml-2">{{patientData.Medical_Number}}</span>
-            </div>
-          </div>
-          <div class="col-md-4">
-            <div class="shadow bg-white rounded pt-3 pb-3">
-              <span class="text-info">Age:</span><span class="ml-2">{{patientData.Age}} years</span>
-            </div>
-          </div>
-        </div>
 
-        <div class="row form-group text-center mt-4" style="font-size: 25px">
-          <div class="col-md-4">
-            <span class="pull-left">
-              <span class="text-secondary">Unit :</span
-              ><span
-                class="ml-2 badge card badge-success text-uppercase pl-4 pr-4 shadow-sm"
-                >{{patientData.Unit}}</span
-              ></span
-            >
+          <div class="row form-group text-center mt-4" style="font-size: 25px">
+            <div class="col-md-4">
+              <span class="pull-left">
+                <span class="text-secondary">Unit :</span
+                ><span
+                  class="ml-2 badge card badge-success text-uppercase pl-4 pr-4 shadow-sm"
+                  >{{ patientData.Unit }}</span
+                ></span
+              >
+            </div>
+            <div class="col-md-4" style="text-decoration: underline; font-size: 28px">
+              <span class="text-success">Date of admission :</span
+              ><span class="ml-2 text-secondary">{{ patientData.Addmission_date }}</span>
+            </div>
+            <div class="col-md-4">
+              <span class="pull-right">
+                <span class="text-secondary">Room:</span>
+                <span class="ml-2 badge card badge-success pl-4 pr-4 shadow-sm">{{
+                  patientData.Room
+                }}</span>
+              </span>
+            </div>
           </div>
-          <div class="col-md-4" style="text-decoration: underline; font-size: 28px">
-            <span class="text-success">Date of admission :</span
-            ><span class="ml-2 text-secondary">{{patientData.Addmission_date}}</span>
-          </div>
-          <div class="col-md-4">
-            <span class="pull-right">
-              <span class="text-secondary">Room:</span>
-              <span class="ml-2 badge card badge-success pl-4 pr-4 shadow-sm">{{patientData.Room}}</span>
-            </span>
+          <hr />
+          <div class="cu-flex form-group">
+            <div class="mt-3">
+              <span class="pull-left bg-white p-3 shadow">
+                <i class="fa fa-address-card-o text-secondary" aria-hidden="true"></i>
+                <span class="ml-2 text-info">Specialty :</span
+                ><span class="ml-2 text-danger">{{ patientData.Specialty }}</span></span
+              >
+            </div>
+            <div class="mt-3">
+              <span class="pull-right bg-white p-3 shadow">
+                <i class="fa fa-user-md text-secondary" aria-hidden="true"></i>
+                <span class="ml-2 text-info">Consultant :</span
+                ><span class="ml-2 text-danger">{{
+                  patientData.Consultant_Name
+                }}</span></span
+              >
+            </div>
           </div>
         </div>
-        <hr />
-        <div class="cu-flex form-group">
-          <div class="mt-3">
-            <span class="pull-left bg-white p-3 shadow">
-              <i class="fa fa-address-card-o text-secondary" aria-hidden="true"></i>
-              <span class="ml-2 text-info">Specialty :</span
-              ><span class="ml-2 text-danger">{{patientData.Specialty}}</span></span
-            >
-          </div>
-          <div class="mt-3">
-            <span class="pull-right bg-white p-3 shadow">
-              <i class="fa fa-user-md text-secondary" aria-hidden="true"></i>
-              <span class="ml-2 text-info">Consultant :</span
-              ><span class="ml-2 text-danger">{{patientData.Consultant_Name}}</span></span
-            >
-          </div>
-        </div>
-      </div>
-      <div class="text-center not-found" v-else>
-          <p><i class='fa fa-warning text-warning'></i>
-          This patient is not found!</p>
+        <div class="text-center not-found" v-else>
+          <p><i class="fa fa-warning text-warning"></i> This patient is not found!</p>
           <p>There is no data found for this IP</p>
+        </div>
+        <!-- end patient data -->
       </div>
-      <!-- end patient data -->
     </div>
-    </div>
-    <div class="container-fluid mt-2 bg-white pt-3 pb-3 card" v-if='patientData'>
+    <div class="container-fluid mt-2 bg-white pt-3 pb-3 card" v-if="patientData">
       <div class="container">
         <div class="row mt-4 text-left">
           <div class="col-xl-8 col-lg-7">
             <div class="card shadow overflow-auto" style="height: 250px">
               <div
-                class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                class="card-header py-3 d-flex flex-row align-items-center justify-content-between"
+              >
                 <h5 class="m-0">Diagnosis</h5>
               </div>
               <!-- Card Body -->
@@ -113,7 +118,8 @@
           <div class="col-md-12">
             <div class="card shadow">
               <div
-                class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                class="card-header py-3 d-flex flex-row align-items-center justify-content-between"
+              >
                 <h5 class="m-0">Medical Details</h5>
               </div>
               <div class="card-body row">
@@ -121,14 +127,15 @@
                   <h4 class="font-weight-bold text-dark mt-3">
                     Pain Level <span class="float-right text-success">2</span>
                   </h4>
-                  <div class="progress bg-light mb-4" style='height:60px'>
+                  <div class="progress bg-light mb-4" style="height: 60px">
                     <input
                       class="progress-bar bg-danger w-100"
                       type="range"
                       min="0"
                       max="10"
                       step="1"
-                      id="volume"/>
+                      id="volume"
+                    />
                   </div>
                 </div>
 
@@ -152,7 +159,8 @@
                           type="radio"
                           id="customRadio2"
                           name="customRadio"
-                          class="custom-control-input"/>
+                          class="custom-control-input"
+                        />
                         <label class="custom-control-label" for="customRadio2"
                           >none</label
                         >
@@ -317,7 +325,7 @@ export default {
     $.ajax({
       type: "POST",
       url: that.apiUrl + "endoresment/insertPatientData.aspx/getPatientData",
-      data: JSON.stringify({ "id": { "id": that.id } }),
+      data: JSON.stringify({ id: { id: that.id } }),
       contentType: "application/json; charset=utf-8",
       dataType: "json",
       success: function (data) {
@@ -334,7 +342,7 @@ export default {
   background-color: #f6f8fb;
   position: relative;
   overflow: hidden;
-  font-size:16px;
+  font-size: 16px;
 }
 .head-info {
   background-color: #f6f8fb;
