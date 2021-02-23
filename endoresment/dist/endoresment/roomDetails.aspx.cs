@@ -277,19 +277,27 @@ public partial class _roomDetails : System.Web.UI.Page
                             ? Convert.ToInt32(idr["id"])
                             : 0,
                     Patient_FullName =
-                        Convert.ToString(idr["Patient_FullName"]),
+                        idr["Patient_FullName"] != DBNull.Value
+                            ? Convert.ToString(idr["Patient_FullName"])
+                            : String.Empty,
                     Bed_id =
                         idr["Bed_id"] != DBNull.Value
                             ? Convert.ToInt32(idr["Bed_id"])
                             : 0,
                     Room = Convert.ToString(idr["Room"]),
                     Gender = Convert.ToString(idr["Gender"]),
-                    Medical_Number = Convert.ToInt64(idr["Medical_Number"]),
+                    Medical_Number =
+                        idr["Medical_Number"] != DBNull.Value
+                            ? Convert.ToInt64(idr["Medical_Number"])
+                            : 0,
                     Age =
                         idr["Age"] != DBNull.Value
-                            ? Convert.ToInt32(idr["Age"])
-                            : 0,
-                    Specialty = Convert.ToString(idr["Specialty"])
+                            ? Convert.ToString(idr["Age"])
+                            : String.Empty,
+                    Specialty =
+                        idr["Specialty"] != DBNull.Value
+                            ? Convert.ToString(idr["Specialty"])
+                            : String.Empty
                 });
         }
 
@@ -308,10 +316,221 @@ public partial class _roomDetails : System.Web.UI.Page
 
         public string Gender { get; set; }
 
-        public Int64 Medical_Number { get; set; }
+        public Int64? Medical_Number { get; set; }
 
-        public int? Age { get; set; }
+        public string Age { get; set; }
 
         public string Specialty { get; set; }
+    }
+
+    // insert new patient data
+    [WebMethod]
+    public static string newPatient(PatientData data)
+    {
+        string config =
+            Convert.ToString(ConfigurationManager.ConnectionStrings["dbcon"]);
+
+        List<PatientData> PatientData = new List<PatientData>();
+
+        SqlConnection con = new SqlConnection(config);
+
+        con.Open();
+        using (
+            SqlCommand cmd1 =
+                new SqlCommand("insert into Endorsement_PatientData (Patient_FullName, Branch_id, Branch_name,Gender,Unit,Room,Bed_id,Addmission_date,Age,Specialty,Patient_Status,Entry_user) values (@Patient_FullName,@Branch_id, @Branch_name, @Gender, @Unit, @Room, @Bed_id, @Addmission_date, @Age, @Specialty, @Patient_Status ,@Entry_user)",
+                    con)
+        )
+        {
+            cmd1.Parameters.Add("@Patient_FullName", SqlDbType.VarChar).Value =
+                data.Patient_FullName;
+            cmd1.Parameters.Add("@Branch_id", SqlDbType.Int).Value =
+                data.Branch_id;
+            cmd1.Parameters.Add("@Branch_name", SqlDbType.VarChar).Value =
+                data.Branch_name;
+            cmd1.Parameters.Add("@Gender", SqlDbType.VarChar).Value =
+                data.Gender;
+            cmd1.Parameters.Add("@Unit", SqlDbType.VarChar).Value = data.Unit;
+            cmd1.Parameters.Add("@Room", SqlDbType.VarChar).Value = data.Room;
+            cmd1.Parameters.Add("@Bed_id", SqlDbType.Int).Value = data.Bed_id;
+            cmd1.Parameters.Add("@Addmission_date", SqlDbType.VarChar).Value =
+                data.Addmission_date;
+            cmd1.Parameters.Add("@Age", SqlDbType.VarChar).Value = data.Age;
+            cmd1.Parameters.Add("@Specialty", SqlDbType.VarChar).Value =
+                data.Specialty;
+            cmd1.Parameters.Add("@Patient_Status", SqlDbType.Int).Value = 1;
+            cmd1.Parameters.Add("@Entry_user", SqlDbType.Int).Value =
+                data.Entry_user;
+
+            cmd1.ExecuteNonQuery();
+        }
+        con.Close();
+
+        // update units dashboard
+        con.Open();
+        using (
+            SqlCommand cmd2 =
+                new SqlCommand("update Endorsement_UnitsDashboard SET Total_Census = Total_Census + 1, Admission = Admission + 1 where Unit_name in (select TOP(1) Unit_name from Endorsement_UnitsDashboard where  Unit_name = @Unit_name)",
+                    con)
+        )
+        {
+            cmd2.Parameters.Add("@Unit_name", SqlDbType.VarChar).Value =
+                data.Unit;
+            cmd2.ExecuteNonQuery();
+        }
+
+        con.Close();
+
+        // update Rooms Dashboard
+        con.Open();
+        using (
+            SqlCommand cmd3 =
+                new SqlCommand("update Endorsement_RoomsDashboard SET Status_id = 2, Status_name = 'Full' where id = @id",
+                    con)
+        )
+        {
+            cmd3.Parameters.Add("@id", SqlDbType.Int).Value = data.Bed_id;
+            cmd3.ExecuteNonQuery();
+        }
+
+        con.Close();
+
+        return JsonConvert.SerializeObject(PatientData);
+    }
+
+    public class PatientData
+    {
+        public string Patient_FullName { get; set; }
+
+        public int? Branch_id { get; set; }
+
+        public string Branch_name { get; set; }
+
+        public string Gender { get; set; }
+
+        public int? Bed_id { get; set; }
+
+        public string Unit { get; set; }
+
+        public string Room { get; set; }
+
+        public string Addmission_date { get; set; }
+
+        public string Age { get; set; }
+
+        public string Specialty { get; set; }
+
+        public int? Patient_Status { get; set; }
+
+        public int? Entry_user { get; set; }
+    }
+
+    // get branches
+    [WebMethod]
+    public static string getBranchesData()
+    {
+        string config =
+            Convert.ToString(ConfigurationManager.ConnectionStrings["dbcon"]);
+        List<branches> branches = new List<branches>();
+
+        SqlConnection con = new SqlConnection(config);
+
+        con.Open();
+
+        using (SqlCommand cmd = new SqlCommand("select * from Branches", con))
+        {
+            SqlDataReader idr = cmd.ExecuteReader();
+
+            if (idr.HasRows)
+            {
+                branches = populatebranchesLisst(idr, con);
+            }
+        }
+
+        con.Close();
+
+        return JsonConvert.SerializeObject(branches);
+    }
+
+    public static List<branches>
+    populatebranchesLisst(SqlDataReader idr, SqlConnection con)
+    {
+        List<branches> branchesI = new List<branches>();
+
+        while (idr.Read())
+        {
+            branchesI
+                .Add(new branches {
+                    id =
+                        idr["id"] != DBNull.Value
+                            ? Convert.ToInt32(idr["id"])
+                            : 0,
+                    Branch_EName = Convert.ToString(idr["Branch_EName"])
+                });
+        }
+
+        return branchesI;
+    }
+
+    public class branches
+    {
+        public int? id { get; set; }
+
+        public string Branch_EName { get; set; }
+    }
+
+    // get Specialities
+    [WebMethod]
+    public static string getSpecialitiesData()
+    {
+        string config =
+            Convert.ToString(ConfigurationManager.ConnectionStrings["dbcon"]);
+        List<Specialities> Specialities = new List<Specialities>();
+
+        SqlConnection con = new SqlConnection(config);
+
+        con.Open();
+
+        using (
+            SqlCommand cmd = new SqlCommand("select * from Specialities", con)
+        )
+        {
+            SqlDataReader idr = cmd.ExecuteReader();
+
+            if (idr.HasRows)
+            {
+                Specialities = populateSpecialitiesLisst(idr, con);
+            }
+        }
+
+        con.Close();
+
+        return JsonConvert.SerializeObject(Specialities);
+    }
+
+    public static List<Specialities>
+    populateSpecialitiesLisst(SqlDataReader idr, SqlConnection con)
+    {
+        List<Specialities> SpecialitiesI = new List<Specialities>();
+
+        while (idr.Read())
+        {
+            SpecialitiesI
+                .Add(new Specialities {
+                    Spcy_id =
+                        idr["Spcy_id"] != DBNull.Value
+                            ? Convert.ToInt32(idr["Spcy_id"])
+                            : 0,
+                    Spcy_name_En = Convert.ToString(idr["Spcy_name_En"])
+                });
+        }
+
+        return SpecialitiesI;
+    }
+
+    public class Specialities
+    {
+        public int? Spcy_id { get; set; }
+
+        public string Spcy_name_En { get; set; }
     }
 }

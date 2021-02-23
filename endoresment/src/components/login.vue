@@ -40,13 +40,14 @@
 <script>
 export default {
   name: "login",
+  props: ["link"],
   data() {
     return {
       user: {
         user_name: "",
         pass_word: "",
       },
-      apiUrl: "http://localhost:52861/endoresment/dist/",
+      apiUrl: `http://localhost:${this.link}/endoresment/dist/`,
     };
   },
   methods: {
