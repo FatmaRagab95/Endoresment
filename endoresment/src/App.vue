@@ -14,7 +14,7 @@
     <div :class="user ? 'page-container' : ''">
       <div :class="user ? 'main-contnet' : ''">
         <upper-nav v-if="user" :username="user.FullName"></upper-nav>
-        <router-view :link="link" />
+        <router-view :link="link" :user='user'/>
       </div>
     </div>
   </div>
@@ -47,6 +47,9 @@ export default {
 </script>
 
 <style>
+[v-cloak] { 
+  display: none; 
+} 
 .main-contnet {
   margin-top: 60px;
 }

@@ -90,40 +90,6 @@
                   <div class="col-md-6">
                     <div class="cu-field">
                       <h3 class="cu-label">
-                        <label>Admission :</label>
-                      </h3>
-                      <div class="cu-input text-box">
-                        <span class="fa fa-edit"></span>
-                        <input type="text" v-model="newUnit.Admission" required />
-                      </div>
-                    </div>
-                  </div>
-                  <div class="col-md-6">
-                    <div class="cu-field">
-                      <h3 class="cu-label">
-                        <label>Transfer In :</label>
-                      </h3>
-                      <div class="cu-input text-box">
-                        <span class="fa fa-edit"></span>
-                        <input type="text" v-model="newUnit.Transfer_In" required />
-                      </div>
-                    </div>
-                  </div>
-
-                  <div class="col-md-6">
-                    <div class="cu-field">
-                      <h3 class="cu-label">
-                        <label>Transfer Out :</label>
-                      </h3>
-                      <div class="cu-input text-box">
-                        <span class="fa fa-edit"></span>
-                        <input type="text" v-model="newUnit.Transfer_Out" required />
-                      </div>
-                    </div>
-                  </div>
-                  <div class="col-md-12">
-                    <div class="cu-field">
-                      <h3 class="cu-label">
                         <label>Total Census :</label>
                       </h3>
                       <div class="cu-input text-box">
@@ -209,7 +175,7 @@
 <script>
 export default {
   name: "addUnit",
-  props: ["link"],
+  props: ["link", 'user'],
   data() {
     return {
       apiUrl: `http://localhost:${this.link}/endoresment/dist/`,
@@ -224,8 +190,8 @@ export default {
         Total_Census: 0,
         Received: 0,
         Admission: 0,
-        Transfer_In: "",
-        Transfer_Out: "",
+        Transfer_In: 0,
+        Transfer_Out: 0,
         Endorsing_ChargeNurse_id: "",
         Endorsing_ChargeNurse: "",
         Receive_ChargeNurse_id: "",
@@ -278,7 +244,7 @@ export default {
       type: "POST",
       url: that.apiUrl + "endoresment/add_unit.aspx/getUnitsData",
       contentType: "application/json; charset=utf-8",
-      data: JSON.stringify({ branch: { id: 1 } }),
+      data: JSON.stringify({ branch: { id:  that.user.Branch_ID} }),
       dataType: "json",
       success: function (data) {
         that.Units = JSON.parse(data.d);
@@ -290,6 +256,7 @@ export default {
       type: "POST",
       url: that.apiUrl + "endoresment/add_unit.aspx/getNursesData",
       contentType: "application/json; charset=utf-8",
+      data: JSON.stringify({ branch: { id:  that.user.Branch_ID} }),
       dataType: "json",
       success: function (data) {
         that.Nurses = JSON.parse(data.d);
