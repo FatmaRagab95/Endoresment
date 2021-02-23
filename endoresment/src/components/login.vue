@@ -40,7 +40,7 @@
 <script>
 export default {
   name: "login",
-  props: ["link"],
+  props: ['link'],
   data() {
     return {
       user: {
@@ -71,7 +71,7 @@ export default {
             } else {
               let data = JSON.parse(result.d)[0];
               localStorage.setItem("user", JSON.stringify(data));
-              that.$router.push({ name: "home" });
+              that.$router.push({ name: "Dashboard" });
             }
           },
         });

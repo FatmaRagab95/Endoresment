@@ -10,15 +10,94 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using Newtonsoft.Json;
 
-public partial class _patientData : System.Web.UI.Page
+public partial class _Handover : System.Web.UI.Page
 {
+    public int unitId = 0;
     protected void Page_Load(object sender, EventArgs e)
     {
+
+    }
+
+    // current user
+        public class user
+    {
+        public int Emp_id { get; set; }
+    }
+
+    // get unit dashboard
+    [WebMethod]
+    public static string getUnitDashData(user chargeNurse)
+    {
+        string config = Convert.ToString(ConfigurationManager.ConnectionStrings["dbcon"]);
+        List<UnitsDash> UnitsDash = new List<UnitsDash>();
+        List<user> user = new List<user>();
+
+        SqlConnection con = new SqlConnection(config);
+
+        con.Open();
+
+        using (SqlCommand cmd = new SqlCommand("SELECT * from Endorsement_UnitsDashboard where Shift_date >= DATEADD(day,-1, GETDATE()) and Unit_id in (select TOP(20) Unit_id from Endorsement_UnitsDashboard where Receive_ChargeNurse_id = @Receive_ChargeNurse_id and Shift_date >=   DATEADD(day,-1, GETDATE()) order by id desc) order by id desc", con))
+        {
+            cmd.Parameters.Add("@Receive_ChargeNurse_id", SqlDbType.Int).Value = chargeNurse.Emp_id;
+            SqlDataReader idr = cmd.ExecuteReader();
+
+            if (idr.HasRows)
+            {
+                UnitsDash = populateUnitsDashLisst(idr, con);
+            }
+        }
+
+        con.Close();
+
+        return JsonConvert.SerializeObject(UnitsDash);
+    }
+
+    public static List<UnitsDash>
+    populateUnitsDashLisst(SqlDataReader idr, SqlConnection con)
+    {
+        List<UnitsDash> UnitsDashI = new List<UnitsDash>();
+
+        while (idr.Read())
+        {
+            UnitsDashI
+                .Add(new UnitsDash {
+                    id = idr["id"] != DBNull.Value ? Convert.ToInt32(idr["id"]) : 0,
+                    Unit_name = Convert.ToString(idr["Unit_name"]),
+                    Shift = Convert.ToString(idr["Shift"]),
+                    Shift_date = Convert.ToString(idr["Shift_date"]),
+                    Endorsing_ChargeNurse = Convert.ToString(idr["Endorsing_ChargeNurse"]),
+                    Receive_ChargeNurse = Convert.ToString(idr["Receive_ChargeNurse"]),
+                    Total_Census = idr["Total_Census"] != DBNull.Value ? Convert.ToInt32(idr["Total_Census"]) : 0,
+                    Received = idr["Received"] != DBNull.Value ? Convert.ToInt32(idr["Received"]) : 0,
+                    Admission = idr["Admission"] != DBNull.Value ? Convert.ToInt32(idr["Admission"]) : 0,
+                    Transfer_In = idr["Transfer_In"] != DBNull.Value ? Convert.ToInt32(idr["Transfer_In"]) : 0,
+                    Transfer_Out = idr["Transfer_Out"] != DBNull.Value ? Convert.ToInt32(idr["Transfer_Out"]) : 0,
+
+                });
+        }
+
+        return UnitsDashI;
+    }
+
+    public class UnitsDash
+    {
+        public int id { get; set; }
+        public int? Unit_id { get; set; }
+        public string Unit_name { get; set; }
+        public string Shift { get; set; }
+        public string Shift_date { get; set; }
+        public string Endorsing_ChargeNurse { get; set; }
+        public string Receive_ChargeNurse { get; set; }
+        public int? Total_Census { get; set; }
+        public int? Received { get; set; }
+        public int? Admission { get; set; }
+        public int? Transfer_In { get; set; }
+        public int? Transfer_Out { get; set; }
     }
 
     // get patients data
     [WebMethod]
-    public static string getPatientData(Endorsement_PatientData id)
+    public static string getPatientsData(user chargeNurse)
     {
         string config =  Convert.ToString(ConfigurationManager.ConnectionStrings["dbcon"]);
         List<Endorsement_PatientData> Endorsement_PatientData = new List<Endorsement_PatientData>();
@@ -27,9 +106,9 @@ public partial class _patientData : System.Web.UI.Page
 
         con.Open();
 
-        using (SqlCommand cmd = new SqlCommand("select * from Endorsement_PatientData where id = @id", con))
+        using (SqlCommand cmd = new SqlCommand("select * from Endorsement_PatientData where Patient_Status = 1 and  Unit in (select TOP(20) Unit_name from Endorsement_UnitsDashboard where Receive_ChargeNurse_id = @Receive_ChargeNurse_id order by id desc)", con))
         {
-            cmd.Parameters.Add("@id", SqlDbType.Int).Value = id.id;
+            cmd.Parameters.Add("@Receive_ChargeNurse_id", SqlDbType.Int).Value = chargeNurse.Emp_id;
             SqlDataReader idr = cmd.ExecuteReader();
 
             if (idr.HasRows)
@@ -96,6 +175,7 @@ public partial class _patientData : System.Web.UI.Page
     {
         string config =  Convert.ToString(ConfigurationManager.ConnectionStrings["dbcon"]);
         List<Endorsement_shiftData> Endorsement_shiftData = new List<Endorsement_shiftData>();
+        List<user> user = new List<user>();
 
         SqlConnection con = new SqlConnection(config);
 
@@ -133,6 +213,7 @@ public partial class _patientData : System.Web.UI.Page
 					Diet_Name   = Convert.ToString(idr["Diet_Name"]),
                     Pain        = idr["Pain"] != DBNull.Value ? Convert.ToInt32(idr["Pain"]) : 0,
 					P_Isolation = Convert.ToString(idr["P_Isolation"]),
+					Fall = Convert.ToString(idr["Fall"]),
 					Allergy     = Convert.ToString(idr["Allergy"]),
 
 					Investegation_ToDo      = Convert.ToString(idr["Investegation_ToDo"]),
@@ -168,6 +249,7 @@ public partial class _patientData : System.Web.UI.Page
         public string Diet_Name { get; set; }
         public int? Pain { get; set; }
         public string P_Isolation { get; set; }
+        public string Fall { get; set; }
         public string Allergy { get; set; }
         public string Investegation_ToDo { get; set; }
         public string Investegation_FollowUp { get; set; }

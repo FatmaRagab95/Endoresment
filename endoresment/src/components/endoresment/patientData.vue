@@ -66,7 +66,7 @@
     </div>
 
     <div class="container-fluid mt-2 bg-white pt-3 pb-3 card">
-      <div class="container" v-if='shiftData'>
+      <div class="container" v-if='!shiftData'>
         <div class="row mt-4 text-left">
           <div class="col-md-8">
             <div class="form-group bg-white border p-3 shadow-sm">

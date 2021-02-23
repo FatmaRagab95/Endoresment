@@ -1,7 +1,6 @@
 import Vue from "vue";
 import Router from "vue-router";
 import login from "@/components/login";
-import home from "@/components/home";
 
 import addUnit from "@/components/endoresment/addUnit";
 import Units from "@/components/endoresment/Units";
@@ -18,6 +17,7 @@ import or_patient_edit from "@/components/endoresment/or_patient_edit";
 import OR from "@/components/endoresment/OR";
 import OR_details from "@/components/endoresment/OR_details";
 import selectUnit from "@/components/endoresment/selectUnit";
+import Handover from "@/components/endoresment/Handover";
 
 Vue.use(Router);
 
@@ -33,7 +33,7 @@ const router = new Router({
     {
       path: "/",
       name: "Dashboard",
-      component: home,
+      component: Handover,
       meta: {
         requiresAuth: true,
         cat: "Endoresment",

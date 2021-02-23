@@ -52,14 +52,17 @@ public partial class _addPatient : System.Web.UI.Page
         
 
         // update units dashboard
-        con.Open();
         using (SqlCommand cmd2 = new SqlCommand("select * from Endorsement_UnitsDashboard where Unit_name = @Unit_name", con))
         {
+            
+            con.Open();
             cmd2.Parameters.Add("@Unit_name", SqlDbType.VarChar).Value   = data.Unit;
+            
             SqlDataReader idr = cmd2.ExecuteReader();
 
             if (idr.HasRows)
             {
+                con.Close();
                 con.Open();
                 using (SqlCommand cmd1 = new SqlCommand("update Endorsement_UnitsDashboard Total_Census = Total_Census + 1, Admission = Admission + 1", con))
 
