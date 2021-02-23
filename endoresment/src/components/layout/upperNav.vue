@@ -134,7 +134,7 @@
                         <div class="profile">
                             <img class="rounded-circle img-fluid" src="../../assets/layout/img/user.jpg">
                         </div>
-                        <div class="p-0"><span>{{username}}</span></div>
+                        <div class="p-0 userName"><span>{{username}}</span></div>
                     </div>
                     <ul class="list-unstyled sub-menu profile-menu">
                         <li><a href="../Security/forgot_password.aspx"><i class="fa fa-user-circle"></i><span>Profile</span></a></li>
@@ -182,5 +182,14 @@ export default {
 }
 .topbar .navbar-brand img {
     max-width:120px;
+}
+.topbar .menu .main-menu {
+    max-width:240px;
+}
+.userName {
+    max-width: 120px;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    word-break: break-word;
 }
 </style>

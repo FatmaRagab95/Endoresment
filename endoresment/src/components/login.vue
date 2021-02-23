@@ -40,13 +40,14 @@
 <script>
 export default {
   name: "login",
+  props: ['link'],
   data() {
     return {
       user: {
         user_name: "",
         pass_word: "",
       },
-      apiUrl: "http://localhost:52861/endoresment/dist/",
+      apiUrl: `http://localhost:${this.link}/endoresment/dist/`,
     };
   },
   methods: {
@@ -70,7 +71,7 @@ export default {
             } else {
               let data = JSON.parse(result.d)[0];
               localStorage.setItem("user", JSON.stringify(data));
-              that.$router.push({ name: "home" });
+              that.$router.push({ name: "Dashboard" });
             }
           },
         });

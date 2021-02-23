@@ -52,18 +52,18 @@ public partial class _viewPatients : System.Web.UI.Page
             Endorsement_PatientDataI
                 .Add(new Endorsement_PatientData {
                     id = idr["id"] != DBNull.Value ? Convert.ToInt32(idr["id"]) : 0,
-					Patient_FullName = Convert.ToString(idr["Patient_FullName"]),
+					Patient_FullName = idr["Patient_FullName"] != DBNull.Value ? Convert.ToString(idr["Patient_FullName"]) : String.Empty,
                     Branch_id = idr["Branch_id"] != DBNull.Value ? Convert.ToInt32(idr["Branch_id"]) : 0,
-					Branch_name = Convert.ToString(idr["Branch_name"]),
-					Gender = Convert.ToString(idr["Gender"]),
-					Medical_Number = Convert.ToInt64(idr["Medical_Number"]),
-					Unit = Convert.ToString(idr["Unit"]),
-					Room = Convert.ToString(idr["Room"]),
-					Addmission_date = Convert.ToString(idr["Addmission_date"]),
-                    Age = idr["Age"] != DBNull.Value ? Convert.ToInt32(idr["Age"]) : 0,
-					Consultant_Name = Convert.ToString(idr["Consultant_Name"]),
-					Specialty = Convert.ToString(idr["Specialty"]),
-					Date_Birth = Convert.ToString(idr["Date_Birth"]),
+					Branch_name =  idr["Branch_name"] != DBNull.Value ? Convert.ToString(idr["Branch_name"]) : String.Empty,
+					Gender =  idr["Gender"] != DBNull.Value ? Convert.ToString(idr["Gender"]): String.Empty,
+					Medical_Number =  idr["Medical_Number"] != DBNull.Value ? Convert.ToInt64(idr["Medical_Number"]): 0,
+					Unit =  idr["Unit"] != DBNull.Value ? Convert.ToString(idr["Unit"]): String.Empty,
+					Room =  idr["Room"] != DBNull.Value ? Convert.ToString(idr["Room"]): String.Empty,
+					Addmission_date =  idr["Addmission_date"] != DBNull.Value ? Convert.ToString(idr["Addmission_date"]): String.Empty,
+                    Age = idr["Age"] != DBNull.Value ? Convert.ToString(idr["Age"]) : String.Empty,
+					Consultant_Name =  idr["Consultant_Name"] != DBNull.Value ? Convert.ToString(idr["Consultant_Name"]): String.Empty,
+					Specialty =  idr["Specialty"] != DBNull.Value ? Convert.ToString(idr["Specialty"]): String.Empty,
+					Date_Birth =  idr["Date_Birth"] != DBNull.Value ? Convert.ToString(idr["Date_Birth"]): String.Empty,
                 });
         }
 
@@ -81,7 +81,7 @@ public partial class _viewPatients : System.Web.UI.Page
         public string Unit { get; set; }
         public string Room { get; set; }
         public string Addmission_date { get; set; }
-        public int? Age { get; set; }
+        public string Age { get; set; }
         public string Consultant_Name { get; set; }
         public string Specialty { get; set; }
         public string Date_Birth { get; set; }
