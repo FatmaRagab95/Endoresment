@@ -2,8 +2,12 @@
     <div class="Handover pb-5">
         <h1 class='text-center mb-5 bg-white p-3 pt-5'>Endoresment / Handover</h1>
         <div class="container-fluid">
+
             <div class='bg-white shadow table-responsive mb-5' v-for='(unit) in UnitDash' :key='unit.id'>
-                <h4 class='text-center p-3 shadow'>{{unit.Unit_name}}</h4>
+                <h4 class='cu-flex p-3 shadow'>
+                    <span><i class='fa fa-hospital-o'></i> {{unit.Unit_name}}</span>
+                    <router-link class='btn btn-primary' :to='{name:"Nurses", params:{id:unit.id}}'>Nurses List</router-link>
+                </h4>
                 <div class="scroll-box">
                     <table class="table table-bordered">
                         <thead class='seperated'>
