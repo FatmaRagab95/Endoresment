@@ -3,167 +3,177 @@
     <div class="container card mt-3 shadow">
       <h1 class="mt-5 text-secondary" style="text-decoration: underline">Edit Shift</h1>
       <p class="text-success">Update date in {{ UnitDash[0].Entry_date }}</p>
-
-      <div class="detials" v-if="UnitDash.length > 0">
-        <div class="row">
-          <div class="col-lg-6">
-            <ul class="list-unstyled card bg-white shadow">
-              <li class="text-left">
-                <h5 class="text-info" style="text-decoration: underline">Shift date</h5>
-                <div class="shadow-sm bg-light card">
-                  <input
-                    class="text-secondary pl-3 rounded"
-                    type="date"
-                    v-model="UnitDash[0].Shift_date"
-                  />
-                </div>
-              </li>
-              <li class="text-left">
-                <h5 class="text-info" style="text-decoration: underline">Unit Name</h5>
-                <div class="shadow-sm bg-light card">
-                  <select
-                    class="text-secondary pl-3 rounded"
-                    v-model="UnitDash[0].Unit_name"
-                  >
-                    <option
-                      v-for="unit in getUnitsData"
-                      :key="unit.U_id"
-                      :value="unit.U_name"
+      <form @submit.prevent="editShift(UnitDash[0])">
+        <div class="detials" v-if="UnitDash.length > 0">
+          <div class="row">
+            <div class="col-lg-6">
+              <ul class="list-unstyled card bg-white shadow">
+                <li class="text-left">
+                  <h5 class="text-info" style="text-decoration: underline">Shift date</h5>
+                  <div class="shadow-sm bg-light card">
+                    <input
+                      class="text-secondary pl-3 rounded"
+                      type="date"
+                      v-model="UnitDash[0].Shift_date"
+                      required
+                    />
+                  </div>
+                </li>
+                <li class="text-left">
+                  <h5 class="text-info" style="text-decoration: underline">Unit Name</h5>
+                  <div class="shadow-sm bg-light card">
+                    <select
+                      class="text-secondary pl-3 rounded"
+                      v-model="UnitDash[0].Unit_name"
+                      required
                     >
-                      {{ unit.U_name }}
-                    </option>
-                  </select>
-                </div>
-              </li>
-              <li class="text-left row">
-                <div class="col-md-6">
+                      <option
+                        v-for="unit in getUnitsData"
+                        :key="unit.U_id"
+                        :value="unit.U_name"
+                      >
+                        {{ unit.U_name }}
+                      </option>
+                    </select>
+                  </div>
+                </li>
+                <li class="text-left row">
+                  <div class="col-md-6">
+                    <h5 class="text-info" style="text-decoration: underline">
+                      Total Census
+                    </h5>
+                    <div class="shadow-sm bg-light card">
+                      <input
+                        class="text-secondary pl-3 rounded"
+                        type="number"
+                        min="0"
+                        v-model="UnitDash[0].Total_Census"
+                        required
+                      />
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <h5 class="text-info" style="text-decoration: underline">Received</h5>
+                    <div class="shadow-sm bg-light card">
+                      <input
+                        class="text-secondary pl-3 rounded"
+                        type="number"
+                        min="0"
+                        v-model="UnitDash[0].Received"
+                        required
+                      />
+                    </div>
+                  </div>
+                </li>
+
+                <li class="text-left">
+                  <h5 class="text-info" style="text-decoration: underline">Shift</h5>
+                  <div class="shadow-sm bg-light card">
+                    <select
+                      class="text-secondary pl-3 rounded"
+                      v-model="UnitDash[0].Shift"
+                      required
+                    >
+                      <option value="Day">Day</option>
+                      <option value="Night">Night</option>
+                    </select>
+                  </div>
+                </li>
+              </ul>
+            </div>
+
+            <div class="col-lg-6">
+              <ul class="list-unstyled card bg-white shadow">
+                <li class="text-left row">
+                  <div class="col-md-6">
+                    <h5 class="text-info" style="text-decoration: underline">
+                      Transfer In
+                    </h5>
+                    <div class="shadow-sm bg-light card">
+                      <input
+                        class="text-secondary pl-3 rounded"
+                        type="number"
+                        min="0"
+                        v-model="UnitDash[0].Transfer_In"
+                        required
+                      />
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <h5 class="text-info" style="text-decoration: underline">
+                      Transfer Out
+                    </h5>
+                    <div class="shadow-sm bg-light card">
+                      <input
+                        class="text-secondary pl-3 rounded"
+                        type="number"
+                        min="0"
+                        v-model="UnitDash[0].Transfer_Out"
+                        required
+                      />
+                    </div>
+                  </div>
+                </li>
+                <li class="text-left">
+                  <h5 class="text-info" style="text-decoration: underline">Admission</h5>
+                  <div class="shadow-sm bg-light card">
+                    <input
+                      class="text-secondary pl-3 rounded"
+                      type="number"
+                      min="0"
+                      v-model="UnitDash[0].Admission"
+                      required
+                    />
+                  </div>
+                </li>
+                <li class="text-left">
                   <h5 class="text-info" style="text-decoration: underline">
-                    Total Census
+                    Endorsing Charge Nurse
                   </h5>
                   <div class="shadow-sm bg-light card">
-                    <input
+                    <select
                       class="text-secondary pl-3 rounded"
-                      type="number"
-                      min="0"
-                      v-model="UnitDash[0].Total_Census"
-                    />
+                      v-model="UnitDash[0].Endorsing_ChargeNurse_id"
+                      required
+                    >
+                      <option
+                        v-for="nurse in Nurses"
+                        :key="nurse.Emp_ID"
+                        :value="nurse.Emp_ID"
+                      >
+                        {{ nurse.FullName }}
+                      </option>
+                    </select>
                   </div>
-                </div>
-                <div class="col-md-6">
-                  <h5 class="text-info" style="text-decoration: underline">Received</h5>
-                  <div class="shadow-sm bg-light card">
-                    <input
-                      class="text-secondary pl-3 rounded"
-                      type="number"
-                      min="0"
-                      v-model="UnitDash[0].Received"
-                    />
-                  </div>
-                </div>
-              </li>
-
-              <li class="text-left">
-                <h5 class="text-info" style="text-decoration: underline">Shift</h5>
-                <div class="shadow-sm bg-light card">
-                  <select class="text-secondary pl-3 rounded" v-model="UnitDash[0].Shift">
-                    <option value="Day">Day</option>
-                    <option value="Night">Night</option>
-                  </select>
-                </div>
-              </li>
-            </ul>
-          </div>
-
-          <div class="col-lg-6">
-            <ul class="list-unstyled card bg-white shadow">
-              <li class="text-left row">
-                <div class="col-md-6">
+                </li>
+                <li class="text-left">
                   <h5 class="text-info" style="text-decoration: underline">
-                    Transfer In
+                    Receive Charge Nurse
                   </h5>
                   <div class="shadow-sm bg-light card">
-                    <input
+                    <select
                       class="text-secondary pl-3 rounded"
-                      type="number"
-                      min="0"
-                      v-model="UnitDash[0].Transfer_In"
-                    />
-                  </div>
-                </div>
-                <div class="col-md-6">
-                  <h5 class="text-info" style="text-decoration: underline">
-                    Transfer Out
-                  </h5>
-                  <div class="shadow-sm bg-light card">
-                    <input
-                      class="text-secondary pl-3 rounded"
-                      type="number"
-                      min="0"
-                      v-model="UnitDash[0].Transfer_Out"
-                    />
-                  </div>
-                </div>
-              </li>
-              <li class="text-left">
-                <h5 class="text-info" style="text-decoration: underline">Admission</h5>
-                <div class="shadow-sm bg-light card">
-                  <input
-                    class="text-secondary pl-3 rounded"
-                    type="number"
-                    min="0"
-                    v-model="UnitDash[0].Admission"
-                  />
-                </div>
-              </li>
-              <li class="text-left">
-                <h5 class="text-info" style="text-decoration: underline">
-                  Endorsing Charge Nurse
-                </h5>
-                <div class="shadow-sm bg-light card">
-                  <select
-                    class="text-secondary pl-3 rounded"
-                    v-model="UnitDash[0].Endorsing_ChargeNurse_id"
-                  >
-                    <option
-                      v-for="nurse in Nurses"
-                      :key="nurse.Emp_ID"
-                      :value="nurse.Emp_ID"
+                      v-model="UnitDash[0].Receive_ChargeNurse_id"
+                      required
                     >
-                      {{ nurse.FullName }}
-                    </option>
-                  </select>
-                </div>
-              </li>
-              <li class="text-left">
-                <h5 class="text-info" style="text-decoration: underline">
-                  Receive Charge Nurse
-                </h5>
-                <div class="shadow-sm bg-light card">
-                  <select
-                    class="text-secondary pl-3 rounded"
-                    v-model="UnitDash[0].Receive_ChargeNurse_id"
-                  >
-                    <option
-                      v-for="nurse in Nurses"
-                      :key="nurse.Emp_ID"
-                      :value="nurse.Emp_ID"
-                    >
-                      {{ nurse.FullName }}
-                    </option>
-                  </select>
-                </div>
-              </li>
-            </ul>
+                      <option
+                        v-for="nurse in Nurses"
+                        :key="nurse.Emp_ID"
+                        :value="nurse.Emp_ID"
+                      >
+                        {{ nurse.FullName }}
+                      </option>
+                    </select>
+                  </div>
+                </li>
+              </ul>
+            </div>
           </div>
         </div>
-      </div>
-      <button
-        class="btn btn-success ml-auto mr-auto mt-0 mb-5"
-        style="width: 100px"
-        v-on:click.prevent="editShift(UnitDash[0])"
-      >
-        Edit
-      </button>
+        <button class="btn btn-success ml-auto mr-auto mt-0 mb-5" style="width: 100px">
+          Edit
+        </button>
+      </form>
     </div>
   </div>
 </template>
@@ -171,7 +181,7 @@
 <script>
 export default {
   name: "editShiftDetials",
-  props: ['link'],
+  props: ["link"],
   data() {
     return {
       UnitDash: [],
@@ -179,33 +189,26 @@ export default {
       getUnitsData: [],
       shiftId: this.$route.params.id,
       apiUrl: `http://localhost:${this.link}/endoresment/dist/`,
-    }
+    };
   },
   methods: {
     editShift: function (shift) {
-      let that = this,
-        updatedShift = {
-          id: shift.id,
-          Unit_name: shift.Unit_name,
-          Shift: shift.Shift,
-          Total_Census: shift.Total_Census,
-          Received: shift.Received,
-          Shift_date: shift.Shift_date,
-          Transfer_In: shift.Transfer_In,
-          Transfer_Out: shift.Transfer_Out,
-          Admission: shift.Admission,
-          Endorsing_ChargeNurse_id: shift.Endorsing_ChargeNurse_id,
-          Receive_ChargeNurse_id: shift.Receive_ChargeNurse_id,
-        };
+      if ($("form").is(":valid")) {
+        let that = this,
+          updatedShift = {
+            id: shift.id,
+            Unit_name: shift.Unit_name,
+            Shift: shift.Shift,
+            Total_Census: shift.Total_Census,
+            Received: shift.Received,
+            Shift_date: shift.Shift_date,
+            Transfer_In: shift.Transfer_In,
+            Transfer_Out: shift.Transfer_Out,
+            Admission: shift.Admission,
+            Endorsing_ChargeNurse_id: shift.Endorsing_ChargeNurse_id,
+            Receive_ChargeNurse_id: shift.Receive_ChargeNurse_id,
+          };
 
-      if (updatedShift.Unit_name === "") {
-        swal({
-          title: "Error!",
-          text: "Sorry, you should type the Unit name ! ",
-          icon: "warning",
-          dangerMode: true,
-        });
-      } else {
         swal({
           title: "Are you sure?",
           buttons: true,
@@ -228,6 +231,12 @@ export default {
               },
             });
           }
+        });
+      } else {
+        swal({
+          icon: "warning",
+          dangerMode: true,
+          text: "Please Fill All Fields!",
         });
       }
     },
