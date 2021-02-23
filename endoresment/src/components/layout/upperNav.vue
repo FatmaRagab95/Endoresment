@@ -21,7 +21,7 @@
                         <span class="link-text">Endoresment</span>
                         </a>
                         <ul class="dropdown-menu"  aria-labelledby="navbarDropdown">
-                            <li v-for="route in routes.filter(x=> x.meta.cat == 'Endoresment')" :key="route.path">
+                            <li v-for="route in routes.filter(x=> x.meta.cat == 'Endoresment' && x.meta.viewMenu)" :key="route.path">
                                 <router-link class="dropdown-item" :to="route.path">
                                 <span class="link-text">{{route.name}}</span>
                                 </router-link>

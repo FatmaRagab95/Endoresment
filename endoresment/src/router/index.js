@@ -37,6 +37,7 @@ const router = new Router({
       meta: {
         requiresAuth: true,
         cat: "Endoresment",
+        viewMenu:true
       },
     },
     {
@@ -46,6 +47,7 @@ const router = new Router({
       meta: {
         requiresAuth: true,
         cat: "Endoresment",
+        viewMenu:true
       },
     },
     {
@@ -55,6 +57,7 @@ const router = new Router({
       meta: {
         requiresAuth: true,
         cat: "Endoresment",
+        viewMenu:true
       },
     },
     {
@@ -64,6 +67,7 @@ const router = new Router({
       meta: {
         requiresAuth: true,
         cat: "Endoresment",
+        viewMenu:false
       },
     },
     {
@@ -73,6 +77,7 @@ const router = new Router({
       meta: {
         requiresAuth: true,
         cat: "Endoresment",
+        viewMenu:false
       },
     },
     {
@@ -82,6 +87,7 @@ const router = new Router({
       meta: {
         requiresAuth: true,
         cat: "Endoresment",
+        viewMenu:false
       },
     },
     {
@@ -91,6 +97,7 @@ const router = new Router({
       meta: {
         requiresAuth: true,
         cat: "Endoresment",
+        viewMenu:true
       },
     },
     {
@@ -100,6 +107,7 @@ const router = new Router({
       meta: {
         requiresAuth: true,
         cat: "Endoresment",
+        viewMenu:true
       },
     },
     {
@@ -109,6 +117,7 @@ const router = new Router({
       meta: {
         requiresAuth: true,
         cat: "Endoresment",
+        viewMenu:false
       },
     },
     {
@@ -118,6 +127,7 @@ const router = new Router({
       meta: {
         requiresAuth: true,
         cat: "Endoresment",
+        viewMenu:false
       },
     },
     {
@@ -127,6 +137,7 @@ const router = new Router({
       meta: {
         requiresAuth: true,
         cat: "Endoresment",
+        viewMenu:false
       },
     },
     {
@@ -136,6 +147,7 @@ const router = new Router({
       meta: {
         requiresAuth: true,
         cat: "Endoresment",
+        viewMenu:true
       },
     },
     {
@@ -145,6 +157,7 @@ const router = new Router({
       meta: {
         requiresAuth: true,
         cat: "Endoresment",
+        viewMenu:false
       },
     },
     {
@@ -154,6 +167,7 @@ const router = new Router({
       meta: {
         requiresAuth: true,
         cat: "Endoresment",
+        viewMenu:true
       },
     },
     {
@@ -163,6 +177,7 @@ const router = new Router({
       meta: {
         requiresAuth: true,
         cat: "Endoresment",
+        viewMenu:false
       },
     },
     {
@@ -172,6 +187,7 @@ const router = new Router({
       meta: {
         requiresAuth: true,
         cat: "Endoresment",
+        viewMenu:true
       },
     },
   ],
