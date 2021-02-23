@@ -88,6 +88,10 @@ public partial class Login : System.Web.UI.Page
                     Branch_ID =
                         idr["Branch_ID"] != DBNull.Value
                             ? Convert.ToInt32(idr["Branch_ID"])
+                            : 0,
+                    Role_id =
+                        idr["Role_id"] != DBNull.Value
+                            ? Convert.ToInt32(idr["Role_id"])
                             : 0
                 });
         }
@@ -115,5 +119,6 @@ public partial class Login : System.Web.UI.Page
         public string Branch_name { get; set; }
 
         public int? Branch_ID { get; set; }
+        public int? Role_id { get; set; }
     }
 }

@@ -74,18 +74,20 @@ public partial class _addUnit : System.Web.UI.Page
 
     // get Nurses
     [WebMethod]
-    public static string getNursesData()
+    public static string getNursesData(branches branch)
     {
         string config =
             Convert.ToString(ConfigurationManager.ConnectionStrings["dbcon"]);
+        List<branches> branches = new List<branches>();
         List<Nurses> Nurses = new List<Nurses>();
 
         SqlConnection con = new SqlConnection(config);
 
         con.Open();
 
-        using (SqlCommand cmd = new SqlCommand("select * from adminusers where Role_id = 17", con))
+        using (SqlCommand cmd = new SqlCommand("select * from adminusers where Role_id = 17 and Branch_ID = @Branch_id", con))
         {
+            cmd.Parameters.Add("@Branch_id", SqlDbType.Int).Value = branch.id;
             SqlDataReader idr = cmd.ExecuteReader();
 
             if (idr.HasRows)

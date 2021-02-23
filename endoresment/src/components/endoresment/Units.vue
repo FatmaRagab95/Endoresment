@@ -189,11 +189,12 @@ export default {
             dataType: "json",
             success: function (data) {
                 that.UnitsDash = JSON.parse(data.d);
-                if (new Date().getHours() < 19 && new Date().getHours() >= 8) {
+                if (new Date().getHours() < 20 && new Date().getHours() >= 8) {
                     that.Shift = 'Day';
                     that.UnitsDash.map(x => {
                         if (x.Shift.trim() == 'Night') {
                             x.Received = 0;
+                            x.Admission = 0;
                             x.Total_Census = 0;
                         }
                     });
@@ -202,6 +203,7 @@ export default {
                     that.UnitsDash.map(x => {
                         if (x.Shift.trim() == 'Day') {
                             x.Received = 0;
+                            x.Admission = 0;
                             x.Total_Census = 0;
                         }
                     });
