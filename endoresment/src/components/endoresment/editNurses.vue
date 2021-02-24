@@ -95,7 +95,7 @@ export default {
         Entry_user: 0,
       },
 
-      apiUrl: `http://localhost:${this.link}/endoresment/dist/`,
+      apiUrl: this.link,
     };
   },
   methods: {

@@ -44,30 +44,6 @@
         </ul>
       </li>
     </ul>
-
-    <!-- <ul class="list-unstyled">
-            <li class="remove-open">
-                <a href="http://stroketest.daralfouad.org/cpanel/Courses/default.aspx"class="sid-links for-a-active">
-                    <i class="fa fa-home"></i>
-                    <span class="link-text">Dashboard</span>
-                </a>
-            </li>
-
-            <li class="main-menu" v-for='category in pagesArr'> 
-                <a class="sid-links" @click.prevent>
-                    <i :class="categories.filter(x => x.id == category[0].CategoryId)[0].Icon + ' fa'"></i>
-                    <span class="link-text">{{categories.filter(x => x.id == category[0].CategoryId)[0].Name}}</span>
-                    <span class="icon fa fa-chevron-down pull-right"></span>
-                </a>
-                <ul class="list-unstyled sub-menu" v-for='page in category'>
-                    <li>
-                        <a :href="'http://stroketest.daralfouad.org/cpanel/' + categories.filter(x => x.id == page.CategoryId)[0].Name + '/' + page.Path">
-                            <span class="link-text">{{page.Name}}</span>
-                        </a>
-                    </li>
-                </ul>
-            </li>
-        </ul> -->
   </div>
 </template>
 

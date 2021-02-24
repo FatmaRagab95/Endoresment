@@ -145,7 +145,7 @@ export default {
             filtered: [],
 
             Shift:'',
-            apiUrl: `http://localhost:${this.link}/endoresment/dist/`,
+            apiUrl: this.link,
         }
     },
     methods: {

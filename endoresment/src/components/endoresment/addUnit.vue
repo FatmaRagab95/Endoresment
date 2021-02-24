@@ -178,7 +178,7 @@ export default {
   props: ["link", 'user'],
   data() {
     return {
-      apiUrl: `http://localhost:${this.link}/endoresment/dist/`,
+      apiUrl: this.link,
       date: new Date(new Date().getTime() + 10000 * 60 * 6).toISOString().substr(0, 10),
       Nurses: [],
       Units: [],

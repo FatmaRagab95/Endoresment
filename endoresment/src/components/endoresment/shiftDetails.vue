@@ -76,7 +76,7 @@ export default {
         return {
             UnitDash:[],
             shiftId:this.$route.params.id,
-            apiUrl: `http://localhost:${this.link}/endoresment/dist/`,
+            apiUrl: this.link,
         }
     },
     created () {

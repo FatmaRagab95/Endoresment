@@ -34,7 +34,7 @@ export default {
   data() {
     return {
       user: JSON.parse(localStorage.getItem("user")),
-      link: 51026,
+      link: `http://localhost:${49638}/endoresment/dist/`,
     };
   },
   watch: {

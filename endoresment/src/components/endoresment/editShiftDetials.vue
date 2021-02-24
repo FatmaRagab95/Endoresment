@@ -188,7 +188,7 @@ export default {
       Nurses: [],
       getUnitsData: [],
       shiftId: this.$route.params.id,
-      apiUrl: `http://localhost:${this.link}/endoresment/dist/`,
+      apiUrl: this.link,
     };
   },
   methods: {

@@ -43,7 +43,7 @@ export default {
       getUnitsData: [],
       selectedUnit: null,
 
-      apiUrl: `http://localhost:${this.link}/endoresment/dist/`,
+      apiUrl: this.link,
     };
   },
   methods: {

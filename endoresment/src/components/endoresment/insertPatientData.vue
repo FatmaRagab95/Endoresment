@@ -313,7 +313,7 @@ export default {
   props: ["link"],
   data() {
     return {
-      apiUrl: `http://localhost:${this.link}/endoresment/dist/`,
+      apiUrl: this.link,
       patientData: null,
       id: this.$route.params.id,
     };

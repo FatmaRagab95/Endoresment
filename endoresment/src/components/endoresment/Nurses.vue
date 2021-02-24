@@ -56,7 +56,7 @@ export default {
       Nurses: [],
       path: "",
 
-      apiUrl: `http://localhost:${this.link}/endoresment/dist/`,
+      apiUrl: this.link,
     };
   },
   methods: {},

@@ -49,7 +49,7 @@ export default {
     data() {
         return {
             patients: [],
-            apiUrl: `http://localhost:${this.link}/endoresment/dist/`,
+            apiUrl: this.link,
         }
     },
     created() {

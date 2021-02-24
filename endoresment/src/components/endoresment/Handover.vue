@@ -186,7 +186,7 @@ export default {
     data() {
         return {
             UnitDash: [],
-            apiUrl: `http://localhost:${this.link}/endoresment/dist/`,
+            apiUrl: this.link,
             patients:[],
             patientsFollow:[],
             Diets: [],
