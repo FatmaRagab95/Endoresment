@@ -34,7 +34,7 @@ export default {
   data() {
     return {
       user: JSON.parse(localStorage.getItem("user")),
-      link: 49638,
+      link: 51026,
     };
   },
   watch: {

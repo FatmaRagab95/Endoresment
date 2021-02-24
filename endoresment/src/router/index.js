@@ -18,6 +18,8 @@ import OR from "@/components/endoresment/OR";
 import OR_details from "@/components/endoresment/OR_details";
 import selectUnit from "@/components/endoresment/selectUnit";
 import Handover from "@/components/endoresment/Handover";
+import Nurses from "@/components/endoresment/Nurses";
+import editNurses from "@/components/endoresment/editNurses";
 
 Vue.use(Router);
 
@@ -190,6 +192,27 @@ const router = new Router({
         viewMenu:true
       },
     },
+    {
+      path: "/Nurses/:id",
+      name: "Nurses",
+      component: Nurses,
+      meta: {
+        requiresAuth: true,
+        cat: "Endoresment",
+        viewMenu:false
+      },
+    },
+    {
+      path: "/editNurses/:id",
+      name: "Edit Nurses",
+      component: editNurses,
+      meta: {
+        requiresAuth: true,
+        cat: "Endoresment",
+        viewMenu:false
+      },
+    },
+    
   ],
 });
 

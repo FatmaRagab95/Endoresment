@@ -1,15 +1,12 @@
 <template>
   <div class="selectUnit p-3 text-capitalize">
-    <div>{{ path }}</div>
     <!-- start select unit -->
-    <div class="container-fluid mt-3 card" id="unit">
+    <div class="container-fluid mt-3 card">
       <div class="container-wave">
         <div class="wave"></div>
       </div>
 
-      <div
-        class="text-secondary card bg-light select-form p-4 text-center shadow overflow-auto"
-      >
+      <div class="text-secondary card bg-light select-form p-4 text-center shadow">
         <label class="text-secondary">
           <h3 class="font-weight-bold">select unit :</h3>
         </label>
