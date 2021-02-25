@@ -152,7 +152,7 @@ public partial class _editNurses : System.Web.UI.Page
 
         using (
             SqlCommand cmd =
-                new SqlCommand("select * from Endoresment_Nurses_Units where Active = 'True'",
+                new SqlCommand("select * from Endoresment_Nurses_Units where Active = 1",
                     con)
         )
         {
@@ -194,8 +194,8 @@ public partial class _editNurses : System.Web.UI.Page
                             : 0,
                     Active =
                         idr["Active"] != DBNull.Value
-                            ? Convert.ToBoolean(idr["Active"])
-                            : false
+                            ? Convert.ToInt32(idr["Active"])
+                            : 1
                 });
         }
 
@@ -210,7 +210,7 @@ public partial class _editNurses : System.Web.UI.Page
 
         public int? Unit_id { get; set; }
 
-        public Boolean? Active { get; set; }
+        public int? Active { get; set; }
     }
 
     // insert nurse selection
@@ -236,7 +236,7 @@ public partial class _editNurses : System.Web.UI.Page
             cmd1.Parameters.Add("@Unit_id", SqlDbType.Int).Value = data.Unit_id;
             cmd1.Parameters.Add("@Entry_user", SqlDbType.Int).Value =
                 data.Entry_user;
-            cmd1.Parameters.Add("@Active", SqlDbType.Bit).Value = data.Active;
+            cmd1.Parameters.Add("@Active", SqlDbType.Int).Value = data.Active;
 
             cmd1.ExecuteNonQuery();
         }
@@ -253,7 +253,7 @@ public partial class _editNurses : System.Web.UI.Page
 
         public int? Entry_user { get; set; }
 
-        public Boolean? Active { get; set; }
+        public int? Active { get; set; }
     }
 
     // update nurse selection
@@ -304,7 +304,7 @@ public partial class _editNurses : System.Web.UI.Page
                     Unit_id = Convert.ToInt32(idr["Unit_id"]),
                     Entry_user = Convert.ToInt32(idr["Entry_user"]),
                     Last_Update = Convert.ToString(idr["Last_Update"]),
-                    Active = Convert.ToBoolean(idr["Active"])
+                    Active = Convert.ToInt32(idr["Active"])
                 });
         }
         return nursetDetailsI;
@@ -322,6 +322,6 @@ public partial class _editNurses : System.Web.UI.Page
 
         public string Last_Update { get; set; }
 
-        public Boolean? Active { get; set; }
+        public int? Active { get; set; }
     }
 }
