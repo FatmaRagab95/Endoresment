@@ -85,7 +85,8 @@ public partial class _Nurses : System.Web.UI.Page
 
         using (
             SqlCommand cmd =
-                new SqlCommand("select * from Endoresment_Nurses_Units", con)
+                new SqlCommand("select * from Endoresment_Nurses_Units where Active = 1",
+                    con)
         )
         {
             SqlDataReader idr = cmd.ExecuteReader();
@@ -128,18 +129,10 @@ public partial class _Nurses : System.Web.UI.Page
                         idr["Entry_user"] != DBNull.Value
                             ? Convert.ToInt32(idr["Entry_user"])
                             : 0,
-                    Entry_date =
-                        idr["Entry_date"] != DBNull.Value
-                            ? Convert.ToString(idr["Entry_date"])
-                            : String.Empty,
-                    Last_Update =
-                        idr["Last_Update"] != DBNull.Value
-                            ? Convert.ToString(idr["Last_Update"])
-                            : String.Empty,
                     Active =
                         idr["Active"] != DBNull.Value
-                            ? Convert.ToBoolean(idr["Active"])
-                            : false
+                            ? Convert.ToInt32(idr["Active"])
+                            : 1
                 });
         }
 
@@ -156,10 +149,73 @@ public partial class _Nurses : System.Web.UI.Page
 
         public int? Entry_user { get; set; }
 
-        public string Entry_date { get; set; }
+        public int? Active { get; set; }
+    }
 
-        public string Last_Update { get; set; }
+    // get admin users data
+    [WebMethod]
+    public static string getadminusersData()
+    {
+        string config =
+            Convert.ToString(ConfigurationManager.ConnectionStrings["dbcon"]);
+        List<adminusers> adminusers = new List<adminusers>();
 
-        public Boolean? Active { get; set; }
+        SqlConnection con = new SqlConnection(config);
+
+        con.Open();
+
+        using (
+            SqlCommand cmd =
+                new SqlCommand("select * from adminusers where Role_id = 12 or Role_id = 17",
+                    con)
+        )
+        {
+            SqlDataReader idr = cmd.ExecuteReader();
+
+            if (idr.HasRows)
+            {
+                adminusers = populateadminusersLisst(idr, con);
+            }
+        }
+
+        con.Close();
+
+        return JsonConvert.SerializeObject(adminusers);
+    }
+
+    public static List<adminusers>
+    populateadminusersLisst(SqlDataReader idr, SqlConnection con)
+    {
+        List<adminusers> adminusersI = new List<adminusers>();
+
+        while (idr.Read())
+        {
+            adminusersI
+                .Add(new adminusers {
+                    Emp_id =
+                        idr["Emp_id"] != DBNull.Value
+                            ? Convert.ToInt32(idr["Emp_id"])
+                            : 0,
+                    FullName =
+                        idr["FullName"] != DBNull.Value
+                            ? Convert.ToString(idr["FullName"])
+                            : String.Empty,
+                    Branch_ID =
+                        idr["Branch_ID"] != DBNull.Value
+                            ? Convert.ToInt32(idr["Branch_ID"])
+                            : 0
+                });
+        }
+
+        return adminusersI;
+    }
+
+    public class adminusers
+    {
+        public int? Emp_id { get; set; }
+
+        public string FullName { get; set; }
+
+        public int? Branch_ID { get; set; }
     }
 }

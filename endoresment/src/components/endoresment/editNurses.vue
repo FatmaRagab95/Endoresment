@@ -62,8 +62,8 @@
             <div class="card overflow-auto p-3 shadow rounded" style="height: 500px">
               <div
                 class="pt-2 pb-2 border-bottom"
-                v-for="(nurse,i) in filterNames(users, selectedName.toLowerCase())"
-                :key="i  + 'f'"
+                v-for="(nurse, i) in filterNames(users, selectedName.toLowerCase())"
+                :key="i + 'f'"
               >
                 <span
                   ><input
@@ -83,18 +83,14 @@
                   v-if="
                     Endoresment_Nurses_Units.filter(
                       (x) =>
-                        x.Nurse_id == nurse.Emp_id &&
-                        x.Unit_id == path &&
-                        x.Active == 1
+                        x.Nurse_id == nurse.Emp_id && x.Unit_id == path && x.Active == 1
                     ).length > 0
                   "
                   >registered in ..
                   <span
                     v-for="(unit, i) in Endoresment_Nurses_Units.filter(
                       (x) =>
-                        x.Nurse_id == nurse.Emp_id &&
-                        x.Unit_id == path &&
-                        x.Active == 1
+                        x.Nurse_id == nurse.Emp_id && x.Unit_id == path && x.Active == 1
                     )"
                     :key="i"
                     >{{ Units.filter((x) => x.U_id == unit.Unit_id)[0].U_name }}..</span
@@ -171,7 +167,7 @@ export default {
         this.Names.push(this.selectedName);
       }
     },
-    /*
+
     OnSubmit: function () {
       let that = this;
       var ObjectD = Object.assign({}, this.newUnitNurse);
@@ -187,97 +183,12 @@ export default {
             text: "Sorry, the selection has been canceled!",
           });
         } else {
-          for (let i = 0; i < this.users.length; i++) {
-            if (this.selectedNurse.map((x) => x.id).includes(this.users[i].Emp_id)) {
-              ObjectD.Nurse_id = this.users[i].Emp_id;
-              ObjectD.Unit_id = this.path;
-              ObjectD.Entry_user = JSON.parse(localStorage.getItem("user")).Emp_id;
-              ObjectD.Active = true;
-
-              $.ajax({
-                type: "POST",
-                url: that.apiUrl + "endoresment/editNurses.aspx/insertNurseSelection",
-                data: JSON.stringify({ data: ObjectD }),
-                contentType: "application/json; charset=utf-8",
-                dataType: "json",
-                success: function () {
-                  if (i == that.users.length - 1) {
-                    swal({
-                      title: "Sweet!",
-                      text: "You successfully made your selections ...",
-                      icon: "success",
-                      dangerMode: true,
-                    });
-                    location.reload();
-                  }
-                },
-              });
-            } else {
-              if (this.updateDate == "") {
-                swal({
-                  title: "Error!",
-                  text: "Sorry, you should select the update date ! ",
-                  icon: "warning",
-                  dangerMode: true,
-                });
-              } else {
-                let updateNurse = {
-                  id: this.Endoresment_Nurses_Units.filter(
-                    (x) => x.Nurse_id == this.users[i].Emp_id && x.Unit_id == this.path
-                  )[0].Id,
-                  Nurse_id: this.users[i].Emp_id,
-                  Unit_id: this.path,
-                  Entry_user: JSON.parse(localStorage.getItem("user")).Emp_id,
-                  Last_Update: this.updateDate,
-                  Active: false,
-                };
-                $.ajax({
-                  type: "POST",
-                  url: that.apiUrl + "endoresment/editNurses.aspx/updatedNurse",
-                  data: JSON.stringify({ detail: updateNurse }),
-                  contentType: "application/json; charset=utf-8",
-                  dataType: "json",
-                  success: function () {
-                    if (i == that.users.length - 1) {
-                      swal({
-                        title: "Sweet!",
-                        text: "You successfully updated the selection ...",
-                        icon: "success",
-                        dangerMode: true,
-                      });
-                      location.reload();
-                    }
-                  },
-                });
-              }
-            }
-          }
-        }
-      });
-    },*/
-     OnSubmit: function () {
-      let that = this;
-      var ObjectD = Object.assign({}, this.newUnitNurse);
-      swal({
-        title: "Are you sure ...",
-        icon: "warning",
-        buttons: true,
-        dangerMode: true,
-      }).then((result) => {
-        if (!result) {
-          swal({
-            title: "Canceled",
-            text: "Sorry, the selection has been canceled!",
-          });
-        } else {
-
           for (let i = 0; i < this.selectedNurse.length; i++) {
             if (
               this.Endoresment_Nurses_Units.filter(
                 (x) => x.Nurse_id == this.selectedNurse[i].id && x.Unit_id == this.path
               ).length == 0
-            ) 
-            {
+            ) {
               ObjectD.Nurse_id = this.selectedNurse[i].id;
               ObjectD.Unit_id = this.path;
               ObjectD.Entry_user = JSON.parse(localStorage.getItem("user")).Emp_id;
@@ -302,14 +213,14 @@ export default {
                 },
               });
             }
-          } 
+          }
 
           // get uncheked nurses
-          let old = that.oldNerses.map(x => x.id);
-          let newNurses = that.selectedNurse.map(x => x.id);
-  
-          if (old.filter(x => !newNurses.includes(x)).length > 0) {
-            that.filterNurses = old.filter(x => !newNurses.includes(x));
+          let old = that.oldNerses.map((x) => x.id);
+          let newNurses = that.selectedNurse.map((x) => x.id);
+
+          if (old.filter((x) => !newNurses.includes(x)).length > 0) {
+            that.filterNurses = old.filter((x) => !newNurses.includes(x));
 
             if (this.updateDate == "") {
               swal({
@@ -343,7 +254,7 @@ export default {
                         text: "You successfully updated the selection ...",
                         icon: "success",
                         dangerMode: true,
-                      }).then( () => {
+                      }).then(() => {
                         location.reload();
                       });
                     }
@@ -384,7 +295,8 @@ export default {
         //get Endoresment Nurses Units
         $.ajax({
           type: "POST",
-          url: that.apiUrl + "endoresment/editNurses.aspx/getEndoresment_Nurses_UnitsData",
+          url:
+            that.apiUrl + "endoresment/editNurses.aspx/getEndoresment_Nurses_UnitsData",
           contentType: "application/json; charset=utf-8",
           dataType: "json",
           success: function (data) {
