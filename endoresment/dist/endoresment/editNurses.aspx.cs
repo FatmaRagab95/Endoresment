@@ -152,7 +152,8 @@ public partial class _editNurses : System.Web.UI.Page
 
         using (
             SqlCommand cmd =
-                new SqlCommand("select * from Endoresment_Nurses_Units", con)
+                new SqlCommand("select * from Endoresment_Nurses_Units where Active = 'True'",
+                    con)
         )
         {
             SqlDataReader idr = cmd.ExecuteReader();
@@ -190,7 +191,11 @@ public partial class _editNurses : System.Web.UI.Page
                     Unit_id =
                         idr["Unit_id"] != DBNull.Value
                             ? Convert.ToInt32(idr["Unit_id"])
-                            : 0
+                            : 0,
+                    Active =
+                        idr["Active"] != DBNull.Value
+                            ? Convert.ToBoolean(idr["Active"])
+                            : false
                 });
         }
 
@@ -204,5 +209,119 @@ public partial class _editNurses : System.Web.UI.Page
         public int? Nurse_id { get; set; }
 
         public int? Unit_id { get; set; }
+
+        public Boolean? Active { get; set; }
+    }
+
+    // insert nurse selection
+    [WebMethod]
+    public static string insertNurseSelection(selectedNurse data)
+    {
+        string config =
+            Convert.ToString(ConfigurationManager.ConnectionStrings["dbcon"]);
+
+        List<selectedNurse> selectedNurse = new List<selectedNurse>();
+
+        SqlConnection con = new SqlConnection(config);
+
+        con.Open();
+        using (
+            SqlCommand cmd1 =
+                new SqlCommand("insert into Endoresment_Nurses_Units (Nurse_id, Unit_id, Entry_user, Active) values (@Nurse_id, @Unit_id, @Entry_user, @Active)",
+                    con)
+        )
+        {
+            cmd1.Parameters.Add("@Nurse_id", SqlDbType.Int).Value =
+                data.Nurse_id;
+            cmd1.Parameters.Add("@Unit_id", SqlDbType.Int).Value = data.Unit_id;
+            cmd1.Parameters.Add("@Entry_user", SqlDbType.Int).Value =
+                data.Entry_user;
+            cmd1.Parameters.Add("@Active", SqlDbType.Bit).Value = data.Active;
+
+            cmd1.ExecuteNonQuery();
+        }
+        con.Close();
+
+        return JsonConvert.SerializeObject(selectedNurse);
+    }
+
+    public class selectedNurse
+    {
+        public int? Nurse_id { get; set; }
+
+        public int? Unit_id { get; set; }
+
+        public int? Entry_user { get; set; }
+
+        public Boolean? Active { get; set; }
+    }
+
+    // update nurse selection
+    [WebMethod]
+    public static string updatedNurse(nursetDetails detail)
+    {
+        string config =
+            Convert.ToString(ConfigurationManager.ConnectionStrings["dbcon"]);
+
+        List<nursetDetails> nursetDetails = new List<nursetDetails>();
+
+        SqlConnection con = new SqlConnection(config);
+
+        con.Open();
+
+        using (
+            SqlCommand cmd =
+                new SqlCommand("update Endoresment_Nurses_Units set Nurse_id=@Nurse_id, Unit_id=@Unit_id, Entry_user=@Entry_user, Last_Update=@Last_Update, Active=@Active where Id = @Id;",
+                    con)
+        )
+        {
+            cmd.Parameters.AddWithValue("@Id", detail.Id);
+            cmd.Parameters.AddWithValue("@Nurse_id", detail.Nurse_id);
+            cmd.Parameters.AddWithValue("@Unit_id", detail.Unit_id);
+            cmd.Parameters.AddWithValue("@Entry_user", detail.Entry_user);
+            cmd.Parameters.AddWithValue("@Last_Update", detail.Last_Update);
+            cmd.Parameters.AddWithValue("@Active", detail.Active);
+
+            cmd.ExecuteNonQuery();
+        }
+
+        con.Close();
+
+        return JsonConvert.SerializeObject(nursetDetails);
+    }
+
+    public static List<nursetDetails>
+    populatenursetDetailsLisst(SqlDataReader idr, SqlConnection con)
+    {
+        List<nursetDetails> nursetDetailsI = new List<nursetDetails>();
+
+        while (idr.Read())
+        {
+            nursetDetailsI
+                .Add(new nursetDetails {
+                    Id = Convert.ToInt32(idr["Id"]),
+                    Nurse_id = Convert.ToInt32(idr["Nurse_id"]),
+                    Unit_id = Convert.ToInt32(idr["Unit_id"]),
+                    Entry_user = Convert.ToInt32(idr["Entry_user"]),
+                    Last_Update = Convert.ToString(idr["Last_Update"]),
+                    Active = Convert.ToBoolean(idr["Active"])
+                });
+        }
+        return nursetDetailsI;
+    }
+
+    public class nursetDetails
+    {
+        public int? Id { get; set; }
+
+        public int? Nurse_id { get; set; }
+
+        public int? Unit_id { get; set; }
+
+        public int? Entry_user { get; set; }
+
+        public string Last_Update { get; set; }
+
+        public Boolean? Active { get; set; }
     }
 }

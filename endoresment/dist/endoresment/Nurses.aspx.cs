@@ -136,14 +136,10 @@ public partial class _Nurses : System.Web.UI.Page
                         idr["Last_Update"] != DBNull.Value
                             ? Convert.ToString(idr["Last_Update"])
                             : String.Empty,
-                    Update_From =
-                        idr["Update_From"] != DBNull.Value
-                            ? Convert.ToString(idr["Update_From"])
-                            : String.Empty,
-                    Update_FromId =
-                        idr["Update_FromId"] != DBNull.Value
-                            ? Convert.ToInt32(idr["Update_FromId"])
-                            : 0
+                    Active =
+                        idr["Active"] != DBNull.Value
+                            ? Convert.ToBoolean(idr["Active"])
+                            : false
                 });
         }
 
@@ -164,8 +160,6 @@ public partial class _Nurses : System.Web.UI.Page
 
         public string Last_Update { get; set; }
 
-        public string Update_From { get; set; }
-
-        public int? Update_FromId { get; set; }
+        public Boolean? Active { get; set; }
     }
 }
