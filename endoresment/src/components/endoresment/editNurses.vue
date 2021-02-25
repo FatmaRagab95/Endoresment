@@ -143,6 +143,10 @@ export default {
       oldNerses: [],
       filterNurses: [],
 
+      oldArray: [1, 2, 3, 4, 5, 6],
+      newArray: [1, 2, 3, 4],
+      filterArray: [],
+
       selectedName: "",
       Names: [],
 
@@ -168,6 +172,181 @@ export default {
       }
     },
     OnSubmit: function () {
+      let that = this;
+      var ObjectD = Object.assign({}, this.newUnitNurse);
+      swal({
+        title: "Are you sure ...",
+        icon: "warning",
+        buttons: true,
+        dangerMode: true,
+      }).then((result) => {
+        if (!result) {
+          swal({
+            title: "Canceled",
+            text: "Sorry, the selection has been canceled!",
+          });
+        } else {
+          for (let i = 0; i < this.users.length; i++) {
+            if (this.selectedNurse.map((x) => x.id).includes(this.users[i].Emp_id)) {
+              ObjectD.Nurse_id = this.users[i].Emp_id;
+              ObjectD.Unit_id = this.path;
+              ObjectD.Entry_user = JSON.parse(localStorage.getItem("user")).Emp_id;
+              ObjectD.Active = true;
+
+              $.ajax({
+                type: "POST",
+                url: that.apiUrl + "endoresment/editNurses.aspx/insertNurseSelection",
+                data: JSON.stringify({ data: ObjectD }),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function () {
+                  if (i == that.users.length - 1) {
+                    swal({
+                      title: "Sweet!",
+                      text: "You successfully made your selections ...",
+                      icon: "success",
+                      dangerMode: true,
+                    });
+                    location.reload();
+                  }
+                },
+              });
+            } else {
+              if (this.updateDate == "") {
+                swal({
+                  title: "Error!",
+                  text: "Sorry, you should select the update date ! ",
+                  icon: "warning",
+                  dangerMode: true,
+                });
+              } else {
+                let updateNurse = {
+                  id: this.Endoresment_Nurses_Units.filter(
+                    (x) => x.Nurse_id == this.users[i].Emp_id && x.Unit_id == this.path
+                  )[0].Id,
+                  Nurse_id: this.users[i].Emp_id,
+                  Unit_id: this.path,
+                  Entry_user: JSON.parse(localStorage.getItem("user")).Emp_id,
+                  Last_Update: this.updateDate,
+                  Active: false,
+                };
+                $.ajax({
+                  type: "POST",
+                  url: that.apiUrl + "endoresment/editNurses.aspx/updatedNurse",
+                  data: JSON.stringify({ detail: updateNurse }),
+                  contentType: "application/json; charset=utf-8",
+                  dataType: "json",
+                  success: function () {
+                    if (i == that.users.length - 1) {
+                      swal({
+                        title: "Sweet!",
+                        text: "You successfully updated the selection ...",
+                        icon: "success",
+                        dangerMode: true,
+                      });
+                      location.reload();
+                    }
+                  },
+                });
+              }
+            }
+          }
+        }
+      });
+    },
+    /**  OnSubmit: function () {
+      let that = this;
+      var ObjectD = Object.assign({}, this.newUnitNurse);
+      swal({
+        title: "Are you sure ...",
+        icon: "warning",
+        buttons: true,
+        dangerMode: true,
+      }).then((result) => {
+        if (!result) {
+          swal({
+            title: "Canceled",
+            text: "Sorry, the selection has been canceled!",
+          });
+        } else {
+          if (
+            this.Endoresment_Nurses_Units.filter(
+              (x) => x.Nurse_id == this.selectedNurse[i].id && x.Unit_id == this.path
+            ).length == 0
+          ) {
+            for (let i = 0; i < this.selectedNurse.length; i++) {
+              ObjectD.Nurse_id = this.selectedNurse[i].id;
+              ObjectD.Unit_id = this.path;
+              ObjectD.Entry_user = JSON.parse(localStorage.getItem("user")).Emp_id;
+              ObjectD.Active = true;
+
+              $.ajax({
+                type: "POST",
+                url: that.apiUrl + "endoresment/editNurses.aspx/insertNurseSelection",
+                data: JSON.stringify({ data: ObjectD }),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function () {
+                  if (i == that.selectedNurse.length - 1) {
+                    swal({
+                      title: "Sweet!",
+                      text: "You successfully made your selections ...",
+                      icon: "success",
+                      dangerMode: true,
+                    });
+                    location.reload();
+                  }
+                },
+              });
+            }
+          } else {
+            that.filterNurses = that.oldNerses.filter(
+              (x) => !that.selectedNurse.includes(x)
+            );
+            if (this.updateDate == "") {
+              swal({
+                title: "Error!",
+                text: "Sorry, you should select the update date ! ",
+                icon: "warning",
+                dangerMode: true,
+              });
+            } else {
+              for (let x = 0; x < this.filterNurses.length; x++) {
+                let updateNurse = {
+                  id: this.Endoresment_Nurses_Units.filter(
+                    (x) => x.Nurse_id == this.filterNurses[x].id && x.Unit_id == this.path
+                  )[0].Id,
+                  Nurse_id: this.filterNurses[x].id,
+                  Unit_id: this.path,
+                  Entry_user: JSON.parse(localStorage.getItem("user")).Emp_id,
+                  Last_Update: this.updateDate,
+                  Active: false,
+                };
+                $.ajax({
+                  type: "POST",
+                  url: that.apiUrl + "endoresment/editNurses.aspx/updatedNurse",
+                  data: JSON.stringify({ detail: updateNurse }),
+                  contentType: "application/json; charset=utf-8",
+                  dataType: "json",
+                  success: function () {
+                    if (i == that.filterNurses.length - 1) {
+                      swal({
+                        title: "Sweet!",
+                        text: "You successfully updated the selection ...",
+                        icon: "success",
+                        dangerMode: true,
+                      });
+                      location.reload();
+                    }
+                  },
+                });
+              }
+            }
+          }
+        }
+      });
+    },**/
+    /**  OnSubmit: function () {
       let that = this;
       var ObjectD = Object.assign({}, this.newUnitNurse);
       swal({
@@ -222,10 +401,11 @@ export default {
                   icon: "warning",
                   dangerMode: true,
                 });
+                console.log(that.filterNurses[0].name);
               } else {
                 for (let x = 0; x < this.filterNurses.length; x++) {
                   let updateNurse = {
-                    id: Endoresment_Nurses_Units.filter(
+                    id: this.Endoresment_Nurses_Units.filter(
                       (x) =>
                         x.Nurse_id == this.filterNurses[x].id && x.Unit_id == this.path
                     )[0].Id,
@@ -259,7 +439,7 @@ export default {
           }
         }
       });
-    },
+    },**/
   },
 
   created() {
