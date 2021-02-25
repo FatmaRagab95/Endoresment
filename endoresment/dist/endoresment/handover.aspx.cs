@@ -316,7 +316,7 @@ public partial class _Handover : System.Web.UI.Page
 
         con.Open();
 
-        using (SqlCommand cmd = new SqlCommand("select top(1) id,Shift,Patient_id,Diet_id,Diet_Name,Pain,P_Isolation,Fall, Allergy,Investegation_ToDo,Investegation_FollowUp,Contraptions_Infusions,Routise_PlanOfCare,Surgury_Procedures,DR_Diagnosis,DR_ProgressNotes,DR_Consultaion_Progress,Update_Nurse,Update_Nurse_Time, Update_Doctor,Insert_Doctor_Time,Consultaion from Endorsement_PatientFollow where Patient_id = @Patient_id order by id desc", con))
+        using (SqlCommand cmd = new SqlCommand("select top(1) id,Shift,Patient_id,Diet_id,Diet_Name,Pain,P_Isolation,Fall, Allergy,Investegation_ToDo,Investegation_FollowUp,Contraptions_Infusions,Routise_PlanOfCare,Surgury_Procedures,DR_Diagnosis,DR_ProgressNotes,DR_Consultaion_Progress,Update_Nurse,Update_Nurse_Time, Update_Doctor,Insert_Doctor_Time,Consultaion,Entry_date from Endorsement_PatientFollow where Patient_id = @Patient_id order by id desc", con))
         {
             cmd.Parameters.Add("@Patient_id", SqlDbType.Int).Value = data.Patient_id;
             SqlDataReader idr = cmd.ExecuteReader();
@@ -364,7 +364,9 @@ public partial class _Handover : System.Web.UI.Page
 					Update_Nurse_Time  = Convert.ToString(idr["Update_Nurse_Time"]),
                     Update_Doctor      = idr["Update_Doctor"] != DBNull.Value ? Convert.ToInt32(idr["Update_Doctor"]) : 0,
                     Insert_Doctor_Time = Convert.ToString(idr["Insert_Doctor_Time"]),
-                    Consultaion        = idr["Consultaion"] != DBNull.Value ? Convert.ToInt32(idr["Consultaion"]) : 0
+                    Consultaion        = idr["Consultaion"] != DBNull.Value ? Convert.ToInt32(idr["Consultaion"]) : 0,
+
+                    Entry_date = Convert.ToDateTime(idr["Entry_date"]),
                 });
         }
 
@@ -401,7 +403,7 @@ public partial class _Handover : System.Web.UI.Page
         public int? Consultaion { get; set; }
         public string Transfer_From { get; set; }
         public string Transfer_To { get; set; }
-        public string Entry_date { get; set; }
+        public DateTime Entry_date { get; set; }
     }
 
     // get diets

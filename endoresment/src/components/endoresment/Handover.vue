@@ -160,6 +160,9 @@
                                      @click.prevent='SaveEdits(i, patient.id)'>Save</button>
                                     <button v-else class='btn btn-success btn-sm' @click.prevent='edit(i)'>Edit</button>
                                 </td>
+                                <td >
+                                    <router-link :to='{name:"Patient Data", params:{id:patient.id}}' target='_blank' class='btn btn-info btn-sm'>Details</router-link>
+                                </td>
                             </tr>
                         </tbody>
                         <caption class='text-center' v-if='patients.filter(x => unit.Unit_name.trim() == x.Unit.trim()).length == 0'>
@@ -225,25 +228,14 @@ export default {
                         success: function (data) {
                             let dataObj = that.patientsFollow.filter(x => patientId == x.Patient_id)[0];
 
-                            if (!dataObj.id) {
-                                // insert into follow up by nurse
-                                if (that.user.Role_id == 12 || that.user.Role_id == 17) {
-                                    dataObj.Insert_Nurse = that.user.Emp_id;
-                                    dataObj.Insert_Nurse_Time = moment(new Date).format();
+                            if (dataObj.id && that.LOS(dataObj.Entry_date) == 'Today' && dataObj.Shift == that.Shift) {
 
-                                    InsertData();
-                                    
-                                } else {
-                                    
-                                    // insert into follow up by doctor
-                                }
-                                    
-                            } else {
                                 // update follow up by nurse
                                 if (that.user.Role_id == 12 || that.user.Role_id == 17) {
 
                                     dataObj.Insert_Nurse = dataObj.Insert_Nurse != '' ? that.user.Emp_id : dataObj.Insert_Nurse;
                                     dataObj.Insert_Nurse_Time = dataObj.Insert_Nurse_Time != '' ? moment(new Date).format() : dataObj.Insert_Nurse_Time;
+                                    dataObj.Insert_Doctor = '';
 
                                     dataObj.Update_Nurse = dataObj.Insert_Nurse != '' ? that.user.Emp_id : '';
                                     dataObj.Update_Nurse_Time = dataObj.Insert_Nurse_Time != '' ? moment(new Date).format() : '';
@@ -253,6 +245,21 @@ export default {
                                 } else {
                                     
                                     // update follow up by doctor
+                                }
+
+                            } else {
+
+                                // insert into follow up by nurse
+                                if (that.user.Role_id == 12 || that.user.Role_id == 17) {
+                                    dataObj.Insert_Nurse = that.user.Emp_id;
+                                    dataObj.Insert_Nurse_Time = moment(new Date).format();
+                                    dataObj.Insert_Doctor = 0;
+
+                                    InsertData();
+                                    
+                                } else {
+                                    
+                                    // insert into follow up by doctor
                                 }
                             }
 
@@ -397,7 +404,8 @@ export default {
                                         Insert_Doctor_Time: '',
                                         Consultaion: '',
                                         Transfer_From: '',
-                                        Transfer_To: ''
+                                        Transfer_To: '',
+                                        Entry_date:new Date()
                                     }
                                 )
                             }

@@ -66,7 +66,7 @@
     </div>
 
     <div class="container-fluid mt-2 bg-white pt-3 pb-3 card">
-      <div class="container" v-if='!shiftData'>
+      <div class="container" v-if='shiftData'>
         <div class="row mt-4 text-left">
           <div class="col-md-8">
             <div class="form-group bg-white border p-3 shadow-sm">
@@ -117,20 +117,8 @@
               </div>
               <!-- Card Body -->
               <div class="card-body">
-                <i class="fa fa-circle text-danger small"></i>
-                Vast amounts of medical information are still recorded as unstructured
-                text. The knowledge contained in this textual data has a great potential
-                to
-                <br />
-                <i class="fa fa-circle text-success small"></i>
-                Vast amounts of medical information are still recorded as unstructured
-                text. The knowledge contained in this textual data has a great potential
-                to
-                <br />
-                <i class="fa fa-circle text-info small"></i>
-                Vast amounts of medical information are still recorded as unstructured
-                text. The knowledge contained in this textual data has a great potential
-                to
+                <i class="fa fa-circle text-danger small" v-if='viewedShift.DR_Diagnosis'></i>
+                {{viewedShift.DR_Diagnosis}}
               </div>
             </div>
           </div>
@@ -156,20 +144,8 @@
               </div>
               <!-- Card Body -->
               <div class="card-body">
-                <i class="fa fa-circle text-danger small"></i>
-                Vast amounts of medical information are still recorded as unstructured
-                text. The knowledge contained in this textual data has a great potential
-                to
-                <br />
-                <i class="fa fa-circle text-success small"></i>
-                Vast amounts of medical information are still recorded as unstructured
-                text. The knowledge contained in this textual data has a great potential
-                to
-                <br />
-                <i class="fa fa-circle text-info small"></i>
-                Vast amounts of medical information are still recorded as unstructured
-                text. The knowledge contained in this textual data has a great potential
-                to
+                <i class="fa fa-circle text-danger small" v-if='viewedShift.DR_ProgressNotes'></i>
+                {{viewedShift.DR_ProgressNotes}}
               </div>
             </div>
           </div>
@@ -197,7 +173,7 @@
               <div class="card-body row">
                 <div class="col-md-6">
                   <h4 class="font-weight-bold text-dark mt-3">
-                    Pain Level <span class="float-right text-success">2</span>
+                    Pain Level <span class="float-right text-success">{{viewedShift.Pain}}</span>
                   </h4>
                   <div class="progress bg-light mb-4" style='height:60px'>
                     <input
@@ -206,19 +182,20 @@
                       min="0"
                       max="10"
                       step="1"
-                      id="volume"/>
+                      id="volume"
+                      :value='viewedShift.Pain' disabled/>
                   </div>
                 </div>
                 <div class="col-md-6">
                   <div class="bg-light pt-2 pb-2 mb-3 w-100 shadow-sm">
                     <span class="ml-2 font-weight-bold text-dark">Fall :</span>
-                    <span class="font-weight-normal text-secondary ml-2">Fall ...</span>
+                    <span class="font-weight-normal text-secondary ml-2">{{viewedShift.Fall}}</span>
                   </div>
                 </div>
                 <div class="col-md-6">
                   <div class="bg-light pt-2 pb-2 mb-3 w-100 shadow-sm">
                     <span class="ml-2 font-weight-bold text-dark">Diet :</span>
-                    <span class="font-weight-normal text-secondary ml-2">Diet ...</span>
+                    <span class="font-weight-normal text-secondary ml-2">{{viewedShift.Diet_Name}}</span>
                   </div>
                 </div>
 
@@ -226,7 +203,7 @@
                   <div class="bg-light pt-2 pb-2 mb-3 w-100 shadow-sm">
                     <span class="ml-2 font-weight-bold text-dark">Issolation :</span>
                     <span class="font-weight-normal text-secondary ml-2"
-                      >Issolation ...</span
+                      >{{viewedShift.P_Isolation}}</span
                     >
                   </div>
                 </div>
@@ -234,11 +211,7 @@
                   <div class="bg-light p-3 mb-3 w-100 shadow-sm h-100">
                     <span class="font-weight-bold text-dark">Allergy :</span>
                     <span class="font-weight-normal text-secondary ml-2"
-                      >An allergy is an immune system response to a foreign substance
-                      that's not typically harmful to your body. These foreign substances
-                      are called allergens An allergy is an immune system response to a
-                      foreign substance that's not typically harmful to your
-                      body.....</span
+                      >{{viewedShift.Allergy}}</span
                     >
                   </div>
                 </div>
@@ -268,10 +241,8 @@
               </div>
               <div class="card-body row m-0">
                 <div class="col-md-12">
-                  <i class="fa fa-circle text-success small"></i>
-                  Vast amounts of medical information are still recorded as unstructured
-                  text. The knowledge contained in this textual data has a great potential
-                  to
+                  <i class="fa fa-circle text-success small"  v-if='viewedShift.Investegation_ToDo'></i>
+                  {{viewedShift.Investegation_ToDo}}
                 </div>
               </div>
             </div>
@@ -297,10 +268,8 @@
               </div>
               <div class="card-body row m-0">
                 <div class="col-md-12">
-                  <i class="fa fa-circle text-success small"></i>
-                  Vast amounts of medical information are still recorded as unstructured
-                  text. The knowledge contained in this textual data has a great potential
-                  to
+                  <i class="fa fa-circle text-success small" v-if='viewedShift.Investegation_FollowUp'></i>
+                  {{viewedShift.Investegation_FollowUp}}
                 </div>
               </div>
             </div>
@@ -326,10 +295,8 @@
               </div>
               <div class="card-body row m-0">
                 <div class="col-md-12">
-                  <i class="fa fa-circle text-success small"></i>
-                  Vast amounts of medical information are still recorded as unstructured
-                  text. The knowledge contained in this textual data has a great potential
-                  to
+                  <i class="fa fa-circle text-success small" v-if='viewedShift.Contraptions_Infusions'></i>
+                  {{viewedShift.Contraptions_Infusions}}
                 </div>
               </div>
             </div>
@@ -355,10 +322,8 @@
               </div>
               <div class="card-body row m-0">
                 <div class="col-md-12">
-                  <i class="fa fa-circle text-success small"></i>
-                  Vast amounts of medical information are still recorded as unstructured
-                  text. The knowledge contained in this textual data has a great potential
-                  to
+                  <i class="fa fa-circle text-success small"  v-if='viewedShift.Routise_PlanOfCare'></i>
+                  {{viewedShift.Routise_PlanOfCare}}
                 </div>
               </div>
             </div>
@@ -386,20 +351,8 @@
               </div>
               <div class="card-body row m-0">
                 <div class="col-md-12">
-                  <i class="fa fa-circle text-danger small"></i>
-                  Vast amounts of medical information are still recorded as unstructured
-                  text. The knowledge contained in this textual data has a great potential
-                  to
-                  <br />
-                  <i class="fa fa-circle text-success small"></i>
-                  Vast amounts of medical information are still recorded as unstructured
-                  text. The knowledge contained in this textual data has a great potential
-                  to
-                  <br />
-                  <i class="fa fa-circle text-info small"></i>
-                  Vast amounts of medical information are still recorded as unstructured
-                  text. The knowledge contained in this textual data has a great potential
-                  to
+                  <i class="fa fa-circle text-danger small" v-if='viewedShift.DR_Consultaion_Progress'></i>
+                  {{viewedShift.DR_Consultaion_Progress}}
                 </div>
               </div>
             </div>
@@ -427,6 +380,7 @@ export default {
       patientData:null,
       shiftData:null,
       id: this.$route.params.id,
+      viewedShift: null
     };
   },
   methods: {},
@@ -453,7 +407,8 @@ export default {
       contentType: "application/json; charset=utf-8",
       dataType: "json",
       success: function (data) {
-        that.shiftData = JSON.parse(data.d)[0];
+        that.shiftData = JSON.parse(data.d);
+        that.viewedShift = that.shiftData.slice(-1)[0];
       },
     });
 

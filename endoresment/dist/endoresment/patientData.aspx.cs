@@ -146,7 +146,6 @@ public partial class _patientData : System.Web.UI.Page
 
                     Update_Nurse       = idr["Update_Nurse"] != DBNull.Value ? Convert.ToInt32(idr["Update_Nurse"]) : 0,
 					Update_Nurse_Time  = Convert.ToString(idr["Update_Nurse_Time"]),
-					Specialty          = Convert.ToString(idr["Specialty"]),
                     Update_Doctor      = idr["Update_Doctor"] != DBNull.Value ? Convert.ToInt32(idr["Update_Doctor"]) : 0,
                     Insert_Doctor_Time = Convert.ToString(idr["Insert_Doctor_Time"]),
                     Consultaion        = idr["Consultaion"] != DBNull.Value ? Convert.ToInt32(idr["Consultaion"]) : 0,
@@ -179,7 +178,6 @@ public partial class _patientData : System.Web.UI.Page
         public string DR_Consultaion_Progress { get; set; }
         public int? Update_Nurse { get; set; }
         public string Update_Nurse_Time { get; set; }
-        public string Specialty { get; set; }
         public int? Update_Doctor { get; set; }
         public int? Update_Doctor_Time { get; set; }
         public int? Insert_Nurse { get; set; }
