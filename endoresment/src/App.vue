@@ -14,7 +14,7 @@
     <div :class="user ? 'page-container' : ''">
       <div :class="user ? 'main-contnet' : ''">
         <upper-nav v-if="user" :username="user.FullName"></upper-nav>
-        <router-view :link="link" :user='user'/>
+        <router-view :link="link" :user="user" />
       </div>
     </div>
   </div>
@@ -34,7 +34,7 @@ export default {
   data() {
     return {
       user: JSON.parse(localStorage.getItem("user")),
-      link: `http://localhost:${49638}/endoresment/dist/`,
+      link: `http://localhost:${51026}/endoresment/dist/`,
     };
   },
   watch: {
@@ -47,9 +47,9 @@ export default {
 </script>
 
 <style>
-[v-cloak] { 
-  display: none; 
-} 
+[v-cloak] {
+  display: none;
+}
 .main-contnet {
   margin-top: 60px;
 }
