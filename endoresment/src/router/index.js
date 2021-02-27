@@ -20,6 +20,7 @@ import selectUnit from "@/components/endoresment/selectUnit";
 import Handover from "@/components/endoresment/Handover";
 import Nurses from "@/components/endoresment/Nurses";
 import editNurses from "@/components/endoresment/editNurses";
+import editPatients from "@/components/endoresment/editPatients";
 
 Vue.use(Router);
 
@@ -212,6 +213,17 @@ const router = new Router({
         viewMenu:false
       },
     },
+    {
+      path: "/editPatients/:id",
+      name: "Edit Patients",
+      component: editPatients,
+      meta: {
+        requiresAuth: true,
+        cat: "Endoresment",
+        viewMenu:false
+      },
+    },
+    
     
   ],
 });

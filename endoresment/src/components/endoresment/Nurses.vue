@@ -71,7 +71,7 @@
         v-if="patientDetails['patientPop'] == true"
       >
         <div class="popup-body" style="max-width: 1000px">
-          <div class="container-fluid custom-form m-auto pb-4" style="max-width: 900px">
+          <div class="container-fluid custom-form m-auto pb-4" style="max-width: 1000px">
             <div class="cu-container">
               <span class="close-pop" v-on:click="close">Close</span>
               <div class="title text-center text-white">
@@ -81,41 +81,80 @@
               <!--- start patient-info -->
               <div class="social-timeline-card shadow">
                 <div
-                  class="card bg-light general info tabcontent active overflow-auto text-center"
+                  class="card bg-light general info tabcontent active overflow-auto p-3"
                   style="max-height: 380px"
                 >
-                  <div
-                    class="text-secondary card bg-light select-form p-4 text-center shadow"
+                  <h4
+                    class="text-secondary text-center"
+                    style="text-decoration: underline"
                   >
-                    <h1 style="text-decoration: underline">
-                      {{ Units.filter((x) => x.U_id == path)[0].U_name }}
-                    </h1>
-                    <div class="text-right mt-3">
-                      <router-link
-                        class="btn btn-secondary"
-                        style="width: 150px"
-                        :to="{ name: 'Edit Patients', params: { id: path } }"
-                        ><i class="fa fa-pencil-square-o mr-3" aria-hidden="true"></i>Edit
-                        patients List</router-link
-                      >
-                    </div>
-
-                    <table
-                      class="table table-striped table-light shadow text-secondary mt-3"
+                    {{
+                      users.filter((x) => x.Emp_id == patientDetails.Nurse_id)[0].FullName
+                    }}
+                  </h4>
+                  <div class="text-right mt-3">
+                    <router-link
+                      class="btn btn-secondary"
+                      style="width: 200px"
+                      :to="{
+                        name: 'Edit Patients',
+                        params: { id: patientDetails.Nurse_id },
+                      }"
+                      ><i class="fa fa-pencil-square-o mr-3" aria-hidden="true"></i>Edit
+                      patients List</router-link
                     >
-                      <thead class="font-wight-bold bg-secondary text-white">
-                        <tr>
-                          <th scope="col">#</th>
-                          <th scope="col">nurse name</th>
-                          <th scope="col">emp id</th>
-                          <th scope="col">last update</th>
-                          <th scope="col">update from</th>
-                          <th scope="col">patients list</th>
-                        </tr>
-                      </thead>
-                      <tbody></tbody>
-                    </table>
                   </div>
+
+                  <table
+                    class="table table-light shadow text-secondary mt-3"
+                    v-if="
+                      Endoresment_Nurses_Units.filter(
+                        (x) => x.Nurse_id == patientDetails.Nurse_id
+                      ).length > 0
+                    "
+                  >
+                    <thead class="font-wight-bold bg-secondary text-white">
+                      <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">patient name</th>
+                        <th scope="col">Medical Number</th>
+                        <th scope="col">age</th>
+                        <th scope="col">Specialty</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr
+                        v-for="(patient, i) in Endorsement_Nurse_patients.filter(
+                          (x) => x.Nurse_id == patientDetails.Nurse_id
+                        )"
+                        :key="patient.id"
+                      >
+                        <td>{{ i + 1 }}</td>
+                        <td>
+                          {{
+                            patients.filter((x) => x.id == patient.Patient_id)[0]
+                              .Patient_FullName
+                          }}
+                        </td>
+                        <td>
+                          {{
+                            patients.filter((x) => x.id == patient.Patient_id)[0]
+                              .Medical_Number
+                          }}
+                        </td>
+                        <td>
+                          {{ patients.filter((x) => x.id == patient.Patient_id)[0].Age }}
+                        </td>
+                        <td>
+                          {{
+                            patients.filter((x) => x.id == patient.Patient_id)[0]
+                              .Specialty
+                          }}
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                  <div v-else>no avalible data</div>
                 </div>
               </div>
               <!--- end patient-info -->
@@ -137,7 +176,10 @@ export default {
     return {
       Units: [],
       users: [],
+      Endorsement_Nurse_patients: [],
       Endoresment_Nurses_Units: [],
+      patients: [],
+
       patientDetails: [],
       path: "",
       apiUrl: this.link,
@@ -177,6 +219,17 @@ export default {
     //get Endoresment Nurses Units
     $.ajax({
       type: "POST",
+      url: that.apiUrl + "endoresment/Nurses.aspx/Endorsement_Nurse_patients",
+      contentType: "application/json; charset=utf-8",
+      dataType: "json",
+      success: function (data) {
+        that.Endorsement_Nurse_patients = JSON.parse(data.d);
+      },
+    });
+
+    //get Endoresment Nurses Units
+    $.ajax({
+      type: "POST",
       url: that.apiUrl + "endoresment/Nurses.aspx/getEndoresment_Nurses_UnitsData",
       contentType: "application/json; charset=utf-8",
       dataType: "json",
@@ -193,6 +246,17 @@ export default {
       dataType: "json",
       success: function (data) {
         that.users = JSON.parse(data.d);
+      },
+    });
+
+    //get patients data
+    $.ajax({
+      type: "POST",
+      url: that.apiUrl + "endoresment/Nurses.aspx/getPatientsData",
+      contentType: "application/json; charset=utf-8",
+      dataType: "json",
+      success: function (data) {
+        that.patients = JSON.parse(data.d);
       },
     });
   },

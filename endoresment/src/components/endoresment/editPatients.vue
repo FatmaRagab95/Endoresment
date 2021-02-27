@@ -1,15 +1,12 @@
 <template>
-  <div class="editNurses p-3 text-capitalize">
+  <div class="editPatients p-3 text-capitalize">
     <div class="container-fluid mt-3 card">
-      <div class="container-wave">
-        <div class="wave"></div>
-      </div>
       <div class="text-secondary card bg-light select-form p-4 text-left shadow">
         <div class="row">
           <span class="col-md-6"
-            ><h1>
-              {{ Units.filter((x) => x.U_id == path)[0].U_name }}
-            </h1>
+            ><h3>
+              {{ users.filter((x) => x.Emp_id == path)[0].FullName }}
+            </h3>
           </span>
           <span class="col-md-6">
             <button
@@ -19,7 +16,7 @@
               submit selection
             </button>
           </span>
-          <span class="col-md-6">
+          <span class="col-md-6 mt-4">
             <form class="form-inline">
               <input
                 class="form-control mr-sm-2"
@@ -37,7 +34,7 @@
               ></span>
             </form>
           </span>
-          <span class="col-md-6 row">
+          <span class="col-md-6 row mt-4">
             <span class="col-md-3 text-right p-0 m-0" style="line-height: 2.1"
               >updated date</span
             >
@@ -56,65 +53,45 @@
 
         <div class="row">
           <div class="col-md-7">
-            <h3 class="text-info" style="text-decoration: underline">
-              nurses list in {{ Units.filter((x) => x.U_id == path)[0].U_name }}
-            </h3>
+            <h5 class="text-info" style="text-decoration: underline">
+              patients list for {{ users.filter((x) => x.Emp_id == path)[0].FullName }}
+            </h5>
             <div class="card overflow-auto p-3 shadow rounded" style="height: 500px">
               <div
                 class="pt-2 pb-2 border-bottom"
-                v-for="(nurse, i) in filterNames(users, selectedName.toLowerCase())"
+                v-for="(patient, i) in filterNames(patients, selectedName.toLowerCase())"
                 :key="i + 'f'"
               >
                 <span
                   ><input
                     style="width: 20px; height: 20px"
                     class="rounded bg-dark"
-                    :id="nurse.Emp_id"
+                    :id="patient.id"
                     type="checkbox"
                     name="role"
-                    :value="{ id: nurse.Emp_id, name: nurse.FullName }"
-                    v-model="selectedNurse"
+                    :value="{ id: patient.id, name: patient.Patient_FullName }"
+                    v-model="selectedPatients"
                 /></span>
                 <span class="ml-3"
-                  ><label :for="nurse.Emp_id">{{ nurse.FullName }}</label></span
+                  ><label :for="patient.id">{{ patient.Patient_FullName }}</label></span
                 >
-                <span
-                  class="pull-right"
-                  v-if="
-                    Endoresment_Nurses_Units.filter(
-                      (x) =>
-                        x.Nurse_id == nurse.Emp_id && x.Unit_id == path && x.Active == 1
-                    ).length > 0
-                  "
-                  >registered in ..
-                  <span
-                    v-for="(unit, i) in Endoresment_Nurses_Units.filter(
-                      (x) =>
-                        x.Nurse_id == nurse.Emp_id && x.Unit_id == path && x.Active == 1
-                    )"
-                    :key="i"
-                    >{{ Units.filter((x) => x.U_id == unit.Unit_id)[0].U_name }}..</span
-                  >
-                  {{
-                }}</span>
-                <span class="pull-right text-danger" v-else
-                  >not registered in any unit</span
-                >
+                <span class="pull-right"></span>
               </div>
             </div>
           </div>
           <div class="col-md-5">
-            <h3 class="text-info" style="text-decoration: underline">
-              selected nurses in {{ Units.filter((x) => x.U_id == path)[0].U_name }}
-            </h3>
+            <h5 class="text-info" style="text-decoration: underline">
+              selected patients with
+              {{ users.filter((x) => x.Emp_id == path)[0].FullName }}
+            </h5>
             <div class="card overflow-auto p-3 shadow rounded" style="height: 500px">
               <div
                 class="pt-2 pb-2 border-bottom"
-                v-for="(nurse, i) in selectedNurse"
+                v-for="(patient, i) in selectedPatients"
                 :key="i + 'b'"
               >
                 <span>{{ i + 1 }}</span>
-                <span class="ml-3">{{ nurse.name }}</span>
+                <span class="ml-3">{{ patient.name }}</span>
               </div>
             </div>
           </div>
@@ -126,29 +103,31 @@
 
 <script>
 export default {
-  name: "editNurses",
+  name: "editPatients",
   props: ["link"],
   data() {
     return {
       Units: [],
       users: [],
-      Endoresment_Nurses_Units: [],
+      Nurse_patients: [],
       Nurses: [],
+      patients: [],
       path: "",
-      selectedNurse: [],
-      oldNerses: [],
-      filterNurses: [],
+      selectedPatients: [],
+      oldPatients: [],
+      filterPatients: [],
 
       selectedName: "",
       Names: [],
 
       updateDate: "",
 
-      newUnitNurse: {
+      newPatients: {
+        Patient_id: 0,
         Nurse_id: 0,
-        Unit_id: 0,
         Entry_user: 0,
-        Active: 1,
+        Bed_id: 0,
+        Nurse_name: "",
       },
 
       apiUrl: this.link,
@@ -156,7 +135,7 @@ export default {
   },
   methods: {
     filterNames(list, value) {
-      return list.filter((x) => x.FullName.toLowerCase().indexOf(value) > -1);
+      return list.filter((x) => x.Patient_FullName.toLowerCase().indexOf(value) > -1);
     },
     namesList(event) {
       if (event.key == "Enter") {
@@ -166,7 +145,7 @@ export default {
 
     OnSubmit: function () {
       let that = this;
-      var ObjectD = Object.assign({}, this.newUnitNurse);
+      var ObjectD = Object.assign({}, this.newPatients);
       swal({
         title: "Are you sure ...",
         icon: "warning",
@@ -179,25 +158,32 @@ export default {
             text: "Sorry, the selection has been canceled!",
           });
         } else {
-          for (let i = 0; i < this.selectedNurse.length; i++) {
+          for (let i = 0; i < this.selectedPatients.length; i++) {
             if (
-              this.Endoresment_Nurses_Units.filter(
-                (x) => x.Nurse_id == this.selectedNurse[i].id && x.Unit_id == this.path
+              this.Nurse_patients.filter(
+                (x) =>
+                  x.Patient_id == this.selectedPatients[i].id && x.Nurse_id == this.path
               ).length == 0
             ) {
-              ObjectD.Nurse_id = this.selectedNurse[i].id;
-              ObjectD.Unit_id = this.path;
+              ObjectD.Patient_id = this.selectedPatients[i].id;
+              ObjectD.Nurse_id = this.path;
               ObjectD.Entry_user = JSON.parse(localStorage.getItem("user")).Emp_id;
-              ObjectD.Active = 1;
+              ObjectD.Bed_id = this.patients.filter(
+                (x) => x.id == this.selectedPatients[i].id
+              )[0].Bed_id;
+              ObjectD.Nurse_name = this.users.filter(
+                (x) => x.Emp_id == this.path
+              )[0].FullName;
 
               $.ajax({
                 type: "POST",
-                url: that.apiUrl + "endoresment/editNurses.aspx/insertNurseSelection",
+                url:
+                  that.apiUrl + "endoresment/editPatients.aspx/insertPatientsSelection",
                 data: JSON.stringify({ data: ObjectD }),
                 contentType: "application/json; charset=utf-8",
                 dataType: "json",
                 success: function () {
-                  if (i == that.selectedNurse.length - 1) {
+                  if (i == that.selectedPatients.length - 1) {
                     swal({
                       title: "Sweet!",
                       text: "You successfully made your selections ...",
@@ -212,11 +198,11 @@ export default {
           }
 
           // get uncheked nurses
-          let old = that.oldNerses.map((x) => x.id);
-          let newNurses = that.selectedNurse.map((x) => x.id);
+          let old = that.oldPatients.map((x) => x.id);
+          let newPatients = that.selectedPatients.map((x) => x.id);
 
-          if (old.filter((x) => !newNurses.includes(x)).length > 0) {
-            that.filterNurses = old.filter((x) => !newNurses.includes(x));
+          if (old.filter((x) => !newPatients.includes(x)).length > 0) {
+            that.filterPatients = old.filter((x) => !newPatients.includes(x));
 
             if (this.updateDate == "") {
               swal({
@@ -226,25 +212,28 @@ export default {
                 dangerMode: true,
               });
             } else {
-              for (let x = 0; x < this.filterNurses.length; x++) {
-                let updateNurse = {
-                  id: this.Endoresment_Nurses_Units.filter(
-                    (z) => z.Nurse_id == this.filterNurses[x] && z.Unit_id == this.path
-                  )[0].Id,
-                  Nurse_id: this.filterNurses[x],
-                  Unit_id: this.path,
+              for (let x = 0; x < this.filterPatients.length; x++) {
+                let updatePatients = {
+                  id: this.Nurse_patients.filter(
+                    (z) =>
+                      z.Patient_id == this.filterPatients[x] && z.Nurse_id == this.path
+                  )[0].id,
+                  Patient_id: this.filterPatients[x],
+                  Nurse_id: 0,
                   Entry_user: JSON.parse(localStorage.getItem("user")).Emp_id,
-                  Last_Update: this.updateDate,
-                  Active: 0,
+                  Date_from: this.updateDate,
+                  Bed_id: this.patients.filter((z) => z.id == this.filterPatients[x])[0]
+                    .Bed_id,
+                  Nurse_name: "",
                 };
                 $.ajax({
                   type: "POST",
-                  url: that.apiUrl + "endoresment/editNurses.aspx/updatedNurse",
-                  data: JSON.stringify({ detail: updateNurse }),
+                  url: that.apiUrl + "endoresment/editPatients.aspx/updatedPatient",
+                  data: JSON.stringify({ detail: updatePatients }),
                   contentType: "application/json; charset=utf-8",
                   dataType: "json",
                   success: function () {
-                    if (x == that.filterNurses.length - 1) {
+                    if (x == that.filterPatients.length - 1) {
                       swal({
                         title: "Sweet!",
                         text: "You successfully updated the selection ...",
@@ -268,50 +257,49 @@ export default {
     let that = this;
     this.path = this.$router.history.current.path.split("/")[2];
 
-    //get units
+    //get patients data
     $.ajax({
       type: "POST",
-      url: that.apiUrl + "endoresment/editNurses.aspx/getUnitsData",
+      url: that.apiUrl + "endoresment/editPatients.aspx/getPatientsData",
       contentType: "application/json; charset=utf-8",
       dataType: "json",
       success: function (data) {
-        that.Units = JSON.parse(data.d);
+        that.patients = JSON.parse(data.d);
+
+        // get Endorsement Nurse patients
+        $.ajax({
+          type: "POST",
+          url: that.apiUrl + "endoresment/editPatients.aspx/Endorsement_Nurse_patients",
+          contentType: "application/json; charset=utf-8",
+          dataType: "json",
+          success: function (data) {
+            that.Nurse_patients = JSON.parse(data.d);
+
+            that.selectedPatients = that.Nurse_patients.filter(
+              (x) => x.Nurse_id == that.path
+            ).map((z) => {
+              let id = z.Patient_id;
+              z = {
+                id: id,
+                name: that.patients.filter((i) => i.id == id)[0].Patient_FullName,
+              };
+              return z;
+            });
+
+            that.oldPatients = that.selectedPatients;
+          },
+        });
       },
     });
 
     //get admin users
     $.ajax({
       type: "POST",
-      url: that.apiUrl + "endoresment/editNurses.aspx/getadminusersData",
+      url: that.apiUrl + "endoresment/editPatients.aspx/getadminusersData",
       contentType: "application/json; charset=utf-8",
       dataType: "json",
       success: function (data) {
         that.users = JSON.parse(data.d);
-        //that.users = that.users.filter((z) => z.Branch_ID == 1);
-        //get Endoresment Nurses Units
-        $.ajax({
-          type: "POST",
-          url:
-            that.apiUrl + "endoresment/editNurses.aspx/getEndoresment_Nurses_UnitsData",
-          contentType: "application/json; charset=utf-8",
-          dataType: "json",
-          success: function (data) {
-            that.Endoresment_Nurses_Units = JSON.parse(data.d);
-
-            that.selectedNurse = that.Endoresment_Nurses_Units.filter(
-              (x) => x.Unit_id == that.path
-            ).map((z) => {
-              let id = z.Nurse_id;
-              z = {
-                id: id,
-                name: that.users.filter((i) => i.Emp_id == id)[0].FullName,
-              };
-              return z;
-            });
-
-            that.oldNerses = that.selectedNurse;
-          },
-        });
       },
     });
   },
@@ -319,45 +307,6 @@ export default {
 </script>
 
 <style scoped>
-.container-wave {
-  position: absolute;
-  background: #fff;
-  height: 50vh;
-  width: 100%;
-  left: 0;
-  top: 0;
-}
-
-.wave {
-  position: absolute;
-  height: 250px;
-  width: 100%;
-  background: #fff;
-  bottom: 0;
-}
-
-.wave::before,
-.wave::after {
-  content: "";
-  display: block;
-  position: absolute;
-  border-radius: 100% 50%;
-}
-
-.wave::before {
-  width: 55%;
-  height: 109%;
-  background-color: #f0f0f0;
-  right: -1.5%;
-  top: 80%;
-}
-.wave::after {
-  width: 55%;
-  height: 100%;
-  background-color: #fff;
-  left: 0;
-  top: 60%;
-}
 .select-form {
   left: 50%;
   margin-top: 1%;
