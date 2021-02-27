@@ -175,85 +175,74 @@
 
               <div class="shadow bg-white rounded row w-100 m-auto p-2">
                 <div class="col-md-3 p-2"></div>
-                <div class="col-md-6 p-2">
+                <div
+                  class="col-md-6 p-2"
+                  v-for="bed in RoomsDashboard.filter((x) => x.Room_id == room.id)"
+                  :key="bed.id"
+                >
                   <div class="card p-2 bg-light shadow" style="height: 200px">
                     <div class="h-25 bg-light mb-2 rounded pt-2 shadow">
                       <span
                         :class="
-                          RoomsDashboard.filter((x) => x.Room_id == room.id)[0]
-                            .Status_id == 1
-                            ? 'ml-2 badge-success pl-3 pr-3 rounded'
-                            : RoomsDashboard.filter((x) => x.Room_id == room.id)[0]
-                                .Status_id == 2
-                            ? 'ml-2 badge-danger pl-3 pr-3 rounded'
-                            : RoomsDashboard.filter((x) => x.Room_id == room.id)[0]
-                                .Status_id == 3
-                            ? 'ml-2 badge-warning pl-3 pr-3 rounded'
+                          bed.Status_id == 1
+                            ? 'badge-success pl-3 pr-3 rounded'
+                            : bed.Status_id == 2
+                            ? 'badge-danger pl-3 pr-3 rounded'
+                            : bed.Status_id == 3
+                            ? 'badge-warning pl-3 pr-3 rounded'
                             : ' '
                         "
-                      ></span>
+                      >
+                      </span>
                     </div>
                     <div
                       class="h-75 bg-light rounded pt-3 shadow card bed-background-single"
                     ></div>
                     <div
-                      class="tooltip bg-light card p-4 text-secondary"
-                      v-if="
-                        RoomsDashboard.filter((x) => x.Room_id == room.id)[0].Status_id ==
-                        2
-                      "
+                      class="tooltip bg-light card p-4 text-secondary text-capitalize"
+                      v-if="bed.Status_id == 2"
                     >
                       <h6>
-                        <span class="text-info">Full Name :</span
+                        <span class="text-info">full name :</span
                         ><span class="ml-2">{{
-                          PatientsData.filter((x) => x.Room == room.Room_name)[0]
+                          PatientsData.filter((x) => x.Bed_id == bed.id)[0]
                             .Patient_FullName
                         }}</span>
                       </h6>
                       <h6>
-                        <span class="text-info">Age : </span
+                        <span class="text-info">age : </span
                         ><span class="ml-2">{{
-                          PatientsData.filter((x) => x.Room == room.Room_name)[0].Age
+                          PatientsData.filter((x) => x.Bed_id == bed.id)[0].Age
                         }}</span>
                       </h6>
                       <h6>
-                        <span class="text-info">Gender : </span
+                        <span class="text-info">gender : </span
                         ><span class="ml-2">{{
-                          PatientsData.filter((x) => x.Room == room.Room_name)[0].Gender
+                          PatientsData.filter((x) => x.Bed_id == bed.id)[0].Gender
                         }}</span>
                       </h6>
                       <h6>
-                        <span class="text-info">Medical Number :</span
+                        <span class="text-info">medical number : </span
                         ><span class="ml-2">{{
-                          PatientsData.filter((x) => x.Room == room.Room_name)[0]
-                            .Medical_Number
+                          PatientsData.filter((x) => x.Bed_id == bed.id)[0].Medical_Number
                         }}</span>
                       </h6>
                       <h6>
-                        <span class="text-info">Specialty : </span
+                        <span class="text-info">specialty : </span
                         ><span class="ml-2">{{
-                          PatientsData.filter((x) => x.Room == room.Room_name)[0]
-                            .Specialty
+                          PatientsData.filter((x) => x.Bed_id == bed.id)[0].Specialty
                         }}</span>
                       </h6>
                       <button class="btn mt-3 btn-info btn-sm rounded">Details</button>
                     </div>
                     <div
                       class="tooltip bg-light card p-4 text-center"
-                      v-else-if="
-                        RoomsDashboard.filter((x) => x.Room_id == room.id)[0].Status_id ==
-                        1
-                      "
+                      v-else-if="bed.Status_id == 1"
                     >
                       <button
-                        class="btn align-middle btn-danger btn-sm rounded open-pop shadow-sm m-auto"
+                        class="btn btn-danger btn-sm rounded open-pop shadow-sm"
                         data-pop-name="patient-popup"
-                        v-on:click.prevent="
-                          popUp(
-                            RoomsDashboard.filter((x) => x.Room_id == room.id)[0],
-                            'patientPop'
-                          )
-                        "
+                        v-on:click.prevent="popUp(bed, 'patientPop')"
                       >
                         patient registration
                       </button>
@@ -304,20 +293,24 @@
 
               <div class="shadow bg-white rounded row w-100 m-auto p-2">
                 <div class="col-md-3 p-2"></div>
-                <div class="col-md-6 p-2">
+                <div
+                  class="col-md-6 p-2"
+                  v-for="bed in RoomsDashboard.filter((x) => x.Room_id == room.id)"
+                  :key="bed.id"
+                >
                   <div class="card p-2 bg-light shadow" style="height: 200px">
                     <div class="h-25 bg-light mb-2 rounded pt-2 shadow">
                       <span
                         :class="
                           RoomsDashboard.filter((x) => x.Room_id == room.id)[0]
                             .Status_id == 1
-                            ? 'ml-2 badge-success pl-3 pr-3 rounded'
+                            ? 'badge-success pl-3 pr-3 rounded'
                             : RoomsDashboard.filter((x) => x.Room_id == room.id)[0]
                                 .Status_id == 2
-                            ? 'ml-2 badge-danger pl-3 pr-3 rounded'
+                            ? 'badge-danger pl-3 pr-3 rounded'
                             : RoomsDashboard.filter((x) => x.Room_id == room.id)[0]
                                 .Status_id == 3
-                            ? 'ml-2 badge-warning pl-3 pr-3 rounded'
+                            ? 'badge-warning pl-3 pr-3 rounded'
                             : ' '
                         "
                       ></span>
@@ -326,63 +319,50 @@
                       class="h-75 bg-light rounded pt-3 shadow card bed-background-single"
                     ></div>
                     <div
-                      class="tooltip bg-light card p-4 text-secondary"
-                      v-if="
-                        RoomsDashboard.filter((x) => x.Room_id == room.id)[0].Status_id ==
-                        2
-                      "
+                      class="tooltip bg-light card p-4 text-secondary text-capitalize"
+                      v-if="bed.Status_id == 2"
                     >
                       <h6>
-                        <span class="text-info">Full Name :</span
+                        <span class="text-info">full name :</span
                         ><span class="ml-2">{{
-                          PatientsData.filter((x) => x.Room == room.Room_name)[0]
+                          PatientsData.filter((x) => x.Bed_id == bed.id)[0]
                             .Patient_FullName
                         }}</span>
                       </h6>
                       <h6>
-                        <span class="text-info">Age : </span
+                        <span class="text-info">age : </span
                         ><span class="ml-2">{{
-                          PatientsData.filter((x) => x.Room == room.Room_name)[0].Age
+                          PatientsData.filter((x) => x.Bed_id == bed.id)[0].Age
                         }}</span>
                       </h6>
                       <h6>
-                        <span class="text-info">Gender : </span
+                        <span class="text-info">gender : </span
                         ><span class="ml-2">{{
-                          PatientsData.filter((x) => x.Room == room.Room_name)[0].Gender
+                          PatientsData.filter((x) => x.Bed_id == bed.id)[0].Gender
                         }}</span>
                       </h6>
                       <h6>
-                        <span class="text-info">Medical Number :</span
+                        <span class="text-info">medical number : </span
                         ><span class="ml-2">{{
-                          PatientsData.filter((x) => x.Room == room.Room_name)[0]
-                            .Medical_Number
+                          PatientsData.filter((x) => x.Bed_id == bed.id)[0].Medical_Number
                         }}</span>
                       </h6>
                       <h6>
-                        <span class="text-info">Specialty : </span
+                        <span class="text-info">specialty : </span
                         ><span class="ml-2">{{
-                          PatientsData.filter((x) => x.Room == room.Room_name)[0]
-                            .Specialty
+                          PatientsData.filter((x) => x.Bed_id == bed.id)[0].Specialty
                         }}</span>
                       </h6>
                       <button class="btn mt-3 btn-info btn-sm rounded">Details</button>
                     </div>
                     <div
                       class="tooltip bg-light card p-4 text-center"
-                      v-else-if="
-                        RoomsDashboard.filter((x) => x.Room_id == room.id)[0].Status_id ==
-                        1
-                      "
+                      v-else-if="bed.Status_id == 1"
                     >
                       <button
-                        class="btn align-middle btn-danger btn-sm rounded open-pop shadow-sm"
+                        class="btn btn-danger btn-sm rounded open-pop shadow-sm"
                         data-pop-name="patient-popup"
-                        v-on:click.prevent="
-                          popUp(
-                            RoomsDashboard.filter((x) => x.Room_id == room.id)[0],
-                            'patientPop'
-                          )
-                        "
+                        v-on:click.prevent="popUp(bed, 'patientPop')"
                       >
                         patient registration
                       </button>
@@ -433,20 +413,24 @@
 
               <div class="shadow bg-white rounded row w-100 m-auto p-2">
                 <div class="col-md-3 p-2"></div>
-                <div class="col-md-6 p-2">
+                <div
+                  class="col-md-6 p-2"
+                  v-for="bed in RoomsDashboard.filter((x) => x.Room_id == room.id)"
+                  :key="bed.id"
+                >
                   <div class="card p-2 bg-light shadow" style="height: 200px">
                     <div class="h-25 bg-light mb-2 rounded pt-2 shadow">
                       <span
                         :class="
                           RoomsDashboard.filter((x) => x.Room_id == room.id)[0]
                             .Status_id == 1
-                            ? 'ml-2 badge-success pl-3 pr-3 rounded'
+                            ? 'badge-success pl-3 pr-3 rounded'
                             : RoomsDashboard.filter((x) => x.Room_id == room.id)[0]
                                 .Status_id == 2
-                            ? 'ml-2 badge-danger pl-3 pr-3 rounded'
+                            ? 'badge-danger pl-3 pr-3 rounded'
                             : RoomsDashboard.filter((x) => x.Room_id == room.id)[0]
                                 .Status_id == 3
-                            ? 'ml-2 badge-warning pl-3 pr-3 rounded'
+                            ? 'badge-warning pl-3 pr-3 rounded'
                             : ' '
                         "
                       ></span>
@@ -455,63 +439,50 @@
                       class="h-75 bg-light rounded pt-3 shadow card bed-background-single"
                     ></div>
                     <div
-                      class="tooltip bg-light card p-4 text-secondary"
-                      v-if="
-                        RoomsDashboard.filter((x) => x.Room_id == room.id)[0].Status_id ==
-                        2
-                      "
+                      class="tooltip bg-light card p-4 text-secondary text-capitalize"
+                      v-if="bed.Status_id == 2"
                     >
                       <h6>
-                        <span class="text-info">Full Name :</span
+                        <span class="text-info">full name :</span
                         ><span class="ml-2">{{
-                          PatientsData.filter((x) => x.Room == room.Room_name)[0]
+                          PatientsData.filter((x) => x.Bed_id == bed.id)[0]
                             .Patient_FullName
                         }}</span>
                       </h6>
                       <h6>
-                        <span class="text-info">Age : </span
+                        <span class="text-info">age : </span
                         ><span class="ml-2">{{
-                          PatientsData.filter((x) => x.Room == room.Room_name)[0].Age
+                          PatientsData.filter((x) => x.Bed_id == bed.id)[0].Age
                         }}</span>
                       </h6>
                       <h6>
-                        <span class="text-info">Gender : </span
+                        <span class="text-info">gender : </span
                         ><span class="ml-2">{{
-                          PatientsData.filter((x) => x.Room == room.Room_name)[0].Gender
+                          PatientsData.filter((x) => x.Bed_id == bed.id)[0].Gender
                         }}</span>
                       </h6>
                       <h6>
-                        <span class="text-info">Medical Number :</span
+                        <span class="text-info">medical number : </span
                         ><span class="ml-2">{{
-                          PatientsData.filter((x) => x.Room == room.Room_name)[0]
-                            .Medical_Number
+                          PatientsData.filter((x) => x.Bed_id == bed.id)[0].Medical_Number
                         }}</span>
                       </h6>
                       <h6>
-                        <span class="text-info">Specialty : </span
+                        <span class="text-info">specialty : </span
                         ><span class="ml-2">{{
-                          PatientsData.filter((x) => x.Room == room.Room_name)[0]
-                            .Specialty
+                          PatientsData.filter((x) => x.Bed_id == bed.id)[0].Specialty
                         }}</span>
                       </h6>
                       <button class="btn mt-3 btn-info btn-sm rounded">Details</button>
                     </div>
                     <div
                       class="tooltip bg-light card p-4 text-center"
-                      v-else-if="
-                        RoomsDashboard.filter((x) => x.Room_id == room.id)[0].Status_id ==
-                        1
-                      "
+                      v-else-if="bed.Status_id == 1"
                     >
                       <button
-                        class="btn align-middle btn-danger btn-sm rounded open-pop shadow-sm"
+                        class="btn btn-danger btn-sm rounded open-pop shadow-sm"
                         data-pop-name="patient-popup"
-                        v-on:click.prevent="
-                          popUp(
-                            RoomsDashboard.filter((x) => x.Room_id == room.id)[0],
-                            'patientPop'
-                          )
-                        "
+                        v-on:click.prevent="popUp(bed, 'patientPop')"
                       >
                         patient registration
                       </button>
@@ -562,7 +533,11 @@
 
               <div class="shadow bg-white rounded row w-100 m-auto p-2">
                 <div class="col-md-3 p-2"></div>
-                <div class="col-md-6 p-2">
+                <div
+                  class="col-md-6 p-2"
+                  v-for="bed in RoomsDashboard.filter((x) => x.Room_id == room.id)"
+                  :key="bed.id"
+                >
                   <div class="card p-2 bg-light shadow" style="height: 200px">
                     <div class="h-25 bg-light mb-2 rounded pt-2 shadow">
                       <span
@@ -584,63 +559,50 @@
                       class="h-75 bg-light rounded pt-3 shadow card bed-background-single"
                     ></div>
                     <div
-                      class="tooltip bg-light card p-4 text-secondary"
-                      v-if="
-                        RoomsDashboard.filter((x) => x.Room_id == room.id)[0].Status_id ==
-                        2
-                      "
+                      class="tooltip bg-light card p-4 text-secondary text-capitalize"
+                      v-if="bed.Status_id == 2"
                     >
                       <h6>
-                        <span class="text-info">Full Name :</span
+                        <span class="text-info">full name :</span
                         ><span class="ml-2">{{
-                          PatientsData.filter((x) => x.Room == room.Room_name)[0]
+                          PatientsData.filter((x) => x.Bed_id == bed.id)[0]
                             .Patient_FullName
                         }}</span>
                       </h6>
                       <h6>
-                        <span class="text-info">Age : </span
+                        <span class="text-info">age : </span
                         ><span class="ml-2">{{
-                          PatientsData.filter((x) => x.Room == room.Room_name)[0].Age
+                          PatientsData.filter((x) => x.Bed_id == bed.id)[0].Age
                         }}</span>
                       </h6>
                       <h6>
-                        <span class="text-info">Gender : </span
+                        <span class="text-info">gender : </span
                         ><span class="ml-2">{{
-                          PatientsData.filter((x) => x.Room == room.Room_name)[0].Gender
+                          PatientsData.filter((x) => x.Bed_id == bed.id)[0].Gender
                         }}</span>
                       </h6>
                       <h6>
-                        <span class="text-info">Medical Number :</span
+                        <span class="text-info">medical number : </span
                         ><span class="ml-2">{{
-                          PatientsData.filter((x) => x.Room == room.Room_name)[0]
-                            .Medical_Number
+                          PatientsData.filter((x) => x.Bed_id == bed.id)[0].Medical_Number
                         }}</span>
                       </h6>
                       <h6>
-                        <span class="text-info">Specialty : </span
+                        <span class="text-info">specialty : </span
                         ><span class="ml-2">{{
-                          PatientsData.filter((x) => x.Room == room.Room_name)[0]
-                            .Specialty
+                          PatientsData.filter((x) => x.Bed_id == bed.id)[0].Specialty
                         }}</span>
                       </h6>
                       <button class="btn mt-3 btn-info btn-sm rounded">Details</button>
                     </div>
                     <div
                       class="tooltip bg-light card p-4 text-center"
-                      v-else-if="
-                        RoomsDashboard.filter((x) => x.Room_id == room.id)[0].Status_id ==
-                        1
-                      "
+                      v-else-if="bed.Status_id == 1"
                     >
                       <button
-                        class="btn align-middle btn-danger btn-sm rounded open-pop shadow-sm"
+                        class="btn btn-danger btn-sm rounded open-pop shadow-sm"
                         data-pop-name="patient-popup"
-                        v-on:click.prevent="
-                          popUp(
-                            RoomsDashboard.filter((x) => x.Room_id == room.id)[0],
-                            'patientPop'
-                          )
-                        "
+                        v-on:click.prevent="popUp(bed, 'patientPop')"
                       >
                         patient registration
                       </button>
@@ -687,7 +649,6 @@
                         class="general info tabcontent active overflow-auto text-center"
                         style="max-height: 380px"
                       >
-                        <div>{{ patientDetails }}</div>
                         <form @submit.prevent="InsertPatient(patientDetails)">
                           <div
                             class="cu-form-group special shadow-sm grouped rounded mb-2 bg-light pr-3 pl-3 ml-auto mr-auto text-left"
@@ -784,7 +745,7 @@
                                   <span class="fa fa-edit"></span>
                                   <input
                                     type="date"
-                                    :max="new Date().toISOString().substring(0, 10)"
+                                    :max="currentDate"
                                     v-model="newPatient.Addmission_date"
                                     required
                                   />
@@ -824,6 +785,8 @@ export default {
       filterUnits: [],
       patientDetails: [],
       selectedUnit: null,
+
+      currentDate: moment(new Date()).format("YYYY-MM-DD"),
 
       path: "",
 
@@ -888,6 +851,13 @@ export default {
           dataType: "json",
           success: function (data) {
             //that.$router.push({ name: "viewPatients" });
+            swal({
+              title: "Sweet!",
+              text: "You successfully add a new patient ...",
+              icon: "success",
+              buttons: false,
+              dangerMode: 1,
+            });
             location.reload();
           },
         });
