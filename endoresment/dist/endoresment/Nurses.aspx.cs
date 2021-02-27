@@ -218,4 +218,182 @@ public partial class _Nurses : System.Web.UI.Page
 
         public int? Branch_ID { get; set; }
     }
+
+    // get Endorsement Nurse patients
+    [WebMethod]
+    public static string Endorsement_Nurse_patients()
+    {
+        string config =
+            Convert.ToString(ConfigurationManager.ConnectionStrings["dbcon"]);
+        List<Nurse_patients> Nurse_patients = new List<Nurse_patients>();
+
+        SqlConnection con = new SqlConnection(config);
+
+        con.Open();
+
+        using (
+            SqlCommand cmd =
+                new SqlCommand("select * from Endorsement_Nurse_patients", con)
+        )
+        {
+            SqlDataReader idr = cmd.ExecuteReader();
+
+            if (idr.HasRows)
+            {
+                Nurse_patients = populateNurse_patientsLisst(idr, con);
+            }
+        }
+
+        con.Close();
+
+        return JsonConvert.SerializeObject(Nurse_patients);
+    }
+
+    public static List<Nurse_patients>
+    populateNurse_patientsLisst(SqlDataReader idr, SqlConnection con)
+    {
+        List<Nurse_patients> Nurse_patientsI = new List<Nurse_patients>();
+
+        while (idr.Read())
+        {
+            Nurse_patientsI
+                .Add(new Nurse_patients {
+                    id =
+                        idr["id"] != DBNull.Value
+                            ? Convert.ToInt32(idr["id"])
+                            : 0,
+                    Nurse_id =
+                        idr["Nurse_id"] != DBNull.Value
+                            ? Convert.ToInt32(idr["Nurse_id"])
+                            : 0,
+                    Patient_id =
+                        idr["Patient_id"] != DBNull.Value
+                            ? Convert.ToInt32(idr["Patient_id"])
+                            : 0,
+                    Bed_id =
+                        idr["Bed_id"] != DBNull.Value
+                            ? Convert.ToInt32(idr["Bed_id"])
+                            : 0,
+                    Nurse_name =
+                        idr["Nurse_name"] != DBNull.Value
+                            ? Convert.ToString(idr["Nurse_name"])
+                            : String.Empty,
+                    Entry_user =
+                        idr["Entry_user"] != DBNull.Value
+                            ? Convert.ToInt32(idr["Entry_user"])
+                            : 0
+                });
+        }
+
+        return Nurse_patientsI;
+    }
+
+    public class Nurse_patients
+    {
+        public int? id { get; set; }
+
+        public int? Nurse_id { get; set; }
+
+        public int? Patient_id { get; set; }
+
+        public int? Bed_id { get; set; }
+
+        public string Nurse_name { get; set; }
+
+        public int? Entry_user { get; set; }
+    }
+
+    // get patients data
+    [WebMethod]
+    public static string getPatientsData()
+    {
+        string config =
+            Convert.ToString(ConfigurationManager.ConnectionStrings["dbcon"]);
+        List<Endorsement_PatientData> Endorsement_PatientData =
+            new List<Endorsement_PatientData>();
+
+        SqlConnection con = new SqlConnection(config);
+
+        con.Open();
+
+        using (
+            SqlCommand cmd =
+                new SqlCommand("select * from Endorsement_PatientData WHERE Patient_Status = 1",
+                    con)
+        )
+        {
+            SqlDataReader idr = cmd.ExecuteReader();
+
+            if (idr.HasRows)
+            {
+                Endorsement_PatientData =
+                    populateEndorsement_PatientDataLisst(idr, con);
+            }
+        }
+
+        con.Close();
+
+        return JsonConvert.SerializeObject(Endorsement_PatientData);
+    }
+
+    public static List<Endorsement_PatientData>
+    populateEndorsement_PatientDataLisst(SqlDataReader idr, SqlConnection con)
+    {
+        List<Endorsement_PatientData> Endorsement_PatientDataI =
+            new List<Endorsement_PatientData>();
+
+        while (idr.Read())
+        {
+            Endorsement_PatientDataI
+                .Add(new Endorsement_PatientData {
+                    id =
+                        idr["id"] != DBNull.Value
+                            ? Convert.ToInt32(idr["id"])
+                            : 0,
+                    Patient_FullName =
+                        idr["Patient_FullName"] != DBNull.Value
+                            ? Convert.ToString(idr["Patient_FullName"])
+                            : String.Empty,
+                    Bed_id =
+                        idr["Bed_id"] != DBNull.Value
+                            ? Convert.ToInt32(idr["Bed_id"])
+                            : 0,
+                    Room = Convert.ToString(idr["Room"]),
+                    Gender = Convert.ToString(idr["Gender"]),
+                    Medical_Number =
+                        idr["Medical_Number"] != DBNull.Value
+                            ? Convert.ToInt64(idr["Medical_Number"])
+                            : 0,
+                    Age =
+                        idr["Age"] != DBNull.Value
+                            ? Convert.ToString(idr["Age"])
+                            : String.Empty,
+                    Specialty =
+                        idr["Specialty"] != DBNull.Value
+                            ? Convert.ToString(idr["Specialty"])
+                            : String.Empty
+                });
+        }
+
+        return Endorsement_PatientDataI;
+    }
+
+    public class Endorsement_PatientData
+    {
+        public int? id { get; set; }
+
+        public string Patient_FullName { get; set; }
+
+        public int? Bed_id { get; set; }
+
+        public string Room { get; set; }
+
+        public string Gender { get; set; }
+
+        public Int64? Medical_Number { get; set; }
+
+        public string Age { get; set; }
+
+        public string Specialty { get; set; }
+    }
 }

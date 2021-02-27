@@ -725,14 +725,16 @@
                                 </h3>
                                 <div class="cu-input text-box">
                                   <span class="fa fa-edit"></span>
-                                  <input
-                                    type="text"
+                                  <select
+                                    class="w-100 form-control"
                                     v-model="newPatient.Gender"
                                     required
-                                  />
+                                  >
+                                    <option>male</option>
+                                    <option>female</option>
+                                  </select>
                                 </div>
                               </div>
-
                               <!-- specialty -->
                               <div class="cu-field col-md-6">
                                 <h3 class="cu-label">
@@ -766,7 +768,7 @@
                                   <span class="fa fa-edit"></span>
                                   <input
                                     type="date"
-                                    :min="new Date().toISOString().substring(0, 10)"
+                                    :max="new Date().toISOString().substring(0, 10)"
                                     v-model="newPatient.Addmission_date"
                                     required
                                   />
