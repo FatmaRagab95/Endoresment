@@ -337,12 +337,14 @@ public partial class _roomDetails : System.Web.UI.Page
         con.Open();
         using (
             SqlCommand cmd1 =
-                new SqlCommand("insert into Endorsement_PatientData (Patient_FullName, Branch_id, Branch_name,Gender,Unit,Room,Bed_id,Addmission_date,Age,Specialty,Patient_Status,Entry_user) values (@Patient_FullName,@Branch_id, @Branch_name, @Gender, @Unit, @Room, @Bed_id, @Addmission_date, @Age, @Specialty, @Patient_Status ,@Entry_user)",
+                new SqlCommand("insert into Endorsement_PatientData (Patient_FullName, Branch_id, Branch_name,Gender,Unit,Room,Bed_id,Addmission_date,Age,Specialty,Patient_Status,Entry_user,Medical_Number) values (@Patient_FullName,@Branch_id, @Branch_name, @Gender, @Unit, @Room, @Bed_id, @Addmission_date, @Age, @Specialty, @Patient_Status ,@Entry_user, @Medical_Number)",
                     con)
         )
         {
             cmd1.Parameters.Add("@Patient_FullName", SqlDbType.VarChar).Value =
                 data.Patient_FullName;
+            cmd1.Parameters.Add("@Medical_Number", SqlDbType.Int).Value =
+                data.Medical_Number;
             cmd1.Parameters.Add("@Branch_id", SqlDbType.Int).Value =
                 data.Branch_id;
             cmd1.Parameters.Add("@Branch_name", SqlDbType.VarChar).Value =
@@ -402,6 +404,8 @@ public partial class _roomDetails : System.Web.UI.Page
         public string Patient_FullName { get; set; }
 
         public int? Branch_id { get; set; }
+
+        public int? Medical_Number { get; set; }
 
         public string Branch_name { get; set; }
 

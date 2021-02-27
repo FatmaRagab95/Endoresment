@@ -75,9 +75,9 @@ public partial class _editPatients : System.Web.UI.Page
                         idr["Nurse_name"] != DBNull.Value
                             ? Convert.ToString(idr["Nurse_name"])
                             : String.Empty,
-                    Date_from =
-                        idr["Date_from"] != DBNull.Value
-                            ? Convert.ToString(idr["Date_from"])
+                    Date_to =
+                        idr["Date_to"] != DBNull.Value
+                            ? Convert.ToString(idr["Date_to"])
                             : String.Empty,
                     Entry_user =
                         idr["Entry_user"] != DBNull.Value
@@ -101,7 +101,7 @@ public partial class _editPatients : System.Web.UI.Page
 
         public string Nurse_name { get; set; }
 
-        public string Date_from { get; set; }
+        public string Date_to { get; set; }
 
         public int? Entry_user { get; set; }
     }
@@ -275,7 +275,7 @@ public partial class _editPatients : System.Web.UI.Page
         con.Open();
         using (
             SqlCommand cmd1 =
-                new SqlCommand("insert into Endorsement_Nurse_patients (Patient_id, Nurse_id, Entry_user, Bed_id, Nurse_name) values (@Patient_id, @Nurse_id, @Entry_user, @Bed_id, @Nurse_name)",
+                new SqlCommand("insert into Endorsement_Nurse_patients (Patient_id, Nurse_id, Entry_user, Bed_id, Nurse_name, Date_to) values (@Patient_id, @Nurse_id, @Entry_user, @Bed_id, @Nurse_name, @Date_to)",
                     con)
         )
         {
@@ -288,6 +288,8 @@ public partial class _editPatients : System.Web.UI.Page
             cmd1.Parameters.Add("@Bed_id", SqlDbType.Int).Value = data.Bed_id;
             cmd1.Parameters.Add("@Nurse_name", SqlDbType.VarChar).Value =
                 data.Nurse_name;
+            cmd1.Parameters.Add("@Date_to", SqlDbType.VarChar).Value =
+                data.Date_to;
 
             cmd1.ExecuteNonQuery();
         }
@@ -307,6 +309,8 @@ public partial class _editPatients : System.Web.UI.Page
         public int? Bed_id { get; set; }
 
         public string Nurse_name { get; set; }
+
+        public string Date_to { get; set; }
     }
 
     // update nurse selection
@@ -324,7 +328,7 @@ public partial class _editPatients : System.Web.UI.Page
 
         using (
             SqlCommand cmd =
-                new SqlCommand("update Endorsement_Nurse_patients set Nurse_id=@Nurse_id, Patient_id=@Patient_id, Entry_user=@Entry_user, Date_from=@Date_from, Bed_id=@Bed_id, Nurse_name=@Nurse_name where id = @id;",
+                new SqlCommand("update Endorsement_Nurse_patients set Nurse_id=@Nurse_id, Patient_id=@Patient_id, Entry_user=@Entry_user, Date_to=@Date_to, Bed_id=@Bed_id, Nurse_name=@Nurse_name where id = @id;",
                     con)
         )
         {
@@ -332,7 +336,7 @@ public partial class _editPatients : System.Web.UI.Page
             cmd.Parameters.AddWithValue("@Nurse_id", detail.Nurse_id);
             cmd.Parameters.AddWithValue("@Patient_id", detail.Patient_id);
             cmd.Parameters.AddWithValue("@Entry_user", detail.Entry_user);
-            cmd.Parameters.AddWithValue("@Date_from", detail.Date_from);
+            cmd.Parameters.AddWithValue("@Date_to", detail.Date_to);
             cmd.Parameters.AddWithValue("@Bed_id", detail.Bed_id);
             cmd.Parameters.AddWithValue("@Nurse_name", detail.Nurse_name);
 
@@ -357,7 +361,7 @@ public partial class _editPatients : System.Web.UI.Page
                     Nurse_id = Convert.ToInt32(idr["Nurse_id"]),
                     Patient_id = Convert.ToInt32(idr["Patient_id"]),
                     Entry_user = Convert.ToInt32(idr["Entry_user"]),
-                    Date_from = Convert.ToString(idr["Date_from"]),
+                    Date_to = Convert.ToString(idr["Date_to"]),
                     Bed_id = Convert.ToInt32(idr["Bed_id"]),
                     Nurse_name = Convert.ToString(idr["Nurse_name"])
                 });
@@ -375,7 +379,7 @@ public partial class _editPatients : System.Web.UI.Page
 
         public int? Entry_user { get; set; }
 
-        public string Date_from { get; set; }
+        public string Date_to { get; set; }
 
         public int? Bed_id { get; set; }
 

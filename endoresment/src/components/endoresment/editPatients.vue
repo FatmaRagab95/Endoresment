@@ -128,6 +128,7 @@ export default {
         Entry_user: 0,
         Bed_id: 0,
         Nurse_name: "",
+        Date_to: "",
       },
 
       apiUrl: this.link,
@@ -165,35 +166,45 @@ export default {
                   x.Patient_id == this.selectedPatients[i].id && x.Nurse_id == this.path
               ).length == 0
             ) {
-              ObjectD.Patient_id = this.selectedPatients[i].id;
-              ObjectD.Nurse_id = this.path;
-              ObjectD.Entry_user = JSON.parse(localStorage.getItem("user")).Emp_id;
-              ObjectD.Bed_id = this.patients.filter(
-                (x) => x.id == this.selectedPatients[i].id
-              )[0].Bed_id;
-              ObjectD.Nurse_name = this.users.filter(
-                (x) => x.Emp_id == this.path
-              )[0].FullName;
+              if (this.updateDate == "") {
+                swal({
+                  title: "Error!",
+                  text: "Sorry, you should select the update date ! ",
+                  icon: "warning",
+                  dangerMode: true,
+                });
+              } else {
+                ObjectD.Patient_id = this.selectedPatients[i].id;
+                ObjectD.Nurse_id = this.path;
+                ObjectD.Entry_user = JSON.parse(localStorage.getItem("user")).Emp_id;
+                ObjectD.Date_to = this.updateDate;
+                ObjectD.Bed_id = this.patients.filter(
+                  (x) => x.id == this.selectedPatients[i].id
+                )[0].Bed_id;
+                ObjectD.Nurse_name = this.users.filter(
+                  (x) => x.Emp_id == this.path
+                )[0].FullName;
 
-              $.ajax({
-                type: "POST",
-                url:
-                  that.apiUrl + "endoresment/editPatients.aspx/insertPatientsSelection",
-                data: JSON.stringify({ data: ObjectD }),
-                contentType: "application/json; charset=utf-8",
-                dataType: "json",
-                success: function () {
-                  if (i == that.selectedPatients.length - 1) {
-                    swal({
-                      title: "Sweet!",
-                      text: "You successfully made your selections ...",
-                      icon: "success",
-                      dangerMode: 1,
-                    });
-                    location.reload();
-                  }
-                },
-              });
+                $.ajax({
+                  type: "POST",
+                  url:
+                    that.apiUrl + "endoresment/editPatients.aspx/insertPatientsSelection",
+                  data: JSON.stringify({ data: ObjectD }),
+                  contentType: "application/json; charset=utf-8",
+                  dataType: "json",
+                  success: function () {
+                    if (i == that.selectedPatients.length - 1) {
+                      swal({
+                        title: "Sweet!",
+                        text: "You successfully made your selections ...",
+                        icon: "success",
+                        dangerMode: 1,
+                      });
+                      location.reload();
+                    }
+                  },
+                });
+              }
             }
           }
 
@@ -221,7 +232,7 @@ export default {
                   Patient_id: this.filterPatients[x],
                   Nurse_id: 0,
                   Entry_user: JSON.parse(localStorage.getItem("user")).Emp_id,
-                  Date_from: this.updateDate,
+                  Date_to: this.updateDate,
                   Bed_id: this.patients.filter((z) => z.id == this.filterPatients[x])[0]
                     .Bed_id,
                   Nurse_name: "",

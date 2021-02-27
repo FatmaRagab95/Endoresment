@@ -120,6 +120,7 @@
                         <th scope="col">Medical Number</th>
                         <th scope="col">age</th>
                         <th scope="col">Specialty</th>
+                        <th scope="col">room</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -150,6 +151,9 @@
                             patients.filter((x) => x.id == patient.Patient_id)[0]
                               .Specialty
                           }}
+                        </td>
+                        <td>
+                          {{ patients.filter((x) => x.id == patient.Patient_id)[0].Room }}
                         </td>
                       </tr>
                     </tbody>

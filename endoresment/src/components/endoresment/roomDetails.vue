@@ -250,7 +250,7 @@
                         data-pop-name="patient-popup"
                         v-on:click.prevent="
                           popUp(
-                            RoomsDashboard.filter((x) => x.Room_id == room.id),
+                            RoomsDashboard.filter((x) => x.Room_id == room.id)[0],
                             'patientPop'
                           )
                         "
@@ -379,7 +379,7 @@
                         data-pop-name="patient-popup"
                         v-on:click.prevent="
                           popUp(
-                            RoomsDashboard.filter((x) => x.Room_id == room.id),
+                            RoomsDashboard.filter((x) => x.Room_id == room.id)[0],
                             'patientPop'
                           )
                         "
@@ -508,7 +508,7 @@
                         data-pop-name="patient-popup"
                         v-on:click.prevent="
                           popUp(
-                            RoomsDashboard.filter((x) => x.Room_id == room.id),
+                            RoomsDashboard.filter((x) => x.Room_id == room.id)[0],
                             'patientPop'
                           )
                         "
@@ -637,7 +637,7 @@
                         data-pop-name="patient-popup"
                         v-on:click.prevent="
                           popUp(
-                            RoomsDashboard.filter((x) => x.Room_id == room.id),
+                            RoomsDashboard.filter((x) => x.Room_id == room.id)[0],
                             'patientPop'
                           )
                         "
@@ -687,13 +687,14 @@
                         class="general info tabcontent active overflow-auto text-center"
                         style="max-height: 380px"
                       >
+                        <div>{{ patientDetails }}</div>
                         <form @submit.prevent="InsertPatient(patientDetails)">
                           <div
                             class="cu-form-group special shadow-sm grouped rounded mb-2 bg-light pr-3 pl-3 ml-auto mr-auto text-left"
                           >
                             <div class="row">
                               <!-- patient name -->
-                              <div class="cu-field col-md-12">
+                              <div class="cu-field col-md-6">
                                 <h3 class="cu-label">
                                   <label>patient name :</label>
                                 </h3>
@@ -702,6 +703,21 @@
                                   <input
                                     type="text"
                                     v-model="newPatient.Patient_FullName"
+                                    required
+                                  />
+                                </div>
+                              </div>
+
+                              <!-- medical number -->
+                              <div class="cu-field col-md-6">
+                                <h3 class="cu-label">
+                                  <label>medical number :</label>
+                                </h3>
+                                <div class="cu-input text-box" style="max-width: 100%">
+                                  <span class="fa fa-edit"></span>
+                                  <input
+                                    type="number"
+                                    v-model="newPatient.Medical_Number"
                                     required
                                   />
                                 </div>
@@ -813,6 +829,7 @@ export default {
 
       newPatient: {
         Patient_FullName: "",
+        Medical_Number: 0,
         Branch_id: 0,
         Branch_name: "",
         Gender: "",
