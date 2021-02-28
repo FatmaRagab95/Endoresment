@@ -158,13 +158,7 @@
             v-for="room in filterUnits.filter((x) => x.Room_type_id == 2)"
             :key="room.R_id"
           >
-            <div
-              class="bg-light shadow p-2 container card icon"
-              style="
-                transition: 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-                position: relative;
-              "
-            >
+            <div class="bg-light shadow p-2 container card">
               <h4
                 class="text-secondary font-weight-bold mb-3"
                 style="text-decoration: underline"
@@ -180,7 +174,14 @@
                   v-for="bed in RoomsDashboard.filter((x) => x.Room_id == room.id)"
                   :key="bed.id"
                 >
-                  <div class="card p-2 bg-light shadow" style="height: 200px">
+                  <div
+                    class="card p-2 bg-light shadow icon"
+                    style="
+                      transition: 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+                      position: relative;
+                      height: 200px;
+                    "
+                  >
                     <div class="h-25 bg-light mb-2 rounded pt-2 shadow">
                       <span
                         :class="
@@ -192,7 +193,7 @@
                             ? 'badge-warning pl-3 pr-3 rounded'
                             : ' '
                         "
-                      >
+                        >{{ bed.Bed_name.substring(0, 4) }}
                       </span>
                     </div>
                     <div
@@ -276,13 +277,7 @@
             v-for="room in filterUnits.filter((x) => x.Room_type_id == 3)"
             :key="room.R_id"
           >
-            <div
-              class="bg-light shadow p-2 container card icon"
-              style="
-                transition: 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-                position: relative;
-              "
-            >
+            <div class="bg-light shadow p-2 container card">
               <h4
                 class="text-secondary font-weight-bold mb-3"
                 style="text-decoration: underline"
@@ -298,22 +293,27 @@
                   v-for="bed in RoomsDashboard.filter((x) => x.Room_id == room.id)"
                   :key="bed.id"
                 >
-                  <div class="card p-2 bg-light shadow" style="height: 200px">
+                  <div
+                    class="card p-2 bg-light shadow icon"
+                    style="
+                      transition: 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+                      position: relative;
+                      height: 200px;
+                    "
+                  >
                     <div class="h-25 bg-light mb-2 rounded pt-2 shadow">
                       <span
                         :class="
-                          RoomsDashboard.filter((x) => x.Room_id == room.id)[0]
-                            .Status_id == 1
+                          bed.Status_id == 1
                             ? 'badge-success pl-3 pr-3 rounded'
-                            : RoomsDashboard.filter((x) => x.Room_id == room.id)[0]
-                                .Status_id == 2
+                            : bed.Status_id == 2
                             ? 'badge-danger pl-3 pr-3 rounded'
-                            : RoomsDashboard.filter((x) => x.Room_id == room.id)[0]
-                                .Status_id == 3
+                            : bed.Status_id == 3
                             ? 'badge-warning pl-3 pr-3 rounded'
                             : ' '
                         "
-                      ></span>
+                        >{{ bed.Bed_name.substring(0, 4) }}
+                      </span>
                     </div>
                     <div
                       class="h-75 bg-light rounded pt-3 shadow card bed-background-single"
@@ -396,13 +396,7 @@
             v-for="room in filterUnits.filter((x) => x.Room_type_id == 4)"
             :key="room.R_id"
           >
-            <div
-              class="bg-light shadow p-2 container card icon"
-              style="
-                transition: 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-                position: relative;
-              "
-            >
+            <div class="bg-light shadow p-2 container card">
               <h4
                 class="text-secondary font-weight-bold mb-3"
                 style="text-decoration: underline"
@@ -418,22 +412,27 @@
                   v-for="bed in RoomsDashboard.filter((x) => x.Room_id == room.id)"
                   :key="bed.id"
                 >
-                  <div class="card p-2 bg-light shadow" style="height: 200px">
+                  <div
+                    class="card p-2 bg-light shadow icon"
+                    style="
+                      height: 200px;
+                      transition: 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+                      position: relative;
+                    "
+                  >
                     <div class="h-25 bg-light mb-2 rounded pt-2 shadow">
                       <span
                         :class="
-                          RoomsDashboard.filter((x) => x.Room_id == room.id)[0]
-                            .Status_id == 1
+                          bed.Status_id == 1
                             ? 'badge-success pl-3 pr-3 rounded'
-                            : RoomsDashboard.filter((x) => x.Room_id == room.id)[0]
-                                .Status_id == 2
+                            : bed.Status_id == 2
                             ? 'badge-danger pl-3 pr-3 rounded'
-                            : RoomsDashboard.filter((x) => x.Room_id == room.id)[0]
-                                .Status_id == 3
+                            : bed.Status_id == 3
                             ? 'badge-warning pl-3 pr-3 rounded'
                             : ' '
                         "
-                      ></span>
+                        >{{ bed.Bed_name.substring(0, 4) }}
+                      </span>
                     </div>
                     <div
                       class="h-75 bg-light rounded pt-3 shadow card bed-background-single"
@@ -516,13 +515,7 @@
             v-for="room in filterUnits.filter((x) => x.Room_type_id == 5)"
             :key="room.R_id"
           >
-            <div
-              class="bg-light shadow p-2 container card icon"
-              style="
-                transition: 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-                position: relative;
-              "
-            >
+            <div class="bg-light shadow p-2 container card">
               <h4
                 class="text-secondary font-weight-bold mb-3"
                 style="text-decoration: underline"
@@ -538,22 +531,27 @@
                   v-for="bed in RoomsDashboard.filter((x) => x.Room_id == room.id)"
                   :key="bed.id"
                 >
-                  <div class="card p-2 bg-light shadow" style="height: 200px">
+                  <div
+                    class="card p-2 bg-light shadow icon"
+                    style="
+                      transition: 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+                      position: relative;
+                      height: 200px;
+                    "
+                  >
                     <div class="h-25 bg-light mb-2 rounded pt-2 shadow">
                       <span
                         :class="
-                          RoomsDashboard.filter((x) => x.Room_id == room.id)[0]
-                            .Status_id == 1
-                            ? 'ml-2 badge-success pl-3 pr-3 rounded'
-                            : RoomsDashboard.filter((x) => x.Room_id == room.id)[0]
-                                .Status_id == 2
-                            ? 'ml-2 badge-danger pl-3 pr-3 rounded'
-                            : RoomsDashboard.filter((x) => x.Room_id == room.id)[0]
-                                .Status_id == 3
-                            ? 'ml-2 badge-warning pl-3 pr-3 rounded'
+                          bed.Status_id == 1
+                            ? 'badge-success pl-3 pr-3 rounded'
+                            : bed.Status_id == 2
+                            ? 'badge-danger pl-3 pr-3 rounded'
+                            : bed.Status_id == 3
+                            ? 'badge-warning pl-3 pr-3 rounded'
                             : ' '
                         "
-                      ></span>
+                        >{{ bed.Bed_name.substring(0, 4) }}
+                      </span>
                     </div>
                     <div
                       class="h-75 bg-light rounded pt-3 shadow card bed-background-single"

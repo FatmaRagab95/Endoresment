@@ -82,15 +82,13 @@
                   class="pull-right"
                   v-if="
                     Endoresment_Nurses_Units.filter(
-                      (x) =>
-                        x.Nurse_id == nurse.Emp_id && x.Unit_id == path && x.Active == 1
+                      (x) => x.Nurse_id == nurse.Emp_id && x.Active == 1
                     ).length > 0
                   "
                   >registered in ..
                   <span
                     v-for="(unit, i) in Endoresment_Nurses_Units.filter(
-                      (x) =>
-                        x.Nurse_id == nurse.Emp_id && x.Unit_id == path && x.Active == 1
+                      (x) => x.Nurse_id == nurse.Emp_id && x.Active == 1
                     )"
                     :key="i"
                     >{{ Units.filter((x) => x.U_id == unit.Unit_id)[0].U_name }}..</span
