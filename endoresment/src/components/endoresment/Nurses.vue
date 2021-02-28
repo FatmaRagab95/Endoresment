@@ -1,24 +1,80 @@
 <template>
   <div class="Nurses p-3 text-capitalize">
-    <div class="container-fluid mt-3 card">
-      <div class="container-wave">
-        <div class="wave"></div>
-      </div>
-      <div class="text-secondary card bg-light select-form p-4 text-center shadow">
-        <h1 style="text-decoration: underline">
-          {{ Units.filter((x) => x.U_id == path)[0].U_name }}
-        </h1>
-        <div class="text-right mt-3">
-          <router-link
-            class="btn btn-secondary"
-            style="width: 150px"
-            :to="{ name: 'Edit Nurses', params: { id: path } }"
-            ><i class="fa fa-pencil-square-o mr-3" aria-hidden="true"></i>Edit Nurses
-            List</router-link
+    <div class="container-fluid mt-3 card" style="min-height: 100vh">
+      <div class="container text-secondary mt-5 mb-5 bg-light shadow p-5">
+        <div class="row bg-white shadow">
+          <div class="col-md-6 p-4">
+            <h1 style="text-decoration: underline">
+              {{ Units.filter((x) => x.U_id == path)[0].U_name }}
+            </h1>
+          </div>
+          <div class="col-md-6 p-4">
+            <router-link
+              class="btn btn-danger pull-right mt-3"
+              style="width: 150px"
+              :to="{ name: 'Edit Nurses', params: { id: path } }"
+              ><i class="fa fa-pencil-square-o mr-3" aria-hidden="true"></i>Edit Nurses
+              List</router-link
+            >
+          </div>
+        </div>
+        <div class="row bg-white shadow mt-4 p-4 card">
+          <div
+            class="col-md-12 p-4 bg-light mb-3 shadow card"
+            v-for="nurse in Endoresment_Nurses_Units.filter((x) => x.Unit_id == path)"
+            :key="nurse.Id"
           >
+            <h4 class="pb-3">
+              <i class="fa fa-user-md mr-2 text-info" aria-hidden="true"></i>nurse name :
+              <span class="text-dark">{{
+                users.filter((x) => x.Emp_id == nurse.Nurse_id)[0].FullName
+              }}</span>
+            </h4>
+            <div class="border-bottom pb-3">
+              <span class="pull-left"
+                ><i class="fa fa-id-badge mr-3 text-info" aria-hidden="true"></i>emp id :
+                <span class="badge-secondary badge pt-1 pb-1 pl-3 pr-3 ml-3">{{
+                  nurse.Nurse_id
+                }}</span></span
+              >
+              <span class="pull-right" v-if="nurse.Last_Update"
+                ><i class="fa fa-pencil-square-o text-info mr-2" aria-hidden="true"></i
+                >last update :
+                <span class="text-dark">{{ nurse.Last_Update }}</span></span
+              >
+              <span class="pull-right" v-else
+                ><i class="fa fa-pencil-square-o text-info mr-2" aria-hidden="true"></i
+                >last update : <span class="text-dark">no update date found</span></span
+              >
+            </div>
+
+            <div class="pt-3">
+              <span
+                class="pull-left"
+                v-if="users.filter((x) => x.Emp_id == nurse.Entry_user).length > 0"
+                >update from :
+                <span class="text-success">{{
+                  users.filter((x) => x.Emp_id == nurse.Entry_user)[0].FullName
+                }}</span>
+              </span>
+              <span class="pull-left" v-else
+                >update from : <span class="text-success">no avalible data</span></span
+              >
+              <span class="pull-right text-info"
+                ><a
+                  class="open-pop"
+                  style="text-decoration: underline; cursor: pointer"
+                  data-pop-name="patient-popup"
+                  v-on:click.prevent="popUp(nurse, 'patientPop')"
+                >
+                  view patients list
+                </a></span
+              >
+            </div>
+          </div>
         </div>
 
-        <table class="table table-striped table-light shadow text-secondary mt-3">
+        <!--  <table class="table table-striped table-light shadow text-secondary mt-3">
           <thead class="font-wight-bold bg-secondary text-white">
             <tr>
               <th scope="col">#</th>
@@ -57,7 +113,7 @@
               </td>
             </tr>
           </tbody>
-        </table>
+        </table>-->
       </div>
     </div>
     <!-- start patients list popup-->
@@ -267,53 +323,4 @@ export default {
 };
 </script>
 
-<style scoped>
-.container-wave {
-  position: absolute;
-  background: #fff;
-  height: 50vh;
-  width: 100%;
-  left: 0;
-  top: 0;
-}
-
-.wave {
-  position: absolute;
-  height: 250px;
-  width: 100%;
-  background: #fff;
-  bottom: 0;
-}
-
-.wave::before,
-.wave::after {
-  content: "";
-  display: block;
-  position: absolute;
-  border-radius: 100% 50%;
-}
-
-.wave::before {
-  width: 55%;
-  height: 109%;
-  background-color: #f0f0f0;
-  right: -1.5%;
-  top: 80%;
-}
-.wave::after {
-  width: 55%;
-  height: 100%;
-  background-color: #fff;
-  left: 0;
-  top: 60%;
-}
-.select-form {
-  left: 50%;
-  margin-top: 1%;
-  margin-bottom: 1%;
-  width: 80%;
-  transform: translateX(-50%);
-  max-height: 90vh;
-  overflow: auto;
-}
-</style>
+<style scoped></style>
