@@ -75,7 +75,7 @@
         <!-- end patient data -->
       </div>
     </div>
-    <div class="container-fluid mt-2 bg-white pt-3 pb-3 card" v-if="patientData">
+    <div class="container-fluid mt-2 bg-white pt-3 pb-3 card" v-if="patientData && patientFollow">
       <div class="container">
         <div class="row mt-4 text-left">
           <div class="col-xl-8 col-lg-7">
@@ -91,6 +91,8 @@
                   class="form-control rounded shadow-sm"
                   id="exampleFormControlTextarea1"
                   rows="5"
+                  v-model='patientFollow.DR_Diagnosis'
+                  :disabled="user.Role_id == 12 || user.Role_id == 17 ? 'disabled' : ''"
                 ></textarea>
               </div>
             </div>
@@ -109,6 +111,8 @@
                   class="form-control rounded shadow-sm"
                   id="exampleFormControlTextarea1"
                   rows="5"
+                  v-model='patientFollow.DR_ProgressNotes'
+                  :disabled="user.Role_id == 12 || user.Role_id == 17 ? 'disabled' : ''"
                 ></textarea>
               </div>
             </div>
@@ -125,7 +129,7 @@
               <div class="card-body row">
                 <div class="col-md-6">
                   <h4 class="font-weight-bold text-dark mt-3">
-                    Pain Level <span class="float-right text-success">2</span>
+                    Pain Level <span class="float-right text-success">{{patientFollow.Pain}}</span>
                   </h4>
                   <div class="progress bg-light mb-4" style="height: 60px">
                     <input
@@ -135,6 +139,7 @@
                       max="10"
                       step="1"
                       id="volume"
+                      v-model='patientFollow.Pain'
                     />
                   </div>
                 </div>
@@ -149,8 +154,10 @@
                           id="customRadio1"
                           name="customRadio"
                           class="custom-control-input"
+                          value='F'
+                          v-model='patientFollow.Fall'
                         />
-                        <label class="custom-control-label" for="customRadio1">f</label>
+                        <label class="custom-control-label" for="customRadio1">F</label>
                       </div>
                     </span>
                     <span class="col-md-6">
@@ -160,9 +167,11 @@
                           id="customRadio2"
                           name="customRadio"
                           class="custom-control-input"
+                          value='None'
+                          v-model='patientFollow.Fall'
                         />
                         <label class="custom-control-label" for="customRadio2"
-                          >none</label
+                          >None</label
                         >
                       </div>
                     </span>
@@ -172,10 +181,9 @@
                 <div class="col-md-6">
                   <div class="bg-light p-3 w-100 shadow-sm">
                     <span class="ml-2 font-weight-bold text-dark">Diet :</span>
-                    <select
-                      class="form-control font-weight-normal text-secondary shadow-sm rounded"
-                    >
-                      <option>....................</option>
+                    <select class="form-control font-weight-normal text-secondary shadow-sm rounded" v-model="patientFollow.Diet_Name">
+                        <option v-for='diet in Diets' :key='diet.id' 
+                        :value="diet.Diet_Name"  @click='patientFollow.Diet_id = diet.id '>{{diet.Diet_Name}}</option>
                     </select>
                   </div>
                 </div>
@@ -184,8 +192,13 @@
                     <span class="ml-2 font-weight-bold text-dark">Issolation :</span>
                     <select
                       class="form-control font-weight-normal text-secondary shadow-sm rounded"
-                    >
-                      <option>....................</option>
+                      v-model='patientFollow.P_Isolation'>
+                      <option value='None'>None</option>
+                      <option value='Contact'>Contact</option>
+                      <option value='Droplet'>Droplet</option>
+                      <option value='Airborn'>Airborn</option>
+                      <option value='Contact Droplet'>Contact Droplet</option>
+                      <option value='Contact Airborn'>Contact Airborn</option>
                     </select>
                   </div>
                 </div>
@@ -196,6 +209,7 @@
                       class="form-control rounded shadow-sm"
                       id="exampleFormControlTextarea1"
                       rows="2"
+                      v-model='patientFollow.Allergy'
                     ></textarea>
                   </div>
                 </div>
@@ -218,6 +232,7 @@
                     class="form-control rounded shadow-sm"
                     id="exampleFormControlTextarea1"
                     rows="5"
+                    v-model='patientFollow.Investegation_ToDo'
                   ></textarea>
                 </div>
               </div>
@@ -236,6 +251,7 @@
                     class="form-control rounded shadow-sm"
                     id="exampleFormControlTextarea1"
                     rows="5"
+                    v-model='patientFollow.Investegation_FollowUp'
                   ></textarea>
                 </div>
               </div>
@@ -254,6 +270,7 @@
                     class="form-control rounded shadow-sm"
                     id="exampleFormControlTextarea1"
                     rows="5"
+                    v-model='patientFollow.Contraptions_Infusions'
                   ></textarea>
                 </div>
               </div>
@@ -273,6 +290,7 @@
                     class="form-control rounded shadow-sm"
                     id="exampleFormControlTextarea1"
                     rows="5"
+                    v-model='patientFollow.Routise_PlanOfCare'
                   ></textarea>
                 </div>
               </div>
@@ -293,6 +311,8 @@
                     class="form-control rounded shadow-sm"
                     id="exampleFormControlTextarea1"
                     rows="3"
+                    v-model='patientFollow.DR_Consultaion_Progress'
+                    :disabled="user.Role_id == 12 || user.Role_id == 17 ? 'disabled' : ''"
                   ></textarea>
                 </div>
               </div>
@@ -300,7 +320,7 @@
           </div>
         </div>
         <div class="text-center">
-          <button class="special-btn">Submit</button>
+          <button class="special-btn" @click.prevent='SaveEdits()'>Submit</button>
         </div>
       </div>
     </div>
@@ -310,17 +330,120 @@
 <script>
 export default {
   name: "insertPatientData",
-  props: ["link"],
+  props: ['link', 'user'],
   data() {
     return {
       apiUrl: this.link,
       patientData: null,
+      patientFollow: null,
       id: this.$route.params.id,
+      Shift: '',
+      Diets: []
     };
   },
-  methods: {},
+  methods: {
+    
+    LOS(date) {
+        let length = Math.round((new Date() - new Date(date.trim())) / (1000 * 60 * 60 * 24));
+        return length == 0 ? 'Today' : length == 1 ? length + ' Day' : length + ' Days'
+    },
+    SaveEdits() { //updateFollowUpData
+        let that = this;
+        swal({
+            title: "Are you sure?",
+            icon: "warning",
+            buttons: true,
+            dangerMode: true,
+            })
+            .then((confirm) => {
+            if (confirm) {
+              let dataObj = that.patientFollow;
+
+              if (dataObj.id && that.LOS(dataObj.Entry_date) == 'Today' && dataObj.Shift.trim() == that.Shift) {
+
+                  // update follow up by nurse
+                  if (that.user.Role_id == 12 || that.user.Role_id == 17) {
+
+                      dataObj.Insert_Nurse = dataObj.Insert_Nurse != '' ? that.user.Emp_id : dataObj.Insert_Nurse;
+                      dataObj.Insert_Nurse_Time = dataObj.Insert_Nurse_Time != '' ? moment(new Date).format() : dataObj.Insert_Nurse_Time;
+                      dataObj.Insert_Doctor = '';
+
+                      dataObj.Update_Nurse = dataObj.Insert_Nurse != '' ? that.user.Emp_id : '';
+                      dataObj.Update_Nurse_Time = dataObj.Insert_Nurse_Time != '' ? moment(new Date).format() : '';
+
+                      UpdateData();
+                      
+                  } else {
+                      
+                      // update follow up by doctor
+                  }
+
+              } else {
+
+                  // insert into follow up by nurse
+                  if (that.user.Role_id == 12 || that.user.Role_id == 17) {
+                      dataObj.Shift = that.Shift;
+                      dataObj.Insert_Nurse = that.user.Emp_id;
+                      dataObj.Insert_Nurse_Name = that.user.FullName;
+                      dataObj.Insert_Nurse_Time = moment(new Date).format();
+                      dataObj.Insert_Doctor = 0;
+
+                      InsertData();
+                      
+                  } else {
+                      
+                      // insert into follow up by doctor
+                  }
+              }
+
+              function InsertData () {
+                  $.ajax({
+                      type: "POST",
+                      url: that.apiUrl + "endoresment/insertPatientData.aspx/insertFollowUpData",
+                      data:JSON.stringify({"patient": dataObj}),
+                      contentType: "application/json; charset=utf-8",
+                      dataType: "json",
+                      success: function (data) {
+                          swal({
+                              title: "Updated!",
+                              icon: "success",
+                          });
+                          location.reload(); 
+                      }
+                  });
+              }
+
+              function UpdateData () {
+                  $.ajax({
+                      type: "POST",
+                      url: that.apiUrl + "endoresment/insertPatientData.aspx/updateFollowUpData",
+                      data:JSON.stringify({"patient": dataObj}),
+                      contentType: "application/json; charset=utf-8",
+                      dataType: "json",
+                      success: function (data) {
+                          swal({
+                              title: "Updated!",
+                              icon: "success",
+                          });
+                      }
+                  });
+              }
+            } else {
+                swal("Canceled!");
+            }
+        });
+    },
+  },
   created() {
     let that = this;
+
+    // current shift
+    if (new Date().getHours() <= 20 && new Date().getHours() >= 8) {
+        that.Shift = 'Day';
+    } else {
+        that.Shift = 'Night';
+    }
+
     // get patient data
     $.ajax({
       type: "POST",
@@ -331,6 +454,70 @@ export default {
       success: function (data) {
         that.patientData = JSON.parse(data.d)[0];
       },
+    });
+
+    // get latest shift data
+    $.ajax({
+        type: "POST",
+        url: that.apiUrl + "endoresment/insertPatientData.aspx/getShiftData",
+        data:JSON.stringify({"data": {"Patient_id":  that.id}}),
+        contentType: "application/json; charset=utf-8",
+        dataType: "json",
+        success: function (data) {
+            if (JSON.parse(data.d).length > 0) {
+                that.patientFollow =  JSON.parse(data.d)[0] ;
+                that.patientFollow.Fall = that.patientFollow.Fall.trim();
+            }
+            else {
+
+                that.patientFollow = 
+                    {
+                        Shift: that.Shift,
+                        Patient_id: that.id,
+                        Diet_id: 0,
+                        Diet_Name: '',
+                        Pain: 0,
+                        P_Isolation: '',
+                        Fall:'',
+                        Allergy: '',
+                        Investegation_ToDo: '',
+                        Investegation_FollowUp: '',
+                        Contraptions_Infusions: '',
+                        Routise_PlanOfCare: '',
+                        Surgury_Procedures :'',
+                        DR_Diagnosis: '',
+                        DR_ProgressNotes: '',
+                        DR_Consultaion_Progress: '',
+                        Update_Nurse: 0,
+                        Update_Nurse_Name: '',
+                        Update_Nurse_Time: '',
+                        Update_Doctor: 0,
+                        Update_Doctor_Name: '',
+                        Update_Doctor_Time: '',
+                        Insert_Nurse: 0,
+                        Insert_Nurse_Name: '',
+                        Insert_Nurse_Time: '',
+                        Insert_Doctor: 0,
+                        Insert_Doctor_Name: '',
+                        Insert_Doctor_Time: '',
+                        Consultaion: '',
+                        Transfer_From: '',
+                        Transfer_To: '',
+                        Entry_date:new Date()
+                    };
+            }
+        },
+    });
+
+    // get diets 
+    $.ajax({
+        type: "POST",
+        url: that.apiUrl + "endoresment/handover.aspx/getDietsData",
+        contentType: "application/json; charset=utf-8",
+        dataType: "json",
+        success: function (data) {
+            that.Diets = JSON.parse(data.d);
+        }
     });
   },
 };

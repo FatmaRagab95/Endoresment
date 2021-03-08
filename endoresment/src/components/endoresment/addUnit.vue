@@ -184,6 +184,7 @@ export default {
       Units: [],
       newUnit: {
         Unit_id: 0,
+        Branch_id:0,
         Unit_name: "",
         Shift: "",
         Shift_date: "",
@@ -203,6 +204,8 @@ export default {
     submitUnit() {
       if ($("form").is(":valid")) {
         let that = this;
+
+        that.newUnit.Branch_id = that.user.Branch_ID;
 
         that.newUnit.Endorsing_ChargeNurse = that.Nurses.filter(
           (x) => x.Emp_ID == that.newUnit.Endorsing_ChargeNurse_id

@@ -33,6 +33,7 @@ public partial class _Handover : System.Web.UI.Page
     }
 
     // get unit dashboard
+    // if user is a charge nurse and has units at this shift
     [WebMethod]
     public static string getUnitDashData(user chargeNurse)
     {
@@ -52,10 +53,41 @@ public partial class _Handover : System.Web.UI.Page
             if (idr.HasRows)
             {
                 UnitsDash = populateUnitsDashLisst(idr, con);
+
             }
         }
 
-        con.Close();
+        con.Close();  
+        return JsonConvert.SerializeObject(UnitsDash);
+    }
+
+    // get unit dashboard
+    // if user is a charge nurse but has no units at this shift
+    [WebMethod]
+    public static string getUnitDashData2(user chargeNurse)
+    {
+        string config = Convert.ToString(ConfigurationManager.ConnectionStrings["dbcon"]);
+        List<UnitsDash> UnitsDash = new List<UnitsDash>();
+        List<user> user = new List<user>();
+
+        SqlConnection con = new SqlConnection(config);
+
+        con.Open();
+
+        using (SqlCommand cmd1 = new SqlCommand("select Endorsement_UnitsDashboard.* from Endorsement_UnitsDashboard where Branch_ID = @Branch_ID and  Endorsement_UnitsDashboard.Entry_date = (select max(t2.Entry_date) from Endorsement_UnitsDashboard t2 where t2.Unit_id = Endorsement_UnitsDashboard.Unit_id) order by id desc", con))
+        {
+            cmd1.Parameters.Add("@Branch_ID", SqlDbType.Int).Value = chargeNurse.Branch_ID;
+            SqlDataReader idr = cmd1.ExecuteReader();
+
+            
+            if (idr.HasRows)
+            {
+                UnitsDash = populateUnitsDashLisst(idr, con);
+
+            }
+        }
+
+        con.Close();  
 
         return JsonConvert.SerializeObject(UnitsDash);
     }
@@ -80,12 +112,35 @@ public partial class _Handover : System.Web.UI.Page
                     Received = idr["Received"] != DBNull.Value ? Convert.ToInt32(idr["Received"]) : 0,
                     Admission = idr["Admission"] != DBNull.Value ? Convert.ToInt32(idr["Admission"]) : 0,
                     Transfer_In = idr["Transfer_In"] != DBNull.Value ? Convert.ToInt32(idr["Transfer_In"]) : 0,
-                    Transfer_Out = idr["Transfer_Out"] != DBNull.Value ? Convert.ToInt32(idr["Transfer_Out"]) : 0,
+                    Confirm = idr["Confirm"] != DBNull.Value ? Convert.ToBoolean(idr["Confirm"]) : false,
 
                 });
         }
 
         return UnitsDashI;
+    }
+
+    // update confirmation
+    [WebMethod]
+    public static string confirmEndorsing(UnitsDash id)
+    {
+        string config = Convert.ToString(ConfigurationManager.ConnectionStrings["dbcon"]);
+        List<UnitsDash> UnitsDash = new List<UnitsDash>();
+
+        SqlConnection con = new SqlConnection(config);
+
+        con.Open();
+
+        using (SqlCommand cmd1 = new SqlCommand("update Endorsement_UnitsDashboard set Confirm = 'True' where id = @id", con))
+        {
+            cmd1.Parameters.Add("@id", SqlDbType.Int).Value = id.id;
+            SqlDataReader idr = cmd1.ExecuteReader();
+            
+        }
+
+        con.Close();  
+
+        return JsonConvert.SerializeObject(UnitsDash);
     }
 
     public class UnitsDash
@@ -102,6 +157,7 @@ public partial class _Handover : System.Web.UI.Page
         public int? Admission { get; set; }
         public int? Transfer_In { get; set; }
         public int? Transfer_Out { get; set; }
+        public Boolean Confirm { get; set; }
     }
 
     // update patients data
@@ -149,6 +205,32 @@ public partial class _Handover : System.Web.UI.Page
         using (SqlCommand cmd = new SqlCommand("select * from Endorsement_PatientData where Patient_Status = 1 and  Unit in (select TOP(20) Unit_name from Endorsement_UnitsDashboard where Receive_ChargeNurse_id = @Receive_ChargeNurse_id order by id desc) and Branch_id = @Branch_ID", con))
         {
             cmd.Parameters.Add("@Receive_ChargeNurse_id", SqlDbType.Int).Value = chargeNurse.Emp_id;
+            cmd.Parameters.Add("@Branch_ID", SqlDbType.Int).Value = chargeNurse.Branch_ID;
+            SqlDataReader idr = cmd.ExecuteReader();
+
+            if (idr.HasRows)
+            {
+                Endorsement_PatientData = populateEndorsement_PatientDataLisst(idr, con);
+            }
+        }
+
+        con.Close();
+
+        return JsonConvert.SerializeObject(Endorsement_PatientData);
+    }
+
+    [WebMethod]
+    public static string getPatientsData2(user chargeNurse)
+    {
+        string config =  Convert.ToString(ConfigurationManager.ConnectionStrings["dbcon"]);
+        List<Endorsement_PatientData> Endorsement_PatientData = new List<Endorsement_PatientData>();
+
+        SqlConnection con = new SqlConnection(config);
+
+        con.Open();
+
+        using (SqlCommand cmd = new SqlCommand("select * from Endorsement_PatientData where Patient_Status = 1 and Branch_id = @Branch_ID", con))
+        {
             cmd.Parameters.Add("@Branch_ID", SqlDbType.Int).Value = chargeNurse.Branch_ID;
             SqlDataReader idr = cmd.ExecuteReader();
 

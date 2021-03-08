@@ -28,10 +28,11 @@ public partial class _addUnit : System.Web.UI.Page
 		SqlConnection con = new SqlConnection(config);
 
 		con.Open();
-        using (SqlCommand cmd1 = new SqlCommand("insert into Endorsement_UnitsDashboard (Unit_id, Unit_name, Shift,Shift_date,Total_Census,Received,Admission,Transfer_In,Transfer_Out,Endorsing_ChargeNurse,Endorsing_ChargeNurse_id,Receive_ChargeNurse,Receive_ChargeNurse_id) values (@Unit_id, @Unit_name, @Shift,@Shift_date,@Total_Census,@Received,@Admission,@Transfer_In,@Transfer_Out,@Endorsing_ChargeNurse,@Endorsing_ChargeNurse_id,@Receive_ChargeNurse,@Receive_ChargeNurse_id)", con))
+        using (SqlCommand cmd1 = new SqlCommand("insert into Endorsement_UnitsDashboard (Unit_id,Branch_id, Unit_name, Shift,Shift_date,Total_Census,Received,Admission,Transfer_In,Transfer_Out,Endorsing_ChargeNurse,Endorsing_ChargeNurse_id,Receive_ChargeNurse,Receive_ChargeNurse_id) values (@Unit_id,@Branch_id, @Unit_name, @Shift,@Shift_date,@Total_Census,@Received,@Admission,@Transfer_In,@Transfer_Out,@Endorsing_ChargeNurse,@Endorsing_ChargeNurse_id,@Receive_ChargeNurse,@Receive_ChargeNurse_id)", con))
 
         {
             cmd1.Parameters.Add("@Unit_id", SqlDbType.Int).Value  = data.Unit_id;
+            cmd1.Parameters.Add("@Branch_id", SqlDbType.Int).Value  = data.Branch_id;
             cmd1.Parameters.Add("@Unit_name", SqlDbType.VarChar).Value = data.Unit_name;
             cmd1.Parameters.Add("@Shift", SqlDbType.VarChar).Value = data.Shift;
             cmd1.Parameters.Add("@Shift_date", SqlDbType.DateTime).Value   = data.Shift_date;
@@ -57,6 +58,7 @@ public partial class _addUnit : System.Web.UI.Page
     public class Endorsement_UnitsDashboard
     {
         public int? Unit_id { get; set; }
+        public int? Branch_id { get; set; }
         public string Unit_name { get; set; }
         public string Shift { get; set; }
         public DateTime Shift_date { get; set; }

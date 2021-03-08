@@ -8,7 +8,7 @@
               {{ Units.filter((x) => x.U_id == path)[0].U_name }}
             </h1>
           </div>
-          <div class="col-md-6 p-4">
+          <div class="col-md-6 p-4" v-if='editCharge'>
             <router-link
               class="btn btn-danger pull-right mt-3"
               style="width: 150px"
@@ -73,47 +73,6 @@
             </div>
           </div>
         </div>
-
-        <!--  <table class="table table-striped table-light shadow text-secondary mt-3">
-          <thead class="font-wight-bold bg-secondary text-white">
-            <tr>
-              <th scope="col">#</th>
-              <th scope="col">nurse name</th>
-              <th scope="col">emp id</th>
-              <th scope="col">last update</th>
-              <th scope="col">update from</th>
-              <th scope="col">patients list</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr
-              v-for="(nurse, i) in Endoresment_Nurses_Units.filter(
-                (x) => x.Unit_id == path
-              )"
-              :key="nurse.Id"
-            >
-              <td>{{ i + 1 }}</td>
-              <td>{{ users.filter((x) => x.Emp_id == nurse.Nurse_id)[0].FullName }}</td>
-              <td>{{ nurse.Nurse_id }}</td>
-              <td v-if="nurse.Last_Update">{{ nurse.Last_Update }}</td>
-              <td v-else>no update date found</td>
-              <td v-if="users.filter((x) => x.Emp_id == nurse.Entry_user).length > 0">
-                {{ users.filter((x) => x.Emp_id == nurse.Entry_user)[0].FullName }}
-              </td>
-              <td v-else>no avalible data</td>
-              <td class="text-info">
-                <a
-                  class="open-pop"
-                  style="text-decoration: underline; cursor: pointer"
-                  data-pop-name="patient-popup"
-                  v-on:click.prevent="popUp(nurse, 'patientPop')"
-                >
-                  view patients list
-                </a>
-              </td>
-            </tr>
-          </tbody>
-        </table>-->
       </div>
     </div>
     <!-- start patients list popup-->
@@ -148,7 +107,7 @@
                       users.filter((x) => x.Emp_id == patientDetails.Nurse_id)[0].FullName
                     }}
                   </h4>
-                  <div class="text-right mt-3">
+                  <div class="text-right mt-3" v-if='editCharge'>
                     <router-link
                       class="btn btn-secondary"
                       style="width: 200px"
@@ -231,7 +190,7 @@
 <script>
 export default {
   name: "Nurses",
-  props: ["link"],
+  props: ["link", 'user', 'edits', 'UnitDash'],
   data() {
     return {
       Units: [],
@@ -243,6 +202,7 @@ export default {
       patientDetails: [],
       path: "",
       apiUrl: this.link,
+      editCharge:false
     };
   },
   methods: {
@@ -263,7 +223,13 @@ export default {
 
   created() {
     let that = this;
-    this.path = this.$router.history.current.path.split("/")[2];
+
+    this.path = this.$route.params.id;
+
+    // if current user is charge nurse to this unit
+    if (that.edits && that.UnitDash.filter(x => x.Unit_id == this.path).length > 0) {
+      that.editCharge = true
+    }
 
     //get units
     $.ajax({

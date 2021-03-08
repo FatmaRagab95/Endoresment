@@ -90,7 +90,7 @@ public partial class _patientData : System.Web.UI.Page
 
     /***********************************************************/
 
-    // get shift data
+    // get follow up data
     [WebMethod]
     public static string getShiftData(Endorsement_shiftData data)
     {
@@ -101,7 +101,7 @@ public partial class _patientData : System.Web.UI.Page
 
         con.Open();
 
-        using (SqlCommand cmd = new SqlCommand("select * from Endorsement_PatientFollow where Patient_id = @Patient_id order by id", con))
+        using (SqlCommand cmd = new SqlCommand("select id,Shift,Patient_id,Diet_id,Diet_Name,Pain,P_Isolation,Fall, Allergy,Investegation_ToDo,Investegation_FollowUp,Contraptions_Infusions,Routise_PlanOfCare,Surgury_Procedures,DR_Diagnosis,DR_ProgressNotes,DR_Consultaion_Progress,Insert_Nurse,Insert_Nurse_Name,Insert_Nurse_Time,Update_Nurse,Update_Nurse_Name,Update_Nurse_Time, Update_Doctor,Update_Doctor_Name,Update_Doctor_Time,Insert_Doctor,Insert_Doctor_Name,Insert_Doctor_Time,Consultaion,Entry_date from Endorsement_PatientFollow where Patient_id = @Patient_id order by id asc", con))
         {
             cmd.Parameters.Add("@Patient_id", SqlDbType.Int).Value = data.Patient_id;
             SqlDataReader idr = cmd.ExecuteReader();
@@ -133,6 +133,7 @@ public partial class _patientData : System.Web.UI.Page
 					Diet_Name   = Convert.ToString(idr["Diet_Name"]),
                     Pain        = idr["Pain"] != DBNull.Value ? Convert.ToInt32(idr["Pain"]) : 0,
 					P_Isolation = Convert.ToString(idr["P_Isolation"]),
+					Fall = Convert.ToString(idr["Fall"]),
 					Allergy     = Convert.ToString(idr["Allergy"]),
 
 					Investegation_ToDo      = Convert.ToString(idr["Investegation_ToDo"]),
@@ -143,15 +144,27 @@ public partial class _patientData : System.Web.UI.Page
 					DR_Diagnosis            = Convert.ToString(idr["DR_Diagnosis"]),
 					DR_ProgressNotes        = Convert.ToString(idr["DR_ProgressNotes"]),
 					DR_Consultaion_Progress = Convert.ToString(idr["DR_Consultaion_Progress"]),
+                    
+                    
+                    Insert_Nurse       = idr["Insert_Nurse"] != DBNull.Value ? Convert.ToInt32(idr["Insert_Nurse"]) : 0,
+					Insert_Nurse_Name  = Convert.ToString(idr["Insert_Nurse_Name"]),
+					Insert_Nurse_Time  = Convert.ToString(idr["Insert_Nurse_Time"]),
 
                     Update_Nurse       = idr["Update_Nurse"] != DBNull.Value ? Convert.ToInt32(idr["Update_Nurse"]) : 0,
+					Update_Nurse_Name  = Convert.ToString(idr["Update_Nurse_Name"]),
 					Update_Nurse_Time  = Convert.ToString(idr["Update_Nurse_Time"]),
-                    Update_Doctor      = idr["Update_Doctor"] != DBNull.Value ? Convert.ToInt32(idr["Update_Doctor"]) : 0,
+
+                    Insert_Doctor      = idr["Insert_Doctor"] != DBNull.Value ? Convert.ToInt32(idr["Insert_Doctor"]) : 0,
+                    Insert_Doctor_Name = Convert.ToString(idr["Insert_Doctor_Name"]),
                     Insert_Doctor_Time = Convert.ToString(idr["Insert_Doctor_Time"]),
+
+                    Update_Doctor      = idr["Update_Doctor"] != DBNull.Value ? Convert.ToInt32(idr["Update_Doctor"]) : 0,
+                    Update_Doctor_Name = Convert.ToString(idr["Update_Doctor_Name"]),
+                    Update_Doctor_Time = Convert.ToString(idr["Update_Doctor_Time"]),
+
                     Consultaion        = idr["Consultaion"] != DBNull.Value ? Convert.ToInt32(idr["Consultaion"]) : 0,
-					Transfer_From      = Convert.ToString(idr["Transfer_From"]),
-					Transfer_To        = Convert.ToString(idr["Transfer_To"]),
-					Entry_date         = Convert.ToString(idr["Entry_date"]),
+
+                    Entry_date = Convert.ToDateTime(idr["Entry_date"]),
                 });
         }
 
@@ -167,6 +180,7 @@ public partial class _patientData : System.Web.UI.Page
         public string Diet_Name { get; set; }
         public int? Pain { get; set; }
         public string P_Isolation { get; set; }
+        public string Fall { get; set; }
         public string Allergy { get; set; }
         public string Investegation_ToDo { get; set; }
         public string Investegation_FollowUp { get; set; }
@@ -177,16 +191,20 @@ public partial class _patientData : System.Web.UI.Page
         public string DR_ProgressNotes { get; set; }
         public string DR_Consultaion_Progress { get; set; }
         public int? Update_Nurse { get; set; }
+        public string Update_Nurse_Name { get; set; }
         public string Update_Nurse_Time { get; set; }
         public int? Update_Doctor { get; set; }
-        public int? Update_Doctor_Time { get; set; }
+        public string Update_Doctor_Name { get; set; }
+        public string Update_Doctor_Time { get; set; }
         public int? Insert_Nurse { get; set; }
+        public string Insert_Nurse_Name { get; set; }
         public string Insert_Nurse_Time { get; set; }
         public int? Insert_Doctor { get; set; }
+        public string Insert_Doctor_Name { get; set; }
         public string Insert_Doctor_Time { get; set; }
         public int? Consultaion { get; set; }
         public string Transfer_From { get; set; }
         public string Transfer_To { get; set; }
-        public string Entry_date { get; set; }
+        public DateTime Entry_date { get; set; }
     }
 }

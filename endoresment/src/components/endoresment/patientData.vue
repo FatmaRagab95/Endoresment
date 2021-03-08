@@ -34,8 +34,8 @@
             >
           </div>
           <div class="col-md-4" style="text-decoration: underline; font-size: 28px">
-            <span class="text-success">Date of admission :</span
-            ><span class="ml-2 text-secondary">{{patientData.Addmission_date}}</span>
+            <span class="text-success">Date of admission :</span>
+            <span class="ml-2 text-secondary">{{patientData.Addmission_date}}</span>
           </div>
           <div class="col-md-4">
             <span class="pull-right">
@@ -73,15 +73,8 @@
               <label for="exampleFormControlSelect1">See previous shifts</label>
               <div class="row">
                   <div class="col-md 6">
-                    <select class="form-control form-control-sm">
-                      <option>Day</option>
-                      <option>Night</option>
-                    </select>
-                  </div>
-                  <div class="col-md 6">
-                    <select class="form-control form-control-sm">
-                      <option>Day</option>
-                      <option>Night</option>
+                    <select class="form-control form-control-sm" v-model='viewedShift'>
+                      <option v-for='shift in shiftData' :value='shift' :key='shift.id'>{{shift.Entry_date.substr(0,10) + ' ' + shift.Shift}}</option>
                     </select>
                   </div>
               </div>
@@ -95,6 +88,25 @@
             </div>
           </div>
         </div>
+
+        <!-- start viewing follow up data -->
+        
+        <div class="infoData">
+          <ul class="list-unstyled  card bg-white shadow" :class='viewedShift.Shift.trim() == "Day" ? "Day-card" : "Night-card"'>
+            <li class="cu-flex detail"><span>Inserted From: </span> 
+                <span>
+                  {{viewedShift.Insert_Doctor ? 'Dr.' + viewedShift.Insert_Doctor_Name : 'Nurse: ' + viewedShift.Insert_Nurse_Name}}
+                </span>
+            </li>
+            <li class="cu-flex detail"><span>Shift</span> <span>
+              <i :class="viewedShift.Shift.trim() == 'Day' ? 'fa fa-sun-o' : 'fa fa-moon-o'"></i>
+                {{viewedShift.Shift}}       
+                </span>
+            </li>
+            <li class="cu-flex detail"><span>Entry Date</span> <span>{{viewedShift.Entry_date.substr(0,10)}}</span></li>
+          </ul>
+        </div>
+
         <div class="row mt-4 text-left">
           <div class="col-xl-8 col-lg-7">
             <div class="card shadow overflow-auto" style="height: 250px">
@@ -358,7 +370,9 @@
             </div>
           </div>
         </div>
+        <!-- end viewing follow up data -->
       </div>
+  
       <div class="text-center not-found" v-else>
         <p><i class='fa fa-warning text-warning'></i>
         There is no follow up data yet for this patient!</p>
@@ -383,7 +397,8 @@ export default {
       viewedShift: null
     };
   },
-  methods: {},
+  methods: {
+  },
   created() {
     let that = this;
 
@@ -426,5 +441,11 @@ export default {
 }
 .head-info {
   background-color: #f6f8fb;
+}
+.infoData ul li {
+    padding: 15px 30px;
+}
+.infoData ul li:nth-of-type(2n) {
+    background-color: #f7f7f7;
 }
 </style>

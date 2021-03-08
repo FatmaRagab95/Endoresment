@@ -185,7 +185,7 @@ const router = new Router({
     },
     {
       path: "/selectUnit",
-      name: "select unit",
+      name: "Rooms",
       component: selectUnit,
       meta: {
         requiresAuth: true,

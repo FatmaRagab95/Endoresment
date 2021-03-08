@@ -3,6 +3,11 @@
         <h1 class='text-center mb-5 bg-white p-3 pt-5'>Endoresment / Handover</h1>
         <div class="container-fluid">
 
+            <p v-if='(user.Role_id == 17) && !edits' class='alert text-danger'>
+                <i class='fa fa-warning text-warning'></i>
+                You haven't recieved any units as a charge nurse for current shift yet!
+            </p>
+
             <div class='bg-white shadow table-responsive mb-5' v-for='(unit) in UnitDash' :key='unit.id'>
                 <h4 class='cu-flex p-3 shadow'>
                     <span><i class='fa fa-hospital-o'></i> {{unit.Unit_name}}</span>
@@ -155,10 +160,10 @@
                                     <textarea  :disabled="user.Role_id == 12 || user.Role_id == 17 ? 'disabled' : ''" v-if='patient.edit' type='text' v-model="FollowData(patient.id).DR_Consultaion_Progress"></textarea>
                                     <span v-else>{{FollowData(patient.id).DR_Consultaion_Progress}}</span>
                                 </td>
-                                <td v-if='user.Role_id == 12 || user.Role_id == 17'>
+                                <td v-if='(user.Role_id == 12 || user.Role_id == 17) && edits'>
                                     <button v-if='patient.edit' class='btn btn-primary btn-sm'
-                                     @click.prevent='SaveEdits(i, patient.id)'>Save</button>
-                                    <button v-else class='btn btn-success btn-sm' @click.prevent='edit(i)'>Edit</button>
+                                     @click.prevent='SaveEdits(patient.id)'>Save</button>
+                                    <button v-else class='btn btn-success btn-sm' @click.prevent='edit(patient.id)'>Edit</button>
                                 </td>
                                 <td >
                                     <router-link :to='{name:"Patient Data", params:{id:patient.id}}' target='_blank' class='btn btn-info btn-sm'>Details</router-link>
@@ -185,10 +190,9 @@ export default {
         dragscroll
     },
     name:'Handover',
-    props: ['link', 'user'],
+    props: ['link', 'user', 'UnitDash', 'edits'],
     data() {
         return {
-            UnitDash: [],
             apiUrl: this.link,
             patients:[],
             patientsFollow:[],
@@ -206,10 +210,10 @@ export default {
             let length = Math.round((new Date() - new Date(date.trim())) / (1000 * 60 * 60 * 24));
             return length == 0 ? 'Today' : length == 1 ? length + ' Day' : length + ' Days'
         },
-        edit(rowIndex) {
-            this.$set(this.patients[rowIndex], 'edit', true);
+        edit(patientId) {
+            this.$set(this.patients.filter(x => x.id == patientId)[0], 'edit', true);
         },
-        SaveEdits(rowIndex, patientId) { //updateFollowUpData
+        SaveEdits(patientId) { //updateFollowUpData
             let that = this;
             swal({
                 title: "Are you sure?",
@@ -222,13 +226,13 @@ export default {
                     $.ajax({
                         type: "POST",
                         url: that.apiUrl + "endoresment/handover.aspx/updatePatientData",
-                        data:JSON.stringify({"patient": that.patients[rowIndex]}),
+                        data:JSON.stringify({"patient": this.patients.filter(x => x.id == patientId)[0]}),
                         contentType: "application/json; charset=utf-8",
                         dataType: "json",
                         success: function (data) {
                             let dataObj = that.patientsFollow.filter(x => patientId == x.Patient_id)[0];
 
-                            if (dataObj.id && that.LOS(dataObj.Entry_date) == 'Today' && dataObj.Shift == that.Shift) {
+                            if (dataObj.id && that.LOS(dataObj.Entry_date) == 'Today' && dataObj.Shift.trim() == that.Shift) {
 
                                 // update follow up by nurse
                                 if (that.user.Role_id == 12 || that.user.Role_id == 17) {
@@ -275,7 +279,7 @@ export default {
                                             title: "Updated!",
                                             icon: "success",
                                         });
-                                        that.$set(that.patients[rowIndex], 'edit', false);
+                                        that.$set(that.patients.filter(x => x.id == patientId)[0], 'edit', false);
                                         location.reload(); 
                                     }
                                 });
@@ -293,7 +297,7 @@ export default {
                                             title: "Updated!",
                                             icon: "success",
                                         });
-                                        that.$set(that.patients[rowIndex], 'edit', false);
+                                        that.$set(that.patients.filter(x => x.id == patientId)[0], 'edit', false);
                                     }
                                 });
                             }
@@ -301,23 +305,13 @@ export default {
                     });
                 } else {
                     swal("Canceled!");
-                    this.$set(that.patients[rowIndex], 'edit', false);
+                    this.$set(this.patients.filter(x => x.id == patientId)[0], 'edit', false);
                 }
             });
-        }
-    },
-    created() {
-        let that = this;
-
-        //get Units dahsboard
-        $.ajax({
-            type: "POST",
-            url: that.apiUrl + "endoresment/handover.aspx/getUnitDashData",
-            data:JSON.stringify({"chargeNurse": that.user}),
-            contentType: "application/json; charset=utf-8",
-            dataType: "json",
-            success: function (data) {
-                that.UnitDash = JSON.parse(data.d);
+        },
+        getChargeUnits() {
+            let that = this;
+            if (that.UnitDash.length > 0) {
                 if (new Date().getHours() < 20 && new Date().getHours() >= 8) {
                     that.Shift = 'Day';
                     that.UnitDash.map(x => {
@@ -337,84 +331,172 @@ export default {
                         }
                     });
                 }
-            },
-        });
+            }
+        }
+    },
+    watch: {
+       UnitDash: function () {
+           let that = this;
+            that.getChargeUnits();
+       } 
+    },
+    created() {
+        let that = this;
+
+        that.getChargeUnits();
 
         // get patients data
-        $.ajax({
-            type: "POST",
-            url: that.apiUrl + "endoresment/handover.aspx/getPatientsData",
-            data:JSON.stringify({"chargeNurse": that.user}),
-            contentType: "application/json; charset=utf-8",
-            dataType: "json",
-            success: function (data) {
-                that.patients = JSON.parse(data.d);
-                if (that.patients.length > 0) {
-                    that.patients.map(x => that.$set(x, 'edit', false))
-                }
+        if (that.edits) {
+            $.ajax({
+                type: "POST",
+                url: that.apiUrl + "endoresment/handover.aspx/getPatientsData",
+                data:JSON.stringify({"chargeNurse": that.user}),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (data) {
+                    that.patients = JSON.parse(data.d);
+                    if (that.patients.length > 0) {
+                        that.patients.map(x => that.$set(x, 'edit', false))
+                    }
 
-                // get follow ups
-                for (let i = 0; i < that.patients.length; i++) {
+                    // get follow ups
+                    for (let i = 0; i < that.patients.length; i++) {
 
-                    that.patients[i].Room = that.patients[i].Room.trim();
+                        that.patients[i].Room = that.patients[i].Room.trim();
 
-                    $.ajax({
-                        type: "POST",
-                        url: that.apiUrl + "endoresment/handover.aspx/getShiftData",
-                        data:JSON.stringify({"data": {"Patient_id":  that.patients[i].id}}),
-                        contentType: "application/json; charset=utf-8",
-                        dataType: "json",
-                        success: function (data) {
-                            if (JSON.parse(data.d).length > 0) {
-                                that.patientsFollow.push(JSON.parse(data.d)[0]);
-                            }
-                            else {
-                                let shift = null;
-                                if (new Date().getHours() <= 20 && new Date().getHours() >= 8) {
-                                    shift = 'Day';
-                                } else {
-                                    shift = 'Night';
+                        $.ajax({
+                            type: "POST",
+                            url: that.apiUrl + "endoresment/handover.aspx/getShiftData",
+                            data:JSON.stringify({"data": {"Patient_id":  that.patients[i].id}}),
+                            contentType: "application/json; charset=utf-8",
+                            dataType: "json",
+                            success: function (data) {
+                                if (JSON.parse(data.d).length > 0) {
+                                    that.patientsFollow.push(JSON.parse(data.d)[0]);
                                 }
-
-                                that.patientsFollow.push(
-                                    {
-                                        Shift: shift,
-                                        Patient_id: that.patients[i].id,
-                                        Diet_id: 0,
-                                        Diet_Name: '',
-                                        Pain: 0,
-                                        P_Isolation: '',
-                                        Fall:'',
-                                        Allergy: '',
-                                        Investegation_ToDo: '',
-                                        Investegation_FollowUp: '',
-                                        Contraptions_Infusions: '',
-                                        Routise_PlanOfCare: '',
-                                        Surgury_Procedures :'',
-                                        DR_Diagnosis: '',
-                                        DR_ProgressNotes: '',
-                                        DR_Consultaion_Progress: '',
-                                        Update_Nurse: 0,
-                                        Update_Nurse_Time: '',
-                                        Update_Doctor: 0,
-                                        Update_Doctor_Time: '',
-                                        Insert_Nurse: '',
-                                        Insert_Nurse_Time: '',
-                                        Insert_Doctor: 0,
-                                        Insert_Doctor_Time: '',
-                                        Consultaion: '',
-                                        Transfer_From: '',
-                                        Transfer_To: '',
-                                        Entry_date:new Date()
+                                else {
+                                    let shift = null;
+                                    if (new Date().getHours() <= 20 && new Date().getHours() >= 8) {
+                                        shift = 'Day';
+                                    } else {
+                                        shift = 'Night';
                                     }
-                                )
-                            }
-                        },
-                    });
 
-                }
-            },
-        });
+                                    that.patientsFollow.push(
+                                        {
+                                            Shift: shift,
+                                            Patient_id: that.patients[i].id,
+                                            Diet_id: 0,
+                                            Diet_Name: '',
+                                            Pain: 0,
+                                            P_Isolation: '',
+                                            Fall:'',
+                                            Allergy: '',
+                                            Investegation_ToDo: '',
+                                            Investegation_FollowUp: '',
+                                            Contraptions_Infusions: '',
+                                            Routise_PlanOfCare: '',
+                                            Surgury_Procedures :'',
+                                            DR_Diagnosis: '',
+                                            DR_ProgressNotes: '',
+                                            DR_Consultaion_Progress: '',
+                                            Update_Nurse: 0,
+                                            Update_Nurse_Time: '',
+                                            Update_Doctor: 0,
+                                            Update_Doctor_Time: '',
+                                            Insert_Nurse: '',
+                                            Insert_Nurse_Time: '',
+                                            Insert_Doctor: 0,
+                                            Insert_Doctor_Time: '',
+                                            Consultaion: '',
+                                            Transfer_From: '',
+                                            Transfer_To: '',
+                                            Entry_date:new Date()
+                                        }
+                                    )
+                                }
+                            },
+                        });
+
+                    }
+                },
+            });
+        } else {
+            $.ajax({
+                type: "POST",
+                url: that.apiUrl + "endoresment/handover.aspx/getPatientsData2",
+                data:JSON.stringify({"chargeNurse": that.user}),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (data) {
+                    that.patients = JSON.parse(data.d);
+                    if (that.patients.length > 0) {
+                        that.patients.map(x => that.$set(x, 'edit', false))
+                    }
+
+                    // get follow ups
+                    for (let i = 0; i < that.patients.length; i++) {
+
+                        that.patients[i].Room = that.patients[i].Room.trim();
+
+                        $.ajax({
+                            type: "POST",
+                            url: that.apiUrl + "endoresment/handover.aspx/getShiftData",
+                            data:JSON.stringify({"data": {"Patient_id":  that.patients[i].id}}),
+                            contentType: "application/json; charset=utf-8",
+                            dataType: "json",
+                            success: function (data) {
+                                if (JSON.parse(data.d).length > 0) {
+                                    that.patientsFollow.push(JSON.parse(data.d)[0]);
+                                }
+                                else {
+                                    let shift = null;
+                                    if (new Date().getHours() <= 20 && new Date().getHours() >= 8) {
+                                        shift = 'Day';
+                                    } else {
+                                        shift = 'Night';
+                                    }
+
+                                    that.patientsFollow.push(
+                                        {
+                                            Shift: shift,
+                                            Patient_id: that.patients[i].id,
+                                            Diet_id: 0,
+                                            Diet_Name: '',
+                                            Pain: 0,
+                                            P_Isolation: '',
+                                            Fall:'',
+                                            Allergy: '',
+                                            Investegation_ToDo: '',
+                                            Investegation_FollowUp: '',
+                                            Contraptions_Infusions: '',
+                                            Routise_PlanOfCare: '',
+                                            Surgury_Procedures :'',
+                                            DR_Diagnosis: '',
+                                            DR_ProgressNotes: '',
+                                            DR_Consultaion_Progress: '',
+                                            Update_Nurse: 0,
+                                            Update_Nurse_Time: '',
+                                            Update_Doctor: 0,
+                                            Update_Doctor_Time: '',
+                                            Insert_Nurse: '',
+                                            Insert_Nurse_Time: '',
+                                            Insert_Doctor: 0,
+                                            Insert_Doctor_Time: '',
+                                            Consultaion: '',
+                                            Transfer_From: '',
+                                            Transfer_To: '',
+                                            Entry_date:new Date()
+                                        }
+                                    )
+                                }
+                            },
+                        });
+
+                    }
+                },
+            });
+        }
 
         // get diets 
         $.ajax({

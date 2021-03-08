@@ -125,7 +125,7 @@
 <script>
 export default {
   name: "editNurses",
-  props: ["link"],
+  props: ["link", 'user', 'edits', 'UnitDash'],
   data() {
     return {
       Units: [],
@@ -264,7 +264,13 @@ export default {
 
   created() {
     let that = this;
-    this.path = this.$router.history.current.path.split("/")[2];
+
+    this.path = this.$route.params.id;
+
+    // if current user is charge nurse to this unit
+    if (this.edits && this.UnitDash.filter(x => x.Unit_id == this.path).length == 0) {
+      this.$router.go(-1)
+    }
 
     //get units
     $.ajax({

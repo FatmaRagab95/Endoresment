@@ -14,7 +14,22 @@
     <div :class="user ? 'page-container' : ''">
       <div :class="user ? 'main-contnet' : ''">
         <upper-nav v-if="user" :username="user.FullName"></upper-nav>
-        <router-view :link="link" :user="user" />
+
+        <!-- show alerts for charge nurses to confirm endorsing -->
+        <div v-if='chargeNurseUnits.length > 0 && edits'>
+          <div v-for='(data, i) in chargeNurseUnits' :key='data.id'>
+            <ul class='list-unstyled mt-5'>
+              <li v-if='!data.Confirm' class='alert bg-danger text-white p-4'>
+                <i class='text-warning fa fa-warning'></i> <span>You haven't confirmed endorsing for 
+                  <strong class='border-bottom'>{{data.Unit_name}}</strong> yet!</span>
+                <button @click.prevent='confirm(data.id,i)' class='pull-right btn btn-warning text-dark'>
+                  Confirm</button>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <router-view :link="link" :user="user" :UnitDash='chargeNurseUnits' :edits='edits' />
       </div>
     </div>
   </div>
@@ -34,15 +49,83 @@ export default {
   data() {
     return {
       user: JSON.parse(localStorage.getItem("user")),
-      link: `http://localhost:${51026}/endoresment/dist/`,
+      link: `http://localhost:${49638}/endoresment/dist/`,
+      chargeNurseUnits: [],
+      edits:false
     };
+  },
+  methods: {
+    // if user is charge nurse
+    getchargeNurseUnits() {
+      if (this.user.Role_id == 17) {
+        let that = this;
+          $.ajax({
+            type: "POST",
+            url: that.link + "endoresment/handover.aspx/getUnitDashData",
+            data:JSON.stringify({"chargeNurse": that.user}),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+              if (new Date().getHours() < 20 && new Date().getHours() >= 8) {
+                that.chargeNurseUnits = JSON.parse(data.d).filter(x => x.Shift.trim() == 'Day');
+              } else {
+                that.chargeNurseUnits = JSON.parse(data.d).filter(x => x.Shift.trim() == 'Night');
+              }
+              if (that.chargeNurseUnits.length > 0) {
+                that.edits = true;
+              } else {
+                  $.ajax({
+                      type: "POST",
+                      url: that.link + "endoresment/handover.aspx/getUnitDashData2",
+                      data:JSON.stringify({"chargeNurse": that.user}),
+                      contentType: "application/json; charset=utf-8",
+                      dataType: "json",
+                      success: function (data) {
+                          if (data.d.length > 0) {
+                              that.edits = false;
+                              that.chargeNurseUnits = JSON.parse(data.d);
+                          }
+                      },
+                  });
+              }
+
+            },
+        });
+      }
+    },
+
+    // confirm endorsing
+    confirm(id, index) {
+      let that = this;
+        $.ajax({
+            type: "POST",
+            url: that.link + "endoresment/handover.aspx/confirmEndorsing",
+            data:JSON.stringify({"id": {"id": id}}),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+                swal({
+                  title: "Confirmed!",
+                  icon: "success",
+                  dangerMode: true,
+                });
+
+                that.chargeNurseUnits[index].Confirm = true;
+            }
+        });
+    }
   },
   watch: {
     $route: function (to, from) {
       this.user = JSON.parse(localStorage.getItem("user"));
     },
+    user: function () {
+      this.getchargeNurseUnits()
+    }
   },
-  created() {},
+  created() {
+    this.getchargeNurseUnits()
+  },
 };
 </script>
 
