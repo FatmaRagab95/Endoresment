@@ -114,8 +114,6 @@ public partial class _addUnit : System.Web.UI.Page
                 .Add(new Nurses {
                     Emp_ID = idr["Emp_ID"] != DBNull.Value ? Convert.ToInt32(idr["Emp_ID"]) : 0,
                     FullName = Convert.ToString(idr["FullName"]),
-                    pass_word = Convert.ToString(idr["pass_word"]),
-                   user_name = Convert.ToString(idr["user_name"]),
                 });
         }
 
@@ -126,8 +124,6 @@ public partial class _addUnit : System.Web.UI.Page
     {
         public int? Emp_ID { get; set; }
         public string FullName { get; set; }
-        public string pass_word { get; set; }
-        public string user_name { get; set; }
     }
 
 

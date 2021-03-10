@@ -16,9 +16,9 @@
         <upper-nav v-if="user" :username="user.FullName"></upper-nav>
 
         <!-- show alerts for charge nurses to confirm endorsing -->
-        <div v-if='chargeNurseUnits.length > 0 && edits'>
+        <div v-if='chargeNurseUnits.length > 0 && edits  && user'>
           <div v-for='(data, i) in chargeNurseUnits' :key='data.id'>
-            <ul class='list-unstyled mt-5'>
+            <ul class='list-unstyled alert-charge'>
               <li v-if='!data.Confirm' class='alert bg-danger text-white p-4'>
                 <i class='text-warning fa fa-warning'></i> <span>You haven't confirmed endorsing for 
                   <strong class='border-bottom'>{{data.Unit_name}}</strong> yet!</span>
@@ -77,7 +77,7 @@ export default {
                   $.ajax({
                       type: "POST",
                       url: that.link + "endoresment/handover.aspx/getUnitDashData2",
-                      data:JSON.stringify({"chargeNurse": that.user}),
+                      data:JSON.stringify({"id": that.user}),
                       contentType: "application/json; charset=utf-8",
                       dataType: "json",
                       success: function (data) {
@@ -91,6 +91,22 @@ export default {
 
             },
         });
+
+        // if the user is not a charge nurse
+      } else {
+          $.ajax({
+              type: "POST",
+              url: that.link + "endoresment/handover.aspx/getUnitDashData2",
+              data:JSON.stringify({"id": that.user}),
+              contentType: "application/json; charset=utf-8",
+              dataType: "json",
+              success: function (data) {
+                  if (data.d.length > 0) {
+                      that.edits = false;
+                      that.chargeNurseUnits = JSON.parse(data.d);
+                  }
+              },
+          });
       }
     },
 
@@ -171,6 +187,14 @@ export default {
 .not-found button {
   max-width: 150px;
   margin: 30px auto;
+}
+.alert-charge {
+  margin-top:120px;
+}
+.modal-content {
+    border: none;
+    border-radius: 5px;
+    box-shadow: 0 0 20px #68696c;
 }
 @keyframes loader {
   12.5% {

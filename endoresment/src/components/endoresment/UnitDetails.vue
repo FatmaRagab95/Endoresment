@@ -6,7 +6,7 @@
         <div class="row">
           <div class="col-lg-7">
             <div class="card shadow bg-white mb-5">
-              <a class="btn btn-bg btn-primary text-white" target="_blank">View Rooms</a>
+              <router-link :to='{name:"Room Details", params:{id:unitId}}' class="btn btn-bg btn-primary text-white" target="_blank">View Rooms</router-link>
             </div>
             <div class="card bg-white shadow">
               <h4><i class="fa fa-table"></i> Latest Shifts</h4>
@@ -50,7 +50,7 @@
 
           <div class="col-lg-5">
             <div class="card bg-white shadow">
-              <h4><i class="fa fa-bar-chart"></i> Statistics data for today.</h4>
+              <h4><i class="fa fa-bar-chart"></i> Statistics data for current shift.</h4>
               <div class="my-chart"><canvas id="myData"></canvas></div>
             </div>
 
@@ -120,9 +120,17 @@ export default {
             x.Shift_date.substr(3, 3) +
             x.Shift_date.substr(0, 3) +
             x.Shift_date.substr(6, 4);
-          if (checkDate == moment(new Date()).format("MM/DD/YYYY")) {
-            that.todayData = x;
-          }
+            if (new Date().getHours() < 20 && new Date().getHours() >= 8) {
+              if (checkDate == moment(new Date()).format("MM/DD/YYYY")) {
+                that.todayData = x;
+              }
+            } else {
+              if (checkDate == moment(new Date()).format("MM/DD/YYYY") && new Date().getHours() < 24) {
+                that.todayData = x;
+              } else if (checkDate == moment(new Date()  - (1000 * 24 * 60 * 60)).format("MM/DD/YYYY")) {
+                that.todayData = x;
+              }
+            }
         });
       },
       complete: function () {
@@ -131,15 +139,16 @@ export default {
           var myChart = new Chart(ctx, {
             type: "pie",
             data: {
-              labels: ["Admission", "Transfer In", "Transfer Out"],
+              labels: ["Received", "Admission", "Transfer In", "Transfer Out"],
               datasets: [
                 {
                   data: [
+                    that.todayData.Received,
                     that.todayData.Admission,
                     that.todayData.Transfer_In,
                     that.todayData.Transfer_Out,
                   ],
-                  backgroundColor: ["#E62531", "#552DEA", "#FCEC34"],
+                  backgroundColor: ["#E62531", "#552DEA", "#FCEC34", "#a6cf20"],
                 },
               ],
             },

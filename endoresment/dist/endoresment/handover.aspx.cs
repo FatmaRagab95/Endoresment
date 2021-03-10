@@ -45,7 +45,7 @@ public partial class _Handover : System.Web.UI.Page
 
         con.Open();
 
-        using (SqlCommand cmd = new SqlCommand("SELECT * from Endorsement_UnitsDashboard where Shift_date >= DATEADD(day,-1, GETDATE()) and Unit_id in (select TOP(20) Unit_id from Endorsement_UnitsDashboard where Receive_ChargeNurse_id = @Receive_ChargeNurse_id and Shift_date >=   DATEADD(day,-1, GETDATE()) order by id desc) order by id desc", con))
+        using (SqlCommand cmd = new SqlCommand("SELECT * from Endorsement_UnitsDashboard where Shift_date >= DATEADD(day,-2, GETDATE()) and Unit_id in (select TOP(20) Unit_id from Endorsement_UnitsDashboard where Receive_ChargeNurse_id = @Receive_ChargeNurse_id and Shift_date >=   DATEADD(day,-2, GETDATE()) order by id desc) order by id desc", con))
         {
             cmd.Parameters.Add("@Receive_ChargeNurse_id", SqlDbType.Int).Value = chargeNurse.Emp_id;
             SqlDataReader idr = cmd.ExecuteReader();
@@ -63,8 +63,9 @@ public partial class _Handover : System.Web.UI.Page
 
     // get unit dashboard
     // if user is a charge nurse but has no units at this shift
+    // or if the user is not a charge nurse
     [WebMethod]
-    public static string getUnitDashData2(user chargeNurse)
+    public static string getUnitDashData2(user id)
     {
         string config = Convert.ToString(ConfigurationManager.ConnectionStrings["dbcon"]);
         List<UnitsDash> UnitsDash = new List<UnitsDash>();
@@ -76,7 +77,7 @@ public partial class _Handover : System.Web.UI.Page
 
         using (SqlCommand cmd1 = new SqlCommand("select Endorsement_UnitsDashboard.* from Endorsement_UnitsDashboard where Branch_ID = @Branch_ID and  Endorsement_UnitsDashboard.Entry_date = (select max(t2.Entry_date) from Endorsement_UnitsDashboard t2 where t2.Unit_id = Endorsement_UnitsDashboard.Unit_id) order by id desc", con))
         {
-            cmd1.Parameters.Add("@Branch_ID", SqlDbType.Int).Value = chargeNurse.Branch_ID;
+            cmd1.Parameters.Add("@Branch_ID", SqlDbType.Int).Value = id.Branch_ID;
             SqlDataReader idr = cmd1.ExecuteReader();
 
             
@@ -91,6 +92,7 @@ public partial class _Handover : System.Web.UI.Page
 
         return JsonConvert.SerializeObject(UnitsDash);
     }
+
 
     public static List<UnitsDash>
     populateUnitsDashLisst(SqlDataReader idr, SqlConnection con)

@@ -177,7 +177,7 @@ export default {
                 ObjectD.Patient_id = this.selectedPatients[i].id;
                 ObjectD.Nurse_id = this.path;
                 ObjectD.Entry_user = JSON.parse(localStorage.getItem("user")).Emp_id;
-                ObjectD.Date_to = this.updateDate;
+                ObjectD.Date_from = this.updateDate;
                 ObjectD.Bed_id = this.patients.filter(
                   (x) => x.id == this.selectedPatients[i].id
                 )[0].Bed_id;

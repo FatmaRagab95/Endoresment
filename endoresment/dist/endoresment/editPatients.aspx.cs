@@ -275,7 +275,7 @@ public partial class _editPatients : System.Web.UI.Page
         con.Open();
         using (
             SqlCommand cmd1 =
-                new SqlCommand("insert into Endorsement_Nurse_patients (Patient_id, Nurse_id, Entry_user, Bed_id, Nurse_name, Date_to) values (@Patient_id, @Nurse_id, @Entry_user, @Bed_id, @Nurse_name, @Date_to)",
+                new SqlCommand("insert into Endorsement_Nurse_patients (Patient_id, Nurse_id, Entry_user, Bed_id, Nurse_name, Date_from) values (@Patient_id, @Nurse_id, @Entry_user, @Bed_id, @Nurse_name, @Date_from)",
                     con)
         )
         {
@@ -288,8 +288,8 @@ public partial class _editPatients : System.Web.UI.Page
             cmd1.Parameters.Add("@Bed_id", SqlDbType.Int).Value = data.Bed_id;
             cmd1.Parameters.Add("@Nurse_name", SqlDbType.VarChar).Value =
                 data.Nurse_name;
-            cmd1.Parameters.Add("@Date_to", SqlDbType.VarChar).Value =
-                data.Date_to;
+            cmd1.Parameters.Add("@Date_from", SqlDbType.VarChar).Value =
+                data.Date_from;
 
             cmd1.ExecuteNonQuery();
         }
@@ -310,7 +310,7 @@ public partial class _editPatients : System.Web.UI.Page
 
         public string Nurse_name { get; set; }
 
-        public string Date_to { get; set; }
+        public string Date_from { get; set; }
     }
 
     // update nurse selection

@@ -2,7 +2,7 @@
     <div class="viewPatients">
         <div class="container">
 
-            <h1 class='pt-3 pb-3  border-bottom mainColor'>
+            <h1 class='pt-5 pb-3  border-bottom mainColor'>
                 <i class='ml-3 mr-3 fa fa-hospital-o'></i>
                 Cardiology patients list</h1>
 
@@ -71,8 +71,7 @@ export default {
 <style scoped>
 .viewPatients {
     min-height:100vh;
-    background:#fff url('../../assets/layout/img/patients1.png') right no-repeat;
-    background-size:contain;
+    background-color:#f6f8fb;
 }
 .viewPatients .details {
     max-width: 300px;
