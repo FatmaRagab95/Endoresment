@@ -57,8 +57,9 @@ export default {
   methods: {
     // if user is charge nurse
     getchargeNurseUnits() {
+      let that = this;
+
       if (this.user.Role_id == 17) {
-        let that = this;
           $.ajax({
             type: "POST",
             url: that.link + "endoresment/handover.aspx/getUnitDashData",

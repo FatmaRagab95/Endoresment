@@ -97,7 +97,7 @@ public partial class _PatientsNurse : System.Web.UI.Page
 
         // get Nurses
     [WebMethod]
-    public static string getNursesData(user branch)
+    public static string getNursesData(user info)
     {
         string config =
             Convert.ToString(ConfigurationManager.ConnectionStrings["dbcon"]);
@@ -108,9 +108,10 @@ public partial class _PatientsNurse : System.Web.UI.Page
 
         con.Open();
 
-        using (SqlCommand cmd = new SqlCommand("select * from adminusers where Role_id = 12 and Branch_ID = @Branch_id", con))
+        using (SqlCommand cmd = new SqlCommand("select * from adminusers where Role_id = 12 and Branch_ID = @Branch_id and Emp_id in (select Nurse_id from Endoresment_Nurses_Units where Unit_id in (select Unit_id from Endoresment_Nurses_Units where Nurse_id = @Nurse_id))", con))
         {
-            cmd.Parameters.Add("@Branch_id", SqlDbType.Int).Value = branch.Branch_ID;
+            cmd.Parameters.Add("@Branch_id", SqlDbType.Int).Value = info.Branch_ID;
+            cmd.Parameters.Add("@Nurse_id", SqlDbType.Int).Value = info.Emp_id;
             SqlDataReader idr = cmd.ExecuteReader();
 
             if (idr.HasRows)

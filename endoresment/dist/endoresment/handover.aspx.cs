@@ -77,7 +77,8 @@ public partial class _Handover : System.Web.UI.Page
 
         using (SqlCommand cmd1 = new SqlCommand("select Endorsement_UnitsDashboard.* from Endorsement_UnitsDashboard where Branch_ID = @Branch_ID and  Endorsement_UnitsDashboard.Entry_date = (select max(t2.Entry_date) from Endorsement_UnitsDashboard t2 where t2.Unit_id = Endorsement_UnitsDashboard.Unit_id) order by id desc", con))
         {
-            cmd1.Parameters.Add("@Branch_ID", SqlDbType.Int).Value = id.Branch_ID;
+           // cmd1.Parameters.Add("@Branch_ID", SqlDbType.Int).Value = id.Branch_ID;
+           cmd1.Parameters.Add("@Branch_ID", SqlDbType.Int).Value = 1;
             SqlDataReader idr = cmd1.ExecuteReader();
 
             

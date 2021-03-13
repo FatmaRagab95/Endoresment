@@ -257,7 +257,7 @@ export default {
         type: "POST",
         url: that.apiUrl + "endoresment/patientsNurse.aspx/getNursesData",
         contentType: "application/json; charset=utf-8",
-        data: JSON.stringify({ branch: { Branch_ID:  that.user.Branch_ID} }),
+        data: JSON.stringify({ info: that.user}),
         dataType: "json",
         success: function (data) {
             that.Nurses = JSON.parse(data.d);

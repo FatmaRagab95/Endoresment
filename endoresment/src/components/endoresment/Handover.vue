@@ -11,13 +11,13 @@
             <div class='bg-white shadow table-responsive mb-5' v-for='(unit) in UnitDash' :key='unit.id'>
                 <h4 class='cu-flex p-3 shadow'>
                     <span><i class='fa fa-hospital-o'></i> {{unit.Unit_name}}</span>
-                    <router-link class='btn btn-primary' :to='{name:"Nurses", params:{id:unit.Unit_id}}'>Nurses List</router-link>
+                    <router-link class='btn btn-primary shadow' :to='{name:"Nurses", params:{id:unit.Unit_id}}'>Nurses List</router-link>
                 </h4>
                 <div class="scroll-box" v-dragscroll>
                     <table class="table table-bordered" v-if='patientsFollow.length == patients.length'>
                         <thead class='seperated'>
                             <th scope="col"></th>
-                            <th colspan="4" scope="col"><span>Date:</span> {{unit.Shift_date.substr(0,10)}}</th>
+                            <th colspan="4" scope="col"><span>Date:</span> {{today}}</th>
                             <th colspan="6" scope="col"><span>Shift:</span> <span class='text-primary'><i :class="Shift == 'Day' ? 'fa fa-sun-o' : 'fa fa-moon-o'"></i> {{Shift}}</span></th>
                             <th colspan="2" scope="col"><span>Total Census:</span> {{unit.Total_Census}}</th>
                             <th colspan="4" scope="col">
@@ -198,7 +198,8 @@ export default {
             patientsFollow:[],
             Diets: [],
             Rooms: [],
-            Shift: ''
+            Shift: '',
+            today:''
         }
     },
     methods: {
@@ -342,6 +343,8 @@ export default {
     },
     created() {
         let that = this;
+
+        that.today = moment(new Date()).format('DD-MM-YYYY');
 
         that.getChargeUnits();
 

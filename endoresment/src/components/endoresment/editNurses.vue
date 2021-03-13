@@ -1,37 +1,32 @@
 <template>
-  <div class="editNurses p-3 text-capitalize">
-    <div class="container-fluid mt-3 card">
-      <div class="container-wave">
-        <div class="wave"></div>
-      </div>
-      <div class="text-secondary card bg-light select-form p-4 text-left shadow">
+  <div class="editNurses pt-5">
+    <div class="container-fluid">
+      <div class="card bg-light select-form p-4 text-left shadow">
         <div class="row">
-          <span class="col-md-6"
-            ><h1>
-              {{ Units.filter((x) => x.U_id == path)[0].U_name }}
-            </h1>
-          </span>
+          <div class="col-md-6">
+            <h1>{{ Units.filter((x) => x.U_id == path)[0].U_name }}</h1>
+          </div>
           <span class="col-md-6">
             <button
-              class="btn btn-secondary shadow-sm pull-right"
+              class="btn btn-primary pull-right shadow"
               @click.prevent="OnSubmit"
             >
-              submit selection
+              Submit selection
             </button>
           </span>
-          <span class="col-md-6">
+          <span class="col-lg-6">
             <form class="form-inline">
               <input
                 class="form-control mr-sm-2"
                 style="width: 85%"
                 type="text"
-                placeholder="type a nurse name"
+                placeholder="Type a nurse name"
                 v-model="selectedName"
                 v-on:keyup="namesList"
                 v-on:keydown.enter.prevent
               />
               <span
-                class="bg-secondary text-white pt-1 pb-1 rounded mr-2 text-center"
+                class="btn btn-primary shadow pt-1 pb-1 rounded mr-2 text-center"
                 style="width: 10%"
                 ><i class="fa fa-search" aria-hidden="true"></i
               ></span>
@@ -39,7 +34,7 @@
           </span>
           <span class="col-md-6 row">
             <span class="col-md-3 text-right p-0 m-0" style="line-height: 2.1"
-              >updated date</span
+              >Updated Date</span
             >
             <span class="col-md-9"
               ><input
@@ -55,9 +50,9 @@
         <hr />
 
         <div class="row">
-          <div class="col-md-7">
+          <div class="col-lg-7">
             <h3 class="text-info" style="text-decoration: underline">
-              nurses list in {{ Units.filter((x) => x.U_id == path)[0].U_name }}
+              Nurses list in {{ Units.filter((x) => x.U_id == path)[0].U_name }}
             </h3>
             <div class="card overflow-auto p-3 shadow rounded" style="height: 500px">
               <div
@@ -79,13 +74,13 @@
                   ><label :for="nurse.Emp_id">{{ nurse.FullName }}</label></span
                 >
                 <span
-                  class="pull-right"
+                  class="pull-right text-success"
                   v-if="
                     Endoresment_Nurses_Units.filter(
                       (x) => x.Nurse_id == nurse.Emp_id && x.Active == 1
                     ).length > 0
                   "
-                  >registered in ..
+                  >Registered in ..
                   <span
                     v-for="(unit, i) in Endoresment_Nurses_Units.filter(
                       (x) => x.Nurse_id == nurse.Emp_id && x.Active == 1
@@ -96,14 +91,14 @@
                   {{
                 }}</span>
                 <span class="pull-right text-danger" v-else
-                  >not registered in any unit</span
+                  >Not registered in any unit</span
                 >
               </div>
             </div>
           </div>
           <div class="col-md-5">
             <h3 class="text-info" style="text-decoration: underline">
-              selected nurses in {{ Units.filter((x) => x.U_id == path)[0].U_name }}
+              Selected nurses in {{ Units.filter((x) => x.U_id == path)[0].U_name }}
             </h3>
             <div class="card overflow-auto p-3 shadow rounded" style="height: 500px">
               <div
@@ -140,7 +135,7 @@ export default {
       selectedName: "",
       Names: [],
 
-      updateDate: "",
+      updateDate: '',
 
       newUnitNurse: {
         Nurse_id: 0,
@@ -266,9 +261,10 @@ export default {
     let that = this;
 
     this.path = this.$route.params.id;
+    this.updateDate = moment(new Date()).format('YYYY-MM-DD');
 
     // if current user is charge nurse to this unit
-    if (this.edits && this.UnitDash.filter(x => x.Unit_id == this.path).length == 0) {
+    if (!this.edits && this.UnitDash.filter(x => x.Unit_id == this.path).length == 0) {
       this.$router.go(-1)
     }
 
@@ -323,51 +319,9 @@ export default {
 </script>
 
 <style scoped>
-.container-wave {
-  position: absolute;
-  background: #fff;
-  height: 50vh;
-  width: 100%;
-  left: 0;
-  top: 0;
-}
-
-.wave {
-  position: absolute;
-  height: 250px;
-  width: 100%;
-  background: #fff;
-  bottom: 0;
-}
-
-.wave::before,
-.wave::after {
-  content: "";
-  display: block;
-  position: absolute;
-  border-radius: 100% 50%;
-}
-
-.wave::before {
-  width: 55%;
-  height: 109%;
-  background-color: #f0f0f0;
-  right: -1.5%;
-  top: 80%;
-}
-.wave::after {
-  width: 55%;
-  height: 100%;
-  background-color: #fff;
-  left: 0;
-  top: 60%;
-}
 .select-form {
-  left: 50%;
-  margin-top: 1%;
-  margin-bottom: 1%;
-  width: 90%;
-  transform: translateX(-50%);
-  max-height: 100vh;
+  min-height: 100vh;
+  padding-bottom:120px;
+  margin-bottom:120px;
 }
 </style>

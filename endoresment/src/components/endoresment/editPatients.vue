@@ -1,7 +1,7 @@
 <template>
-  <div class="editPatients p-3 text-capitalize">
-    <div class="container-fluid mt-3 card">
-      <div class="text-secondary card bg-light select-form p-4 text-left shadow">
+  <div class="editPatients">
+    <div class="container-fluid">
+      <div class="card bg-light select-form p-4 text-left shadow">
         <div class="row">
           <span class="col-md-6"
             ><h3>
@@ -10,10 +10,10 @@
           </span>
           <span class="col-md-6">
             <button
-              class="btn btn-secondary shadow-sm pull-right"
+              class="btn btn-primary pull-right shadow"
               @click.prevent="OnSubmit"
             >
-              submit selection
+              Submit selection
             </button>
           </span>
           <span class="col-md-6 mt-4">
@@ -22,21 +22,21 @@
                 class="form-control mr-sm-2"
                 style="width: 85%"
                 type="text"
-                placeholder="type a nurse name"
+                placeholder="Type a patient name.."
                 v-model="selectedName"
                 v-on:keyup="namesList"
                 v-on:keydown.enter.prevent
               />
               <span
-                class="bg-secondary text-white pt-1 pb-1 rounded mr-2 text-center"
-                style="width: 10%"
-                ><i class="fa fa-search" aria-hidden="true"></i
-              ></span>
+                class="btn btn-primary shadow pt-1 pb-1 rounded mr-2 text-center"
+                style="width: 10%">
+                <i class="fa fa-search" aria-hidden="true"></i>
+              </span>
             </form>
           </span>
           <span class="col-md-6 row mt-4">
             <span class="col-md-3 text-right p-0 m-0" style="line-height: 2.1"
-              >updated date</span
+              >Updated Date:</span
             >
             <span class="col-md-9"
               ><input
@@ -54,7 +54,7 @@
         <div class="row">
           <div class="col-md-7">
             <h5 class="text-info" style="text-decoration: underline">
-              patients list for {{ users.filter((x) => x.Emp_id == path)[0].FullName }}
+              Patients list for {{ users.filter((x) => x.Emp_id == path)[0].FullName }}
             </h5>
             <div class="card overflow-auto p-3 shadow rounded" style="height: 500px">
               <div
@@ -81,7 +81,7 @@
           </div>
           <div class="col-md-5">
             <h5 class="text-info" style="text-decoration: underline">
-              selected patients with
+              Selected patients with
               {{ users.filter((x) => x.Emp_id == path)[0].FullName }}
             </h5>
             <div class="card overflow-auto p-3 shadow rounded" style="height: 500px">
@@ -267,6 +267,7 @@ export default {
   created() {
     let that = this;
     this.path = this.$router.history.current.path.split("/")[2];
+    this.updateDate = moment(new Date()).format('YYYY-MM-DD');
 
     //get patients data
     $.ajax({
@@ -319,11 +320,8 @@ export default {
 
 <style scoped>
 .select-form {
-  left: 50%;
-  margin-top: 1%;
-  margin-bottom: 1%;
-  width: 90%;
-  transform: translateX(-50%);
-  max-height: 100vh;
+  min-height: 100vh;
+  padding-bottom:120px;
+  margin-bottom:120px;
 }
 </style>
