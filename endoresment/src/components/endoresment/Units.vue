@@ -8,7 +8,7 @@
                         {{new Date().toDateString()}}.</h4>
                 <p class='mb-5 text-center text-secondary'>
                     Current shift 
-                    <span class='text-info'><i :class="Shift == 'Day' ? 'fa fa-sun-o' : 'fa fa-moon-o'"></i> {{Shift}}</span>
+                    <span class='text-primary'><i :class="Shift == 'Day' ? 'fa fa-sun-o' : 'fa fa-moon-o'"></i> {{Shift}}</span>
                 </p>
 
                 <div class='cu-flex'>

@@ -5,7 +5,7 @@ import login from "@/components/login";
 import addUnit from "@/components/endoresment/addUnit";
 import Units from "@/components/endoresment/Units";
 import addPatient from "@/components/endoresment/add_patient";
-import viewPatients from "@/components/endoresment/viewPatients";
+import viewPatients from "@/components/endoresment/patients_doctor";
 import patientsNurse from "@/components/endoresment/patients_nurse";
 import UnitDetails from "@/components/endoresment/UnitDetails";
 import shiftDetails from "@/components/endoresment/shiftDetails";
@@ -68,6 +68,17 @@ const router = new Router({
       },
     },
     {
+      path: "/selectUnit",
+      name: "Rooms",
+      component: selectUnit,
+      meta: {
+        requiresAuth: true,
+        cat: "Endoresment",
+        viewMenu:true,
+        chargeNurse:false
+      },
+    },
+    {
       path: "/UnitDetails/:id",
       name: "Unit Details",
       component: UnitDetails,
@@ -113,7 +124,7 @@ const router = new Router({
     },
     {
       path: "/viewPatients",
-      name: "Patients",
+      name: "Doctors Patients",
       component: viewPatients,
       meta: {
         requiresAuth: true,
@@ -124,7 +135,7 @@ const router = new Router({
     },
     {
       path: "/patientsNurse",
-      name: "Patients",
+      name: "Nurses Patients",
       component: patientsNurse,
       meta: {
         requiresAuth: true,
@@ -207,17 +218,6 @@ const router = new Router({
         requiresAuth: true,
         cat: "Endoresment",
         viewMenu:false,
-        chargeNurse:false
-      },
-    },
-    {
-      path: "/selectUnit",
-      name: "Rooms",
-      component: selectUnit,
-      meta: {
-        requiresAuth: true,
-        cat: "Endoresment",
-        viewMenu:true,
         chargeNurse:false
       },
     },

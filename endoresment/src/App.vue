@@ -16,8 +16,8 @@
         <upper-nav v-if="user" :username="user.FullName"></upper-nav>
 
         <!-- show alerts for charge nurses to confirm endorsing -->
-        <div v-if='chargeNurseUnits.length > 0 && edits  && user'>
-          <div v-for='(data, i) in chargeNurseUnits' :key='data.id'>
+        <div v-if='Units.length > 0 && edits  && user'>
+          <div v-for='(data, i) in Units' :key='data.id'>
             <ul class='list-unstyled alert-charge'>
               <li v-if='!data.Confirm' class='alert bg-danger text-white p-4'>
                 <i class='text-warning fa fa-warning'></i> <span>You haven't confirmed endorsing for 
@@ -29,7 +29,7 @@
           </div>
         </div>
 
-        <router-view :link="link" :user="user" :UnitDash='chargeNurseUnits' :edits='edits' />
+        <router-view :link="link" :user="user" :UnitDash='Units' :edits='edits' />
       </div>
     </div>
   </div>
@@ -50,13 +50,14 @@ export default {
     return {
       user: JSON.parse(localStorage.getItem("user")),
       link: `http://localhost:${49638}/endoresment/dist/`,
-      chargeNurseUnits: [],
+      Units: [],
       edits:false
     };
   },
   methods: {
+  
     // if user is charge nurse
-    getchargeNurseUnits() {
+    getUnits() {
       let that = this;
 
       if (this.user.Role_id == 17) {
@@ -68,11 +69,11 @@ export default {
             dataType: "json",
             success: function (data) {
               if (new Date().getHours() < 20 && new Date().getHours() >= 8) {
-                that.chargeNurseUnits = JSON.parse(data.d).filter(x => x.Shift.trim() == 'Day');
+                that.Units = JSON.parse(data.d).filter(x => x.Shift.trim() == 'Day');
               } else {
-                that.chargeNurseUnits = JSON.parse(data.d).filter(x => x.Shift.trim() == 'Night');
+                that.Units = JSON.parse(data.d).filter(x => x.Shift.trim() == 'Night');
               }
-              if (that.chargeNurseUnits.length > 0) {
+              if (that.Units.length > 0) {
                 that.edits = true;
               } else {
                   $.ajax({
@@ -84,7 +85,7 @@ export default {
                       success: function (data) {
                           if (data.d.length > 0) {
                               that.edits = false;
-                              that.chargeNurseUnits = JSON.parse(data.d);
+                              that.Units = JSON.parse(data.d);
                           }
                       },
                   });
@@ -93,8 +94,40 @@ export default {
             },
         });
 
-        // if the user is not a charge nurse
-      } else {
+        // if the user is a nurse
+      } else if (this.user.Role_id == 12) {
+          $.ajax({
+              type: "POST",
+              url: that.link + "endoresment/handover.aspx/getUnitDashData3",
+              data:JSON.stringify({"id": that.user}),
+              contentType: "application/json; charset=utf-8",
+              dataType: "json",
+              success: function (data) {
+                  if (data.d.length > 0) {
+                      that.edits = true;
+                      that.Units = JSON.parse(data.d);
+                  }
+              },
+          });
+      } 
+      // if the user is a doctor
+      else if (this.user.Role_id == 11) {
+          $.ajax({
+              type: "POST",
+              url: that.link + "endoresment/handover.aspx/getUnitDashData2",
+              data:JSON.stringify({"id": that.user}),
+              contentType: "application/json; charset=utf-8",
+              dataType: "json",
+              success: function (data) {
+                  if (data.d.length > 0) {
+                      that.edits = true;
+                      that.Units = JSON.parse(data.d);
+                  }
+              },
+          });
+      } 
+      // if the user is anything else
+      else {
           $.ajax({
               type: "POST",
               url: that.link + "endoresment/handover.aspx/getUnitDashData2",
@@ -104,7 +137,7 @@ export default {
               success: function (data) {
                   if (data.d.length > 0) {
                       that.edits = false;
-                      that.chargeNurseUnits = JSON.parse(data.d);
+                      that.Units = JSON.parse(data.d);
                   }
               },
           });
@@ -127,7 +160,7 @@ export default {
                   dangerMode: true,
                 });
 
-                that.chargeNurseUnits[index].Confirm = true;
+                that.Units[index].Confirm = true;
             }
         });
     }
@@ -137,24 +170,40 @@ export default {
       this.user = JSON.parse(localStorage.getItem("user"));
     },
     user: function () {
-      this.getchargeNurseUnits()
+      this.getUnits()
     }
   },
   created() {
-    this.getchargeNurseUnits()
+    this.getUnits()
   },
 };
 </script>
 
 <style>
-[v-cloak] {
-  display: none;
+/* edit bootstrap classes */
+.badge-primary,
+.btn-primary,
+.bg-primary {
+  background-color:#6534c7 !important;
+  border-color:#6534c7;
 }
+.btn-primary:hover {
+    background-color: #4c2797 !important;
+    border-color: #4c2797;
+}
+.text-primary {
+  color:#6534c7 !important;
+}
+.badge-success,
+.btn-sucsess,
+.bg-success {
+  background-color: #29b770;
+}
+/* end edit bootstrap classes */
+
+/* start global rules */
 .main-contnet {
   margin-top: 60px;
-}
-.badge-success {
-  background-color: #29b770;
 }
 .loader-container {
   background-color: #7da4d0;

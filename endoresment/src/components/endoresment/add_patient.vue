@@ -8,7 +8,7 @@
         <form @submit.prevent='InsertPatient'>
             <div class="custom-form  pt-3">
                 <div class="cu-container">
-                    <div class="cu-form-group special">
+                    <div class="cu-form-group special" style="max-width: 900px">
                         <div class="title">
                             <span> <i class='fa fa-hospital-o mainColor mr-1'></i> admission Form</span>
                         </div>
@@ -49,7 +49,7 @@
                             </h3>
                             <div class="cu-input text-box">
                                 <span class="fa fa-edit"></span>
-                                <input type="number" v-model="newPatient.Age" required>
+                                <input type="text" v-model="newPatient.Age" required>
                             </div>
                         </div>
                         
@@ -91,18 +91,6 @@
                             </div>
                         </div>
 
-                        <div class="cu-field">
-                            <h3 class="cu-label">
-                                <label>Branch :</label>
-                            </h3>
-                            <div class="f-select">
-                                <select class="form-control form-control-sm" v-model='newPatient.Branch_id' required>
-                                    <option v-for='branch in  Branches' :value='branch.id'
-                                    :key='branch.Branch_EName'>{{branch.Branch_EName}}</option>
-                                </select>
-                            </div>
-                        </div>
-
                         <div class="cu-field" v-if='Units.length > 0'>
                             <h3 class="cu-label">
                                 <label>Unit :</label>
@@ -121,8 +109,20 @@
                             </h3>
                             <div class="f-select">
                                 <select class="form-control form-control-sm" v-model='newPatient.Room' required>
-                                    <option v-for='room in  Rooms' :value='room.R_name'
-                                    :key='room.R_name'>{{room.R_name}}</option>
+                                    <option v-for='room in  Rooms' :value='room.id'
+                                    :key='room.Room_name'>{{room.Room_name}}</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="cu-field" v-if='Beds.length > 0'>
+                            <h3 class="cu-label">
+                                <label>Bed :</label>
+                            </h3>
+                            <div class="f-select">
+                                <select class="form-control form-control-sm" v-model='newPatient.Bed_id' required>
+                                    <option v-for='bed in  Beds' :value='bed.id'
+                                    :key='bed.id'>{{bed.Bed_name}}</option>
                                 </select>
                             </div>
                         </div>
@@ -139,13 +139,15 @@
                             </div>
                         </div>
 
-                        <div class="cu-field">
+                        <div class="cu-field" v-if='Consultants.length > 0'>
                             <h3 class="cu-label">
-                                <label>Consultant Name :</label>
+                                <label>Consultant :</label>
                             </h3>
-                            <div class="cu-input text-box">
-                                <span class="fa fa-edit"></span>
-                                <input type="text" v-model="newPatient.Consultant_Name" required>
+                            <div class="f-select">
+                                <select class="form-control form-control-sm" v-model='newPatient.Consultant_id' required>
+                                    <option v-for='dr in  Consultants' :value='dr.Dr_Code'
+                                    :key='dr.DR_Name'>{{dr.DR_Name}}</option>
+                                </select>
                             </div>
                         </div>
 
@@ -155,7 +157,7 @@
                             </h3>
                             <div class="cu-input text-box">
                                 <span class="fa fa-calendar-o"></span>
-                                <input :max='new Date().toISOString().substr(0,10)' type="date" v-model="newPatient.Addmission_date" required>
+                                <input :max='today' type="date" v-model="newPatient.Addmission_date" required>
                             </div>
                         </div>
 
@@ -173,28 +175,33 @@
 <script>
 export default {
     name:'addPatient',
-    props: ['link'],
+    props: ['link', 'user'],
     data() {
         return {
             apiUrl: this.link,
-            Branches:[],
             Units:[],
             Rooms:[],
+            Beds: [],
             Specialities:[],
+            Consultants:[],
+            today:'',
             newPatient: {
                 Patient_FullName:'',
-                Branch_id:0,
+                Branch_id:this.user.Branch_ID,
                 Branch_name:'',
                 Gender:'',
                 Medical_Number:0,
                 Unit:'',
                 Room:'',
+                Bed_id:0,
                 Addmission_date:'',
                 Age:0,
                 Date_Birth:'',
+                Consultant_id:'',
                 Consultant_Name:'',
                 Specialty:'',
                 Patient_Status:1,
+                Entry_user:0
             }
         }
     },
@@ -202,9 +209,12 @@ export default {
         InsertPatient() {
              if ($("form").is(":valid")) {
                  let that = this;
-                 that.newPatient.Branch_name = that.Branches.filter(x => x.id == that.newPatient.Branch_id)[0].Branch_EName;
+                //  that.newPatient.Branch_name = that.Branches.filter(x => x.id == that.newPatient.Branch_id)[0].Branch_EName;
 
                  that.newPatient.Unit = that.Units.filter(x => x.U_id == that.newPatient.Unit)[0].U_name;
+                 that.newPatient.Room = that.Rooms.filter(x => x.id == that.newPatient.Room)[0].Room_name;
+                 that.newPatient.Consultant_Name = that.Consultants.filter(x => x.Dr_Code == that.newPatient.Consultant_id)[0].DR_Name;
+                 that.newPatient.Entry_user = that.user.Emp_id;
 
                 //insert new patient
                 $.ajax({
@@ -214,7 +224,12 @@ export default {
                     contentType: "application/json; charset=utf-8",
                     dataType: "json",
                     success: function (data) {
-                        that.$router.push({name:'viewPatients'})
+                        swal({
+                        title: "Done!",
+                        text: "You successfully added a new patient ...",
+                        icon: "success",
+                        });
+                        location.reload();
                     },
                 });
              } else {
@@ -227,22 +242,6 @@ export default {
         }
     },
     watch: {
-        'newPatient.Branch_id': function () {
-            let branch = this.newPatient.Branch_id,
-            that = this;
-
-            //get Units
-            $.ajax({
-                type: "POST",
-                url: that.apiUrl + "endoresment/add_patient.aspx/getUnitsData",
-                data:JSON.stringify({"branch": {"id": branch}}),
-                contentType: "application/json; charset=utf-8",
-                dataType: "json",
-                success: function (data) {
-                    that.Units = JSON.parse(data.d);
-                },
-            });
-        },
         'newPatient.Unit': function () {
             let Unit = this.newPatient.Unit,
             that = this;
@@ -258,32 +257,67 @@ export default {
                     that.Rooms = JSON.parse(data.d);
                 },
             });
-        }
+        },
+        'newPatient.Room': function () {
+            let Room = this.newPatient.Room,
+            that = this;
+
+            //get Beds
+            $.ajax({
+                type: "POST",
+                url: that.apiUrl + "endoresment/add_patient.aspx/getBedsData",
+                data:JSON.stringify({"room": {"id": Room}}),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (data) {
+                    that.Beds = JSON.parse(data.d);
+                },
+            });
+        },    
+        'newPatient.Specialty': function () {
+        let Specialty = this.Specialities.filter(x => x.Spcy_name_En == this.newPatient.Specialty)[0].Spcy_id,
+        that = this;
+
+        //get Consultants
+        $.ajax({
+            type: "POST",
+            url: that.apiUrl + "endoresment/roomDetails.aspx/getConsultantsData",
+            // data:JSON.stringify({"info": {"Spcy_id": Specialty, 'Branch_ID': that.user.Branch_ID}}),
+            data:JSON.stringify({"info": {"Spcy_id": Specialty, 'Branch_ID': 2}}),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+                that.Consultants = JSON.parse(data.d);
+            },
+        });
+    },
     },
     created() {
 
         let that = this;
+        that.today = moment(new Date()).format('YYYY-MM-DD');
 
-        //get branches
+        //get Units
         $.ajax({
-        type: "POST",
-        url: that.apiUrl + "endoresment/add_patient.aspx/getBranchesData",
-        contentType: "application/json; charset=utf-8",
-        dataType: "json",
-        success: function (data) {
-            that.Branches = JSON.parse(data.d);
-        },
+            type: "POST",
+            url: that.apiUrl + "endoresment/add_patient.aspx/getUnitsData",
+            data:JSON.stringify({"branch": {"id": that.user.Branch_ID}}),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+                that.Units = JSON.parse(data.d);
+            },
         });
 
         //get Specialities
-        $.ajax({
-        type: "POST",
-        url: that.apiUrl + "endoresment/add_patient.aspx/getSpecialitiesData",
-        contentType: "application/json; charset=utf-8",
-        dataType: "json",
-        success: function (data) {
-            that.Specialities = JSON.parse(data.d);
-        },
+            $.ajax({
+            type: "POST",
+            url: that.apiUrl + "endoresment/add_patient.aspx/getSpecialitiesData",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+                that.Specialities = JSON.parse(data.d);
+            },
         });
     }
 }

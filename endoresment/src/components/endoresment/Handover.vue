@@ -171,7 +171,7 @@
                             </tr>
                         </tbody>
                         <caption class='text-center' v-if='patients.filter(x => unit.Unit_name.trim() == x.Unit.trim()).length == 0'>
-                            <p class='mt-5 alert'><i class='fa fa-warning text-warning'></i> There is no patients at this unit!</p>
+                            <p class='mt-5 alert'><i class='fa fa-warning text-warning'></i> There are no patients at this unit!</p>
                             <router-link class='special-btn' :to='{name:"Admission Form"}'>Admission Form</router-link>
                         </caption>
                     </table>

@@ -80,7 +80,7 @@
               </div>
             </div>
           </div>
-          <div class="col-md-4">
+          <div class="col-md-4" v-if='edit'>
             <div class="form-group bg-white border text-center shadow-sm">
               <router-link :to='{name:"Insert Patient Data", params:{id:id}}' class="special-btn pl-3 pr-3">
                   Submit shift data
@@ -114,18 +114,6 @@
                 class="card-header py-3 d-flex flex-row align-items-center justify-content-between"
               >
                 <h5 class="m-0">Diagnosis</h5>
-                <div class="dropdown no-arrow show">
-                  <a
-                    class="fa fa-pencil-square-o text-success"
-                    href="#"
-                    role="button"
-                    id="dropdownMenuLink"
-                    data-toggle="dropdown"
-                    aria-haspopup="true"
-                    aria-expanded="false"
-                  >
-                  </a>
-                </div>
               </div>
               <!-- Card Body -->
               <div class="card-body">
@@ -141,18 +129,6 @@
                 class="card-header py-3 d-flex flex-row align-items-center justify-content-between"
               >
                 <h5 class="m-0">Progress Notes</h5>
-                <div class="dropdown no-arrow show">
-                  <a
-                    class="fa fa-pencil-square-o text-success"
-                    href="#"
-                    role="button"
-                    id="dropdownMenuLink"
-                    data-toggle="dropdown"
-                    aria-haspopup="true"
-                    aria-expanded="false"
-                  >
-                  </a>
-                </div>
               </div>
               <!-- Card Body -->
               <div class="card-body">
@@ -169,18 +145,6 @@
                 class="card-header py-3 d-flex flex-row align-items-center justify-content-between"
               >
                 <h5 class="m-0">Medical Details</h5>
-                <div class="dropdown no-arrow show">
-                  <a
-                    class="fa fa-pencil-square-o text-success"
-                    href="#"
-                    role="button"
-                    id="dropdownMenuLink"
-                    data-toggle="dropdown"
-                    aria-haspopup="true"
-                    aria-expanded="false"
-                  >
-                  </a>
-                </div>
               </div>
               <div class="card-body row">
                 <div class="col-md-6">
@@ -238,18 +202,6 @@
                 class="card-header py-3 d-flex flex-row align-items-center justify-content-between"
               >
                 <h5 class="m-0">To Do</h5>
-                <div class="dropdown no-arrow show">
-                  <a
-                    class="fa fa-pencil-square-o text-success"
-                    href="#"
-                    role="button"
-                    id="dropdownMenuLink"
-                    data-toggle="dropdown"
-                    aria-haspopup="true"
-                    aria-expanded="false"
-                  >
-                  </a>
-                </div>
               </div>
               <div class="card-body row m-0">
                 <div class="col-md-12">
@@ -265,18 +217,6 @@
                 class="card-header py-3 d-flex flex-row align-items-center justify-content-between"
               >
                 <h5 class="m-0">Follow up</h5>
-                <div class="dropdown no-arrow show">
-                  <a
-                    class="fa fa-pencil-square-o text-success"
-                    href="#"
-                    role="button"
-                    id="dropdownMenuLink"
-                    data-toggle="dropdown"
-                    aria-haspopup="true"
-                    aria-expanded="false"
-                  >
-                  </a>
-                </div>
               </div>
               <div class="card-body row m-0">
                 <div class="col-md-12">
@@ -292,18 +232,6 @@
                 class="card-header py-3 d-flex flex-row align-items-center justify-content-between"
               >
                 <h5 class="m-0">Contraptions &amp; Infusions</h5>
-                <div class="dropdown no-arrow show">
-                  <a
-                    class="fa fa-pencil-square-o text-success"
-                    href="#"
-                    role="button"
-                    id="dropdownMenuLink"
-                    data-toggle="dropdown"
-                    aria-haspopup="true"
-                    aria-expanded="false"
-                  >
-                  </a>
-                </div>
               </div>
               <div class="card-body row m-0">
                 <div class="col-md-12">
@@ -319,18 +247,6 @@
                 class="card-header py-3 d-flex flex-row align-items-center justify-content-between"
               >
                 <h5 class="m-0">Routise Plan of Care</h5>
-                <div class="dropdown no-arrow show">
-                  <a
-                    class="fa fa-pencil-square-o text-success"
-                    href="#"
-                    role="button"
-                    id="dropdownMenuLink"
-                    data-toggle="dropdown"
-                    aria-haspopup="true"
-                    aria-expanded="false"
-                  >
-                  </a>
-                </div>
               </div>
               <div class="card-body row m-0">
                 <div class="col-md-12">
@@ -348,18 +264,6 @@
                 class="card-header py-3 d-flex flex-row align-items-center justify-content-between"
               >
                 <h5 class="m-0">Progress of consultations</h5>
-                <div class="dropdown no-arrow show">
-                  <a
-                    class="fa fa-pencil-square-o text-success"
-                    href="#"
-                    role="button"
-                    id="dropdownMenuLink"
-                    data-toggle="dropdown"
-                    aria-haspopup="true"
-                    aria-expanded="false"
-                  >
-                  </a>
-                </div>
               </div>
               <div class="card-body row m-0">
                 <div class="col-md-12">
@@ -376,7 +280,7 @@
       <div class="text-center not-found" v-else>
         <p><i class='fa fa-warning text-warning'></i>
         There is no follow up data yet for this patient!</p>
-        <router-link :to='{name:"Insert Patient Data", params:{id:id}}' class="special-btn pl-3 pr-3">
+        <router-link v-if='edit' :to='{name:"Insert Patient Data", params:{id:id}}' class="special-btn pl-3 pr-3">
             Submit shift data
         </router-link>
       </div>
@@ -387,14 +291,15 @@
 <script>
 export default {
   name: "patientData",
-  props: ["link"],
+  props: ["link", 'user', 'UnitDash'],
   data() {
     return {
       apiUrl: this.link,
       patientData:null,
       shiftData:null,
       id: this.$route.params.id,
-      viewedShift: null
+      viewedShift: null,
+      edit:false
     };
   },
   methods: {
@@ -411,6 +316,24 @@ export default {
       dataType: "json",
       success: function (data) {
         that.patientData = JSON.parse(data.d)[0];
+
+        // if user is a nurse check if the patient is the nurses patient or not
+        if (that.user.Role_id == 12) {
+          $.ajax({
+              type: "POST",
+              url: that.apiUrl + "endoresment/patientsNurse.aspx/getPatientsData",
+              contentType: "application/json; charset=utf-8",
+              data: JSON.stringify({ id: { Emp_id: that.user.Emp_id } }),
+              dataType: "json",
+              success: function (data) {
+                  that.edit = JSON.parse(data.d).filter(x => x.id == that.id).length > 0 ? true : false;
+              },
+          });
+        } 
+        // if the user is a charge nurse check if the patient located in the same unit as current charge nurse
+        else if (that.user.Role_id == 17) {
+          that.edit = that.UnitDash.filter(x => x.Unit_name.trim() == that.patientData.Unit.trim()).length > 0 ? true : false;
+        }
       },
     });
 
@@ -422,8 +345,8 @@ export default {
       contentType: "application/json; charset=utf-8",
       dataType: "json",
       success: function (data) {
-        that.shiftData = JSON.parse(data.d);
-        that.viewedShift = that.shiftData.slice(-1)[0];
+        that.shiftData = JSON.parse(data.d)[0];
+        that.viewedShift = that.shiftData ? that.shiftData.slice(-1)[0] : null;
       },
     });
 

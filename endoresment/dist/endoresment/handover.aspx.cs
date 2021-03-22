@@ -94,6 +94,56 @@ public partial class _Handover : System.Web.UI.Page
         return JsonConvert.SerializeObject(UnitsDash);
     }
 
+    // get unit dashboard
+    // if user is a nurse
+    [WebMethod]
+    public static string getUnitDashData3(user id)
+    {
+        string config = Convert.ToString(ConfigurationManager.ConnectionStrings["dbcon"]);
+        List<UnitsDash> UnitsDash = new List<UnitsDash>();
+        List<user> user = new List<user>();
+
+        SqlConnection con = new SqlConnection(config);
+
+        con.Open();
+
+        using (SqlCommand cmd1 = new SqlCommand("SELECT * from Endorsement_UnitsDashboard where Shift_date >= DATEADD(day,-2, GETDATE()) and Unit_id in (select TOP(20) Unit_id from Endoresment_Nurses_Units where Nurse_id = @Nurse_id and Shift_date >=   DATEADD(day,-2, GETDATE()) order by id desc) order by id desc", con))
+        {
+            cmd1.Parameters.Add("@Nurse_id", SqlDbType.Int).Value = id.Emp_id;
+            SqlDataReader idr = cmd1.ExecuteReader();
+
+            
+            if (idr.HasRows)
+            {
+                UnitsDash = populateUnitsDashLisst(idr, con);
+
+            } else {
+                con.Close(); 
+                con.Open();
+
+                using (SqlCommand cmd2 = new SqlCommand("select Endorsement_UnitsDashboard.* from Endorsement_UnitsDashboard where Unit_id in (select TOP(20) Unit_id from Endoresment_Nurses_Units where Nurse_id = @Nurse_id) and Branch_ID = @Branch_ID and  Endorsement_UnitsDashboard.Entry_date = (select max(t2.Entry_date) from Endorsement_UnitsDashboard t2 where t2.Unit_id = Endorsement_UnitsDashboard.Unit_id) order by id desc", con))
+                {
+                cmd2.Parameters.Add("@Nurse_id", SqlDbType.Int).Value = id.Emp_id;
+                cmd2.Parameters.Add("@Branch_ID", SqlDbType.Int).Value = 1;
+                    SqlDataReader idr1 = cmd2.ExecuteReader();
+
+                    
+                    if (idr1.HasRows)
+                    {
+                        UnitsDash = populateUnitsDashLisst(idr1, con);
+
+                    }
+                }
+
+                con.Close(); 
+            }
+        }
+
+        con.Close();  
+
+        return JsonConvert.SerializeObject(UnitsDash);
+    }
+
 
     public static List<UnitsDash>
     populateUnitsDashLisst(SqlDataReader idr, SqlConnection con)

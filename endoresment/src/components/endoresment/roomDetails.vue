@@ -5,9 +5,8 @@
       <div class="container text-center">
         <h1 class="mt-4 text-secondary" style="text-decoration: underline">
           {{ getUnitsData.filter((x) => x.U_id == path)[0].U_name }} ......
-          <span class="badge badge-secondary"
-            >{{ getRoomsData.filter((x) => x.unit_id == path).length }} rooms</span
-          >
+          <span class="badge bg-primary text-white"
+            >{{ getRoomsData.filter((x) => x.unit_id == path).length }} Rooms</span>
         </h1>
       </div>
     </div>
@@ -17,15 +16,16 @@
     <div class="container-fluid mt-2 bg-white pt-3 pb-3 card viewPatients">
       <div
         class="container"
-        v-if="getRoomsData.filter((x) => x.unit_id == path).length > 0"
-      >
+        v-if="getRoomsData.filter((x) => x.unit_id == path).length > 0">
         <!--- start double rooms --->
-
+        <ul class='list-unstyled'>
+          <li class='cube-container'><span class='cube bg-success rounded'></span> Available rooms</li>
+          <li class='cube-container'><span class='cube bg-danger rounded'></span> Occupied rooms</li>
+        </ul>
         <h4
           v-if="filterUnits.filter((x) => x.Room_type_id == 1).length > 0"
-          class="text-secondary text-left"
-          style="text-decoration: underline"
-        >
+          class="text-secondary text-left border-top pt-5"
+          style="text-decoration: underline">
           double rooms ----
           <span class="badge badge-secondary">{{
             filterUnits.filter((x) => x.Room_type_id == 1).length
@@ -33,36 +33,31 @@
         </h4>
         <div
           class="row text-center"
-          v-if="filterUnits.filter((x) => x.Room_type_id == 1).length > 0"
-        >
+          v-if="filterUnits.filter((x) => x.Room_type_id == 1).length > 0">
           <div
             class="col-md-4 p-2"
             v-for="room in filterUnits.filter((x) => x.Room_type_id == 1)"
-            :key="room.R_id"
-          >
+            :key="room.R_id">
             <div class="bg-light shadow p-2 container card">
               <h4
                 class="text-secondary font-weight-bold mb-3"
-                style="text-decoration: underline"
-              >
+                style="text-decoration: underline">
                 room
-                <span class="text-info">{{ room.Room_name }}</span>
+                <span class="text-primary">{{ room.Room_name }}</span>
               </h4>
 
               <div class="shadow bg-white rounded row w-100 m-auto p-2">
                 <div
                   class="col-md-6 p-2"
                   v-for="bed in RoomsDashboard.filter((x) => x.Room_id == room.id)"
-                  :key="bed.id"
-                >
+                  :key="bed.id">
                   <div
                     class="card p-2 bg-light shadow icon"
                     style="
                       height: 200px;
                       transition: 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
                       position: relative;
-                    "
-                  >
+                    ">
                     <div class="h-25 bg-light mb-2 rounded pt-2 shadow">
                       <span class="text-dark">{{ bed.Bed_name.substring(0, 4) }}</span>
                       <span
@@ -75,59 +70,51 @@
                             ? 'ml-2 badge-warning pl-2 pr-2 rounded'
                             : ' '
                         "
-                        >{{ bed.Bed_name[4] }}</span
-                      >
+                        >{{ bed.Bed_name[4] }}</span>
                     </div>
+                    <div class="h-75 bg-light rounded pt-3 bed-background shadow card"></div>
                     <div
-                      class="h-75 bg-light rounded pt-3 bed-background shadow card"
-                    ></div>
-                    <div
-                      class="tooltip bg-light card p-4 text-secondary text-capitalize"
-                      v-if="bed.Status_id == 2"
-                    >
+                      class="tooltip bg-white card p-4 text-secondary text-capitalize"
+                      v-if="bed.Status_id == 2">
                       <h6>
-                        <span class="text-info">full name :</span
+                        <span class="text-primary">full name :</span
                         ><span class="ml-2">{{
                           PatientsData.filter((x) => x.Bed_id == bed.id)[0]
                             .Patient_FullName
                         }}</span>
                       </h6>
                       <h6>
-                        <span class="text-info">age : </span
-                        ><span class="ml-2">{{
-                          PatientsData.filter((x) => x.Bed_id == bed.id)[0].Age
-                        }}</span>
+                        <span class="text-primary">age : </span><span class="ml-2">
+                          {{
+                            PatientsData.filter((x) => x.Bed_id == bed.id)[0].Age
+                          }}</span>
                       </h6>
                       <h6>
-                        <span class="text-info">gender : </span
-                        ><span class="ml-2">{{
+                        <span class="text-primary">gender : </span><span class="ml-2">{{
                           PatientsData.filter((x) => x.Bed_id == bed.id)[0].Gender
                         }}</span>
                       </h6>
                       <h6>
-                        <span class="text-info">medical number : </span
-                        ><span class="ml-2">{{
+                        <span class="text-primary">medical number : </span><span class="ml-2">{{
                           PatientsData.filter((x) => x.Bed_id == bed.id)[0].Medical_Number
                         }}</span>
                       </h6>
                       <h6>
-                        <span class="text-info">specialty : </span
-                        ><span class="ml-2">{{
+                        <span class="text-primary">specialty : </span><span class="ml-2">{{
                           PatientsData.filter((x) => x.Bed_id == bed.id)[0].Specialty
                         }}</span>
                       </h6>
-                      <button class="btn mt-3 btn-info btn-sm rounded">Details</button>
+                      <router-link :to='{name:"Patient Data", params:{id:PatientsData.filter((x) => x.Bed_id == bed.id)[0].id}}' target='_blank'
+                       class="btn mt-3 btn-primary btn-sm shadow">Details</router-link>
                     </div>
                     <div
-                      class="tooltip bg-light card p-4 text-center"
-                      v-else-if="bed.Status_id == 1"
-                    >
+                      class="tooltip bg-white card p-4 text-center"
+                      v-else-if="bed.Status_id == 1">
                       <button
-                        class="btn btn-danger btn-sm rounded open-pop shadow-sm"
+                        class="btn btn-primary btn-sm rounded open-pop shadow"
                         data-pop-name="patient-popup"
-                        v-on:click.prevent="popUp(bed, 'patientPop')"
-                      >
-                        patient registration
+                        v-on:click.prevent="popUp(bed, 'patientPop')">
+                        Patient Registration
                       </button>
                     </div>
                   </div>
@@ -137,13 +124,12 @@
           </div>
         </div>
         <!--- end double rooms --->
-        <hr />
+
         <!--- start single rooms --->
         <h4
           v-if="filterUnits.filter((x) => x.Room_type_id == 2).length > 0"
-          class="text-secondary text-left mt-5"
-          style="text-decoration: underline"
-        >
+          class="text-secondary text-left mt-5 border-top pt-5"
+          style="text-decoration: underline">
           single rooms ----
           <span class="badge badge-secondary">{{
             filterUnits.filter((x) => x.Room_type_id == 2).length
@@ -151,20 +137,17 @@
         </h4>
         <div
           class="row text-center"
-          v-if="filterUnits.filter((x) => x.Room_type_id == 2).length > 0"
-        >
+          v-if="filterUnits.filter((x) => x.Room_type_id == 2).length > 0">
           <div
             class="col-md-4 p-2"
             v-for="room in filterUnits.filter((x) => x.Room_type_id == 2)"
-            :key="room.R_id"
-          >
+            :key="room.R_id">
             <div class="bg-light shadow p-2 container card">
               <h4
                 class="text-secondary font-weight-bold mb-3"
-                style="text-decoration: underline"
-              >
+                style="text-decoration: underline">
                 room
-                <span class="text-info">{{ room.Room_name }}</span>
+                <span class="text-primary">{{ room.Room_name }}</span>
               </h4>
 
               <div class="shadow bg-white rounded row w-100 m-auto p-2">
@@ -172,16 +155,14 @@
                 <div
                   class="col-md-6 p-2"
                   v-for="bed in RoomsDashboard.filter((x) => x.Room_id == room.id)"
-                  :key="bed.id"
-                >
+                  :key="bed.id">
                   <div
                     class="card p-2 bg-light shadow icon"
                     style="
                       transition: 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
                       position: relative;
                       height: 200px;
-                    "
-                  >
+                    ">
                     <div class="h-25 bg-light mb-2 rounded pt-2 shadow">
                       <span
                         :class="
@@ -200,52 +181,52 @@
                       class="h-75 bg-light rounded pt-3 shadow card bed-background-single"
                     ></div>
                     <div
-                      class="tooltip bg-light card p-4 text-secondary text-capitalize"
+                      class="tooltip bg-white card p-4 text-secondary text-capitalize"
                       v-if="bed.Status_id == 2"
                     >
                       <h6>
-                        <span class="text-info">full name :</span
+                        <span class="text-primary">full name :</span
                         ><span class="ml-2">{{
                           PatientsData.filter((x) => x.Bed_id == bed.id)[0]
                             .Patient_FullName
                         }}</span>
                       </h6>
                       <h6>
-                        <span class="text-info">age : </span
+                        <span class="text-primary">age : </span
                         ><span class="ml-2">{{
                           PatientsData.filter((x) => x.Bed_id == bed.id)[0].Age
                         }}</span>
                       </h6>
                       <h6>
-                        <span class="text-info">gender : </span
+                        <span class="text-primary">gender : </span
                         ><span class="ml-2">{{
                           PatientsData.filter((x) => x.Bed_id == bed.id)[0].Gender
                         }}</span>
                       </h6>
                       <h6>
-                        <span class="text-info">medical number : </span
+                        <span class="text-primary">medical number : </span
                         ><span class="ml-2">{{
                           PatientsData.filter((x) => x.Bed_id == bed.id)[0].Medical_Number
                         }}</span>
                       </h6>
                       <h6>
-                        <span class="text-info">specialty : </span
+                        <span class="text-primary">specialty : </span
                         ><span class="ml-2">{{
                           PatientsData.filter((x) => x.Bed_id == bed.id)[0].Specialty
                         }}</span>
                       </h6>
-                      <button class="btn mt-3 btn-info btn-sm rounded">Details</button>
+                      <button class="btn mt-3 btn-primary btn-sm rounded">Details</button>
                     </div>
                     <div
-                      class="tooltip bg-light card p-4 text-center"
+                      class="tooltip bg-white card p-4 text-center"
                       v-else-if="bed.Status_id == 1"
                     >
                       <button
-                        class="btn btn-danger btn-sm rounded open-pop shadow-sm"
+                        class="btn btn-primary btn-sm rounded open-pop shadow"
                         data-pop-name="patient-popup"
                         v-on:click.prevent="popUp(bed, 'patientPop')"
                       >
-                        patient registration
+                        Patient Registration
                       </button>
                     </div>
                   </div>
@@ -256,11 +237,11 @@
           </div>
         </div>
         <!--- end single rooms --->
-        <hr />
+
         <!--- start suits --->
         <h4
           v-if="filterUnits.filter((x) => x.Room_type_id == 3).length > 0"
-          class="text-secondary text-left mt-5"
+          class="text-secondary text-left mt-5 border-top pt-5"
           style="text-decoration: underline"
         >
           suits ----
@@ -283,7 +264,7 @@
                 style="text-decoration: underline"
               >
                 room
-                <span class="text-info">{{ room.Room_name }}</span>
+                <span class="text-primary">{{ room.Room_name }}</span>
               </h4>
 
               <div class="shadow bg-white rounded row w-100 m-auto p-2">
@@ -319,52 +300,52 @@
                       class="h-75 bg-light rounded pt-3 shadow card bed-background-single"
                     ></div>
                     <div
-                      class="tooltip bg-light card p-4 text-secondary text-capitalize"
+                      class="tooltip bg-white card p-4 text-secondary text-capitalize"
                       v-if="bed.Status_id == 2"
                     >
                       <h6>
-                        <span class="text-info">full name :</span
+                        <span class="text-primary">full name :</span
                         ><span class="ml-2">{{
                           PatientsData.filter((x) => x.Bed_id == bed.id)[0]
                             .Patient_FullName
                         }}</span>
                       </h6>
                       <h6>
-                        <span class="text-info">age : </span
+                        <span class="text-primary">age : </span
                         ><span class="ml-2">{{
                           PatientsData.filter((x) => x.Bed_id == bed.id)[0].Age
                         }}</span>
                       </h6>
                       <h6>
-                        <span class="text-info">gender : </span
+                        <span class="text-primary">gender : </span
                         ><span class="ml-2">{{
                           PatientsData.filter((x) => x.Bed_id == bed.id)[0].Gender
                         }}</span>
                       </h6>
                       <h6>
-                        <span class="text-info">medical number : </span
+                        <span class="text-primary">medical number : </span
                         ><span class="ml-2">{{
                           PatientsData.filter((x) => x.Bed_id == bed.id)[0].Medical_Number
                         }}</span>
                       </h6>
                       <h6>
-                        <span class="text-info">specialty : </span
+                        <span class="text-primary">specialty : </span
                         ><span class="ml-2">{{
                           PatientsData.filter((x) => x.Bed_id == bed.id)[0].Specialty
                         }}</span>
                       </h6>
-                      <button class="btn mt-3 btn-info btn-sm rounded">Details</button>
+                      <button class="btn mt-3 btn-primary btn-sm rounded">Details</button>
                     </div>
                     <div
-                      class="tooltip bg-light card p-4 text-center"
+                      class="tooltip bg-white card p-4 text-center"
                       v-else-if="bed.Status_id == 1"
                     >
                       <button
-                        class="btn btn-danger btn-sm rounded open-pop shadow-sm"
+                        class="btn btn-primary btn-sm rounded open-pop shadow"
                         data-pop-name="patient-popup"
                         v-on:click.prevent="popUp(bed, 'patientPop')"
                       >
-                        patient registration
+                        Patient Registration
                       </button>
                     </div>
                   </div>
@@ -375,11 +356,11 @@
           </div>
         </div>
         <!--- end suits --->
-        <hr />
+
         <!--- start daycase rooms --->
         <h4
           v-if="filterUnits.filter((x) => x.Room_type_id == 4).length > 0"
-          class="text-secondary text-left mt-5"
+          class="text-secondary text-left mt-5 border-top pt-5"
           style="text-decoration: underline"
         >
           daycase rooms ----
@@ -402,7 +383,7 @@
                 style="text-decoration: underline"
               >
                 room
-                <span class="text-info">{{ room.Room_name }}</span>
+                <span class="text-primary">{{ room.Room_name }}</span>
               </h4>
 
               <div class="shadow bg-white rounded row w-100 m-auto p-2">
@@ -438,44 +419,44 @@
                       class="h-75 bg-light rounded pt-3 shadow card bed-background-single"
                     ></div>
                     <div
-                      class="tooltip bg-light card p-4 text-secondary text-capitalize"
+                      class="tooltip bg-white card p-4 text-secondary text-capitalize"
                       v-if="bed.Status_id == 2"
                     >
                       <h6>
-                        <span class="text-info">full name :</span
+                        <span class="text-primary">full name :</span
                         ><span class="ml-2">{{
                           PatientsData.filter((x) => x.Bed_id == bed.id)[0]
                             .Patient_FullName
                         }}</span>
                       </h6>
                       <h6>
-                        <span class="text-info">age : </span
+                        <span class="text-primary">age : </span
                         ><span class="ml-2">{{
                           PatientsData.filter((x) => x.Bed_id == bed.id)[0].Age
                         }}</span>
                       </h6>
                       <h6>
-                        <span class="text-info">gender : </span
+                        <span class="text-primary">gender : </span
                         ><span class="ml-2">{{
                           PatientsData.filter((x) => x.Bed_id == bed.id)[0].Gender
                         }}</span>
                       </h6>
                       <h6>
-                        <span class="text-info">medical number : </span
+                        <span class="text-primary">medical number : </span
                         ><span class="ml-2">{{
                           PatientsData.filter((x) => x.Bed_id == bed.id)[0].Medical_Number
                         }}</span>
                       </h6>
                       <h6>
-                        <span class="text-info">specialty : </span
+                        <span class="text-primary">specialty : </span
                         ><span class="ml-2">{{
                           PatientsData.filter((x) => x.Bed_id == bed.id)[0].Specialty
                         }}</span>
                       </h6>
-                      <button class="btn mt-3 btn-info btn-sm rounded">Details</button>
+                      <button class="btn mt-3 btn-primary btn-sm rounded">Details</button>
                     </div>
                     <div
-                      class="tooltip bg-light card p-4 text-center"
+                      class="tooltip bg-white card p-4 text-center"
                       v-else-if="bed.Status_id == 1"
                     >
                       <button
@@ -483,7 +464,7 @@
                         data-pop-name="patient-popup"
                         v-on:click.prevent="popUp(bed, 'patientPop')"
                       >
-                        patient registration
+                        Patient Registration
                       </button>
                     </div>
                   </div>
@@ -494,11 +475,11 @@
           </div>
         </div>
         <!--- end daycase rooms --->
-        <hr />
+        
         <!--- start ccu rooms --->
         <h4
           v-if="filterUnits.filter((x) => x.Room_type_id == 5).length > 0"
-          class="text-secondary text-left mt-5"
+          class="text-secondary text-left mt-5 border-top pt-5"
           style="text-decoration: underline"
         >
           ccu rooms ----
@@ -521,7 +502,7 @@
                 style="text-decoration: underline"
               >
                 room
-                <span class="text-info">{{ room.Room_name }}</span>
+                <span class="text-primary">{{ room.Room_name }}</span>
               </h4>
 
               <div class="shadow bg-white rounded row w-100 m-auto p-2">
@@ -557,52 +538,52 @@
                       class="h-75 bg-light rounded pt-3 shadow card bed-background-single"
                     ></div>
                     <div
-                      class="tooltip bg-light card p-4 text-secondary text-capitalize"
+                      class="tooltip bg-white card p-4 text-secondary text-capitalize"
                       v-if="bed.Status_id == 2"
                     >
                       <h6>
-                        <span class="text-info">full name :</span
+                        <span class="text-primary">full name :</span
                         ><span class="ml-2">{{
                           PatientsData.filter((x) => x.Bed_id == bed.id)[0]
                             .Patient_FullName
                         }}</span>
                       </h6>
                       <h6>
-                        <span class="text-info">age : </span
+                        <span class="text-primary">age : </span
                         ><span class="ml-2">{{
                           PatientsData.filter((x) => x.Bed_id == bed.id)[0].Age
                         }}</span>
                       </h6>
                       <h6>
-                        <span class="text-info">gender : </span
+                        <span class="text-primary">gender : </span
                         ><span class="ml-2">{{
                           PatientsData.filter((x) => x.Bed_id == bed.id)[0].Gender
                         }}</span>
                       </h6>
                       <h6>
-                        <span class="text-info">medical number : </span
+                        <span class="text-primary">medical number : </span
                         ><span class="ml-2">{{
                           PatientsData.filter((x) => x.Bed_id == bed.id)[0].Medical_Number
                         }}</span>
                       </h6>
                       <h6>
-                        <span class="text-info">specialty : </span
+                        <span class="text-primary">specialty : </span
                         ><span class="ml-2">{{
                           PatientsData.filter((x) => x.Bed_id == bed.id)[0].Specialty
                         }}</span>
                       </h6>
-                      <button class="btn mt-3 btn-info btn-sm rounded">Details</button>
+                      <button class="btn mt-3 btn-primary btn-sm rounded">Details</button>
                     </div>
                     <div
-                      class="tooltip bg-light card p-4 text-center"
+                      class="tooltip bg-white card p-4 text-center"
                       v-else-if="bed.Status_id == 1"
                     >
                       <button
-                        class="btn btn-danger btn-sm rounded open-pop shadow-sm"
+                        class="btn btn-primary btn-sm rounded open-pop shadow"
                         data-pop-name="patient-popup"
                         v-on:click.prevent="popUp(bed, 'patientPop')"
                       >
-                        patient registration
+                        Patient Registration
                       </button>
                     </div>
                   </div>
@@ -615,7 +596,7 @@
         <!--- end ccu rooms --->
       </div>
       <div v-else class="bg-light p-5 card shadow text-secondary w-75 m-auto">
-        no avalible rooms in this unit
+        No avalible rooms in this unit!
       </div>
     </div>
     <!-- end unit rooms -->
@@ -630,135 +611,137 @@
         "
         v-if="patientDetails['patientPop'] == true"
       >
-        <div class="popup-body" style="max-width: 1000px">
-          <div class="container-fluid custom-form m-auto pb-4" style="max-width: 900px">
-            <div class="cu-container">
+        <div class="popup-body" style="max-width: 900px">
+          <div class="custom-form m-auto pb-4">
               <span class="close-pop" v-on:click="close">Close</span>
               <div class="title text-center text-white">
-                <span class="bg-secondary pt-2 pb-2 pl-3 pr-3">patient registration</span>
+                <span class="bg-secondary pt-2 pb-2 pl-3 pr-3">Patient Registration</span>
               </div>
 
-              <!--- patient-info -->
-              <div class="col-md-12">
-                <div>
-                  <div class="social-timeline-card shadow">
-                    <div class="card-body">
+              <!--- patient-primary -->
+              <div class="social-timeline-card">
+                <div class="card-body">
+                  <div
+                    class="general primary tabcontent active overflow-auto text-center"
+                    style="max-height: 400px"
+                  >
+                    <form @submit.prevent="InsertPatient(patientDetails)">
                       <div
-                        class="general info tabcontent active overflow-auto text-center"
-                        style="max-height: 380px"
+                        class="cu-form-group special shadow-sm grouped rounded mb-2 bg-light pr-3 pl-3 ml-auto mr-auto text-left"
                       >
-                        <form @submit.prevent="InsertPatient(patientDetails)">
-                          <div
-                            class="cu-form-group special shadow-sm grouped rounded mb-2 bg-light pr-3 pl-3 ml-auto mr-auto text-left"
-                          >
-                            <div class="row">
-                              <!-- patient name -->
-                              <div class="cu-field col-md-6">
-                                <h3 class="cu-label">
-                                  <label>patient name :</label>
-                                </h3>
-                                <div class="cu-input text-box" style="max-width: 100%">
-                                  <span class="fa fa-edit"></span>
-                                  <input
-                                    type="text"
-                                    v-model="newPatient.Patient_FullName"
-                                    required
-                                  />
-                                </div>
-                              </div>
-
-                              <!-- medical number -->
-                              <div class="cu-field col-md-6">
-                                <h3 class="cu-label">
-                                  <label>medical number :</label>
-                                </h3>
-                                <div class="cu-input text-box" style="max-width: 100%">
-                                  <span class="fa fa-edit"></span>
-                                  <input
-                                    type="number"
-                                    v-model="newPatient.Medical_Number"
-                                    required
-                                  />
-                                </div>
-                              </div>
-
-                              <!-- patient age -->
-                              <div class="cu-field col-md-6">
-                                <h3 class="cu-label">
-                                  <label>patient age :</label>
-                                </h3>
-                                <div class="cu-input text-box">
-                                  <span class="fa fa-edit"></span>
-                                  <input type="text" v-model="newPatient.Age" required />
-                                </div>
-                              </div>
-
-                              <!-- patient gender -->
-                              <div class="cu-field col-md-6">
-                                <h3 class="cu-label">
-                                  <label>patient gender :</label>
-                                </h3>
-                                <div class="cu-input text-box">
-                                  <span class="fa fa-edit"></span>
-                                  <select
-                                    class="w-100 form-control"
-                                    v-model="newPatient.Gender"
-                                    required
-                                  >
-                                    <option>male</option>
-                                    <option>female</option>
-                                  </select>
-                                </div>
-                              </div>
-                              <!-- specialty -->
-                              <div class="cu-field col-md-6">
-                                <h3 class="cu-label">
-                                  <label>specialty :</label>
-                                </h3>
-                                <div class="cu-input text-box">
-                                  <span class="fa fa-edit"></span>
-                                  <select
-                                    class="w-100 form-control"
-                                    v-model="newPatient.Specialty"
-                                    required
-                                  >
-                                    <option>........</option>
-                                    <option
-                                      v-for="spicial in Specialities"
-                                      :key="spicial.Spcy_id"
-                                      :value="spicial.Spcy_name_En"
-                                    >
-                                      {{ spicial.Spcy_name_En }}
-                                    </option>
-                                  </select>
-                                </div>
-                              </div>
-
-                              <!-- addmission date -->
-                              <div class="cu-field col-md-6">
-                                <h3 class="cu-label">
-                                  <label>addmission date :</label>
-                                </h3>
-                                <div class="cu-input text-box">
-                                  <span class="fa fa-edit"></span>
-                                  <input
-                                    type="date"
-                                    :max="currentDate"
-                                    v-model="newPatient.Addmission_date"
-                                    required
-                                  />
-                                </div>
-                              </div>
+                        <div class="row">
+                          <!-- patient name -->
+                          <div class="cu-field col-md-6">
+                            <h3 class="cu-label">
+                              <label>patient name :</label>
+                            </h3>
+                            <div class="cu-input text-box" style="max-width: 100%">
+                              <span class="fa fa-edit"></span>
+                              <input
+                                type="text"
+                                v-model="newPatient.Patient_FullName"
+                                required
+                              />
                             </div>
                           </div>
-                          <button class="btn btn-secondary mt-4">submit</button>
-                        </form>
+
+                          <!-- medical number -->
+                          <div class="cu-field col-md-6">
+                            <h3 class="cu-label">
+                              <label>Medical Number :</label>
+                            </h3>
+                            <div class="cu-input text-box" style="max-width: 100%">
+                              <span class="fa fa-edit"></span>
+                              <input
+                                type="number"
+                                v-model="newPatient.Medical_Number"
+                                required
+                              />
+                            </div>
+                          </div>
+
+                          <!-- patient age -->
+                          <div class="cu-field col-md-6">
+                            <h3 class="cu-label">
+                              <label>Patient Age :</label>
+                            </h3>
+                            <div class="cu-input text-box">
+                              <span class="fa fa-edit"></span>
+                              <input type="text" v-model="newPatient.Age" required />
+                            </div>
+                          </div>
+
+                          <!-- patient gender -->
+                          <div class="cu-field col-md-6">
+                            <h3 class="cu-label">
+                              <label>Patient Gender :</label>
+                            </h3>
+                            <div class="f-select">
+                              <select
+                                class="form-control form-control-sm"
+                                v-model="newPatient.Gender"
+                                required
+                              >
+                                <option value='Male'>Male</option>
+                                <option value='Female'>Female</option>
+                              </select>
+                            </div>
+                          </div>
+                          <!-- specialty -->
+                          <div class="cu-field col-md-6">
+                            <h3 class="cu-label">
+                              <label>specialty :</label>
+                            </h3>
+                            <div class="f-select">
+                              <select
+                                class="form-control form-control-sm"
+                                v-model="newPatient.Specialty"
+                                required>
+                                <option
+                                  v-for="spicial in Specialities"
+                                  :key="spicial.Spcy_id"
+                                  :value="spicial.Spcy_name_En">
+                                  {{ spicial.Spcy_name_En }}
+                                </option>
+                              </select>
+                            </div>
+                          </div>
+
+                          <!-- addmission date -->
+                          <div class="cu-field col-md-6">
+                            <h3 class="cu-label">
+                              <label>Addmission Date :</label>
+                            </h3>
+                            <div class="cu-input text-box">
+                              <span class="fa fa-edit"></span>
+                              <input
+                                type="date"
+                                :max="currentDate"
+                                v-model="newPatient.Addmission_date"
+                                required
+                              />
+                            </div>
+                          </div>
+
+                          <div class="cu-field col-md-12" v-if='Consultants.length > 0'>
+                              <h3 class="cu-label">
+                                  <label>Consultant :</label>
+                              </h3>
+                              <div class="f-select">
+                                  <select class="form-control form-control-sm" v-model='newPatient.Consultant_id' required>
+                                      <option v-for='dr in  Consultants' :value='dr.Dr_Code'
+                                      :key='dr.DR_Name'>{{dr.DR_Name}}</option>
+                                  </select>
+                              </div>
+                          </div>
+                        </div>
                       </div>
-                    </div>
+                      <button class="btn btn-primary mt-4 shadow">Submit</button>
+                    </form>
                   </div>
                 </div>
               </div>
-            </div>
+
           </div>
         </div>
       </div>
@@ -771,13 +754,14 @@
 <script>
 export default {
   name: "roomDetails",
-  props: ["link"],
+  props: ["link", 'user'],
   data() {
     return {
       getUnitsData: [],
       getRoomsData: [],
       RoomsDashboard: [],
       Specialities: [],
+      Consultants: [],
       PatientsData: [],
       Branches: [],
       filterUnits: [],
@@ -800,6 +784,8 @@ export default {
         Addmission_date: "",
         Age: "",
         Specialty: "",
+        Consultant_id:0,
+        Consultant_Name: '',
         Patient_Status: 1,
         Entry_user: 0,
       },
@@ -840,6 +826,10 @@ export default {
           (x) => x.U_id == that.path
         )[0].U_name;
 
+        that.newPatient.Consultant_Name = that.Consultants.filter(
+          (x) => x.Dr_Code == that.newPatient.Consultant_id
+        )[0].DR_Name;
+
         //insert new patient
         $.ajax({
           type: "POST",
@@ -848,13 +838,10 @@ export default {
           contentType: "application/json; charset=utf-8",
           dataType: "json",
           success: function (data) {
-            //that.$router.push({ name: "viewPatients" });
             swal({
               title: "Sweet!",
-              text: "You successfully add a new patient ...",
+              text: "You successfully added a new patient ...",
               icon: "success",
-              buttons: false,
-              dangerMode: 1,
             });
             location.reload();
           },
@@ -867,12 +854,30 @@ export default {
         });
       }
     },
+  },    
+  watch: {
+    'newPatient.Specialty': function () {
+        let Specialty = this.Specialities.filter(x => x.Spcy_name_En == this.newPatient.Specialty)[0].Spcy_id,
+        that = this;
+
+        //get Consultants
+        $.ajax({
+            type: "POST",
+            url: that.apiUrl + "endoresment/roomDetails.aspx/getConsultantsData",
+            // data:JSON.stringify({"info": {"Spcy_id": Specialty, 'Branch_ID': that.user.Branch_ID}}),
+            data:JSON.stringify({"info": {"Spcy_id": Specialty, 'Branch_ID': 2}}),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+                that.Consultants = JSON.parse(data.d);
+            },
+        });
+    },
   },
 
   created() {
     let that = this;
     this.path = this.$router.history.current.path.split("/")[2];
-    //this.filterUnits = this.getRoomsData.filter((x) => x.unit_id == this.path);
 
     //get units
     $.ajax({
@@ -945,60 +950,25 @@ export default {
 </script>
 
 <style scoped>
-.container-wave {
-  position: absolute;
-  background: #fff;
-  height: 50vh;
-  width: 100%;
-  left: 0;
-  top: 0;
-}
-
-.wave {
-  position: absolute;
-  height: 250px;
-  width: 100%;
-  background: #fff;
-  bottom: 0;
-}
-
-.wave::before,
-.wave::after {
-  content: "";
-  display: block;
-  position: absolute;
-  border-radius: 100% 50%;
-}
-
-.wave::before {
-  width: 55%;
-  height: 109%;
-  background-color: #f0f0f0;
-  right: -1.5%;
-  top: 70%;
-}
-.wave::after {
-  width: 55%;
-  height: 100%;
-  background-color: #fff;
-  left: 0;
-  top: 50%;
-}
-.select-form {
-  left: 50%;
-  margin-top: 8%;
-  width: 50%;
-  transform: translateX(-50%);
-  height: 40vh;
-}
 .viewPatients {
   min-height: 500px;
-  background: #fff url("../../assets/layout/img/humaaans-doctors.png") center no-repeat;
+  background: #fff url('../../assets/layout/img/backgrounds/bg20.png') center no-repeat;
   background-size: contain;
   background-color: #f6f8fb;
   text-align: center;
   position: relative;
   overflow: hidden;
+}
+.cube-container {
+  display: inline-flex;
+  margin: 15px 30px;
+  align-items: center;
+}
+.cube {
+  width:20px;
+  height:20px;
+  display:inline-block;
+  margin:0 5px;
 }
 .bed-background {
   background: #fff url("../../assets/layout/img/bed5.png") center no-repeat;

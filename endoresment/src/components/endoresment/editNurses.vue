@@ -230,27 +230,44 @@ export default {
                   Last_Update: this.updateDate,
                   Active: 0,
                 };
-                $.ajax({
-                  type: "POST",
-                  url: that.apiUrl + "endoresment/editNurses.aspx/updatedNurse",
-                  data: JSON.stringify({ detail: updateNurse }),
-                  contentType: "application/json; charset=utf-8",
-                  dataType: "json",
-                  success: function () {
-                    if (x == that.filterNurses.length - 1) {
-                      swal({
-                        title: "Sweet!",
-                        text: "You successfully updated the selection ...",
-                        icon: "success",
-                        dangerMode: true,
-                      }).then(() => {
-                        location.reload();
-                      });
-                    }
-                  },
-                });
+
+                resend();
+
+                function resend () {
+                    return $.ajax({
+                      type: "POST",
+                      url: that.apiUrl + "endoresment/editNurses.aspx/updatedNurse",
+                      data: JSON.stringify({ detail: updateNurse }),
+                      contentType: "application/json; charset=utf-8",
+                      dataType: "json",
+                      beforeSend: function () {
+                          swal({
+                            title: "Sending!",
+                            text: "Please wait!",
+                            buttons: false,
+                            closeOnClickOutside: false
+                          });
+                      },
+                      success: function () {
+                        if (x == that.filterNurses.length - 1) {
+                          swal({
+                            title: "Sweet!",
+                            text: "You successfully updated the selection ...",
+                            icon: "success",
+                            dangerMode: true,
+                          }).then(() => {
+                            location.reload();
+                          });
+                        }
+                      },
+                      error : function () {
+                        resend();
+                      }
+                    });
+                } 
               }
             }
+
           }
         }
       });
@@ -264,7 +281,8 @@ export default {
     this.updateDate = moment(new Date()).format('YYYY-MM-DD');
 
     // if current user is charge nurse to this unit
-    if (!this.edits && this.UnitDash.filter(x => x.Unit_id == this.path).length == 0) {
+    if ((this.edits && this.UnitDash.filter(x => x.Unit_id == this.path).length == 0) || 
+    (!this.edits)) {
       this.$router.go(-1)
     }
 

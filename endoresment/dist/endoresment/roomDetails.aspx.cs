@@ -337,7 +337,7 @@ public partial class _roomDetails : System.Web.UI.Page
         con.Open();
         using (
             SqlCommand cmd1 =
-                new SqlCommand("insert into Endorsement_PatientData (Patient_FullName, Branch_id, Branch_name,Gender,Unit,Room,Bed_id,Addmission_date,Age,Specialty,Patient_Status,Entry_user,Medical_Number) values (@Patient_FullName,@Branch_id, @Branch_name, @Gender, @Unit, @Room, @Bed_id, @Addmission_date, @Age, @Specialty, @Patient_Status ,@Entry_user, @Medical_Number)",
+                new SqlCommand("insert into Endorsement_PatientData (Patient_FullName, Branch_id, Branch_name,Gender,Unit,Room,Bed_id,Addmission_date,Age,Specialty,Consultant_id,Consultant_Name,Patient_Status,Entry_user,Medical_Number) values (@Patient_FullName,@Branch_id, (select Branch_EName from Branches where id = @Branch_id), @Gender, @Unit, @Room, @Bed_id, @Addmission_date, @Age, @Specialty,@Consultant_id,@Consultant_Name, @Patient_Status ,@Entry_user, @Medical_Number)",
                     con)
         )
         {
@@ -347,8 +347,6 @@ public partial class _roomDetails : System.Web.UI.Page
                 data.Medical_Number;
             cmd1.Parameters.Add("@Branch_id", SqlDbType.Int).Value =
                 data.Branch_id;
-            cmd1.Parameters.Add("@Branch_name", SqlDbType.VarChar).Value =
-                data.Branch_name;
             cmd1.Parameters.Add("@Gender", SqlDbType.VarChar).Value =
                 data.Gender;
             cmd1.Parameters.Add("@Unit", SqlDbType.VarChar).Value = data.Unit;
@@ -359,6 +357,9 @@ public partial class _roomDetails : System.Web.UI.Page
             cmd1.Parameters.Add("@Age", SqlDbType.VarChar).Value = data.Age;
             cmd1.Parameters.Add("@Specialty", SqlDbType.VarChar).Value =
                 data.Specialty;
+            cmd1.Parameters.Add("@Consultant_id", SqlDbType.Int).Value = data.Consultant_id;
+            cmd1.Parameters.Add("@Consultant_Name", SqlDbType.VarChar).Value =
+                data.Consultant_Name;
             cmd1.Parameters.Add("@Patient_Status", SqlDbType.Int).Value = 1;
             cmd1.Parameters.Add("@Entry_user", SqlDbType.Int).Value =
                 data.Entry_user;
@@ -422,6 +423,10 @@ public partial class _roomDetails : System.Web.UI.Page
         public string Age { get; set; }
 
         public string Specialty { get; set; }
+
+        public int? Consultant_id { get; set; }
+
+        public string Consultant_Name { get; set; }
 
         public int? Patient_Status { get; set; }
 
@@ -536,5 +541,61 @@ public partial class _roomDetails : System.Web.UI.Page
         public int? Spcy_id { get; set; }
 
         public string Spcy_name_En { get; set; }
+    }
+
+    // get Consultants
+    [WebMethod]
+    public static string getConsultantsData(Consultants info)
+    {
+        string config = Convert.ToString(ConfigurationManager.ConnectionStrings["dbcon"]);
+        List<Consultants> Consultants = new List<Consultants>();
+
+        SqlConnection con = new SqlConnection(config);
+
+        con.Open();
+
+        using (
+            SqlCommand cmd = new SqlCommand("select * from Doctors_Data where Type = 'Consultant' and Spcy_id = @Spcy_id and Dr_Code in (select Emp_ID from adminusers where Branch_ID = @Branch_ID)", con)
+        )
+        {
+            cmd.Parameters.Add("@Spcy_id", SqlDbType.Int).Value = info.Spcy_id;
+            cmd.Parameters.Add("@Branch_ID", SqlDbType.Int).Value = info.Branch_ID;
+            SqlDataReader idr = cmd.ExecuteReader();
+
+            if (idr.HasRows)
+            {
+                Consultants = populateConsultantsLisst(idr, con);
+            }
+        }
+
+        con.Close();
+
+        return JsonConvert.SerializeObject(Consultants);
+    }
+
+    public static List<Consultants>
+    populateConsultantsLisst(SqlDataReader idr, SqlConnection con)
+    {
+        List<Consultants> ConsultantsI = new List<Consultants>();
+
+        while (idr.Read())
+        {
+            ConsultantsI
+                .Add(new Consultants {
+                    Dr_Code = idr["Dr_Code"] != DBNull.Value ? Convert.ToInt32(idr["Dr_Code"]) : 0,
+                    DR_Name = Convert.ToString(idr["DR_Name"]),
+                    Spcy_id = idr["Spcy_id"] != DBNull.Value ? Convert.ToInt32(idr["Spcy_id"]) : 0,
+                });
+        }
+
+        return ConsultantsI;
+    }
+
+    public class Consultants
+    {
+        public int? Dr_Code { get; set; }
+        public string DR_Name { get; set; }
+        public int? Spcy_id { get; set; }
+        public int? Branch_ID { get; set; }
     }
 }
