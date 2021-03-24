@@ -50,7 +50,8 @@ public partial class _addPatient : System.Web.UI.Page
             cmd1.Parameters.Add("@Age", SqlDbType.VarChar).Value = data.Age;
             cmd1.Parameters.Add("@Specialty", SqlDbType.VarChar).Value =
                 data.Specialty;
-            cmd1.Parameters.Add("@Consultant_id", SqlDbType.Int).Value = data.Consultant_id;
+            cmd1.Parameters.Add("@Consultant_id", SqlDbType.Int).Value =
+                data.Consultant_id;
             cmd1.Parameters.Add("@Consultant_Name", SqlDbType.VarChar).Value =
                 data.Consultant_Name;
             cmd1.Parameters.Add("@Patient_Status", SqlDbType.Int).Value = 1;
@@ -96,28 +97,42 @@ public partial class _addPatient : System.Web.UI.Page
     public class PatientData
     {
         public string Patient_FullName { get; set; }
+
         public int? Branch_id { get; set; }
+
         public int? Medical_Number { get; set; }
+
         public string Branch_name { get; set; }
+
         public string Gender { get; set; }
+
         public int? Bed_id { get; set; }
+
         public string Unit { get; set; }
+
         public string Room { get; set; }
+
         public string Addmission_date { get; set; }
+
         public string Age { get; set; }
+
         public string Specialty { get; set; }
+
         public int? Consultant_id { get; set; }
+
         public string Consultant_Name { get; set; }
+
         public int? Patient_Status { get; set; }
+
         public int? Entry_user { get; set; }
     }
 
     public class branches
     {
         public int? id { get; set; }
+
         public string Branch_EName { get; set; }
     }
-
 
     // get Specialities
     [WebMethod]
@@ -131,7 +146,9 @@ public partial class _addPatient : System.Web.UI.Page
 
         con.Open();
 
-        using (SqlCommand cmd = new SqlCommand("select * from Specialities", con))
+        using (
+            SqlCommand cmd = new SqlCommand("select * from Specialities", con)
+        )
         {
             SqlDataReader idr = cmd.ExecuteReader();
 
@@ -159,8 +176,7 @@ public partial class _addPatient : System.Web.UI.Page
                         idr["Spcy_id"] != DBNull.Value
                             ? Convert.ToInt32(idr["Spcy_id"])
                             : 0,
-
-						Spcy_name_En = Convert.ToString(idr["Spcy_name_En"]),
+                    Spcy_name_En = Convert.ToString(idr["Spcy_name_En"])
                 });
         }
 
@@ -173,7 +189,6 @@ public partial class _addPatient : System.Web.UI.Page
 
         public string Spcy_name_En { get; set; }
     }
-
 
     // get units
     [WebMethod]
@@ -188,7 +203,11 @@ public partial class _addPatient : System.Web.UI.Page
 
         con.Open();
 
-        using (SqlCommand cmd = new SqlCommand("select * from Units where Branch_id = @Branch_id", con))
+        using (
+            SqlCommand cmd =
+                new SqlCommand("select * from Units where Branch_id = @Branch_id",
+                    con)
+        )
         {
             cmd.Parameters.Add("@Branch_id", SqlDbType.Int).Value = branch.id;
             SqlDataReader idr = cmd.ExecuteReader();
@@ -217,8 +236,7 @@ public partial class _addPatient : System.Web.UI.Page
                         idr["U_id"] != DBNull.Value
                             ? Convert.ToInt32(idr["U_id"])
                             : 0,
-
-						U_name = Convert.ToString(idr["U_name"]),
+                    U_name = Convert.ToString(idr["U_name"])
                 });
         }
 
@@ -231,7 +249,6 @@ public partial class _addPatient : System.Web.UI.Page
 
         public string U_name { get; set; }
     }
-
 
     // get rooms
     [WebMethod]
@@ -246,7 +263,11 @@ public partial class _addPatient : System.Web.UI.Page
 
         con.Open();
 
-        using (SqlCommand cmd = new SqlCommand("select * from Endorsement_Rooms where Unit_id = @Unit_id and id in (select Room_id from Endorsement_RoomsDashboard where Status_id = 1)", con))
+        using (
+            SqlCommand cmd =
+                new SqlCommand("select * from Endorsement_Rooms where Unit_id = @Unit_id and id in (select Room_id from Endorsement_RoomsDashboard where Status_id = 1)",
+                    con)
+        )
         {
             cmd.Parameters.Add("@Unit_id", SqlDbType.Int).Value = unit.U_id;
             SqlDataReader idr = cmd.ExecuteReader();
@@ -275,8 +296,7 @@ public partial class _addPatient : System.Web.UI.Page
                         idr["id"] != DBNull.Value
                             ? Convert.ToInt32(idr["id"])
                             : 0,
-
-						Room_name = Convert.ToString(idr["Room_name"]),
+                    Room_name = Convert.ToString(idr["Room_name"])
                 });
         }
 
@@ -303,7 +323,11 @@ public partial class _addPatient : System.Web.UI.Page
 
         con.Open();
 
-        using (SqlCommand cmd = new SqlCommand("select * from Endorsement_RoomsDashboard where Room_id = @Room_id and Status_id = 1", con))
+        using (
+            SqlCommand cmd =
+                new SqlCommand("select * from Endorsement_RoomsDashboard where Room_id = @Room_id and Status_id = 1",
+                    con)
+        )
         {
             cmd.Parameters.Add("@Room_id", SqlDbType.Int).Value = room.id;
             SqlDataReader idr = cmd.ExecuteReader();
@@ -332,8 +356,7 @@ public partial class _addPatient : System.Web.UI.Page
                         idr["id"] != DBNull.Value
                             ? Convert.ToInt32(idr["id"])
                             : 0,
-
-						Bed_name = Convert.ToString(idr["Bed_name"]),
+                    Bed_name = Convert.ToString(idr["Bed_name"])
                 });
         }
 

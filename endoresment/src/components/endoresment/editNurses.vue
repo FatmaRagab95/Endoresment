@@ -7,10 +7,7 @@
             <h1>{{ Units.filter((x) => x.U_id == path)[0].U_name }}</h1>
           </div>
           <span class="col-md-6">
-            <button
-              class="btn btn-primary pull-right shadow"
-              @click.prevent="OnSubmit"
-            >
+            <button class="btn btn-primary pull-right shadow" @click.prevent="OnSubmit">
               Submit selection
             </button>
           </span>
@@ -41,7 +38,7 @@
                 class="form-control"
                 type="date"
                 v-model="updateDate"
-                :min="new Date().toISOString().substring(0, 10)"
+                :max="new Date().toISOString().substring(0, 10)"
               />
             </span>
           </span>
@@ -120,7 +117,7 @@
 <script>
 export default {
   name: "editNurses",
-  props: ["link", 'user', 'edits', 'UnitDash'],
+  props: ["link", "user", "edits", "UnitDash"],
   data() {
     return {
       Units: [],
@@ -135,7 +132,7 @@ export default {
       selectedName: "",
       Names: [],
 
-      updateDate: '',
+      updateDate: "",
 
       newUnitNurse: {
         Nurse_id: 0,
@@ -233,41 +230,40 @@ export default {
 
                 resend();
 
-                function resend () {
-                    return $.ajax({
-                      type: "POST",
-                      url: that.apiUrl + "endoresment/editNurses.aspx/updatedNurse",
-                      data: JSON.stringify({ detail: updateNurse }),
-                      contentType: "application/json; charset=utf-8",
-                      dataType: "json",
-                      beforeSend: function () {
-                          swal({
-                            title: "Sending!",
-                            text: "Please wait!",
-                            buttons: false,
-                            closeOnClickOutside: false
-                          });
-                      },
-                      success: function () {
-                        if (x == that.filterNurses.length - 1) {
-                          swal({
-                            title: "Sweet!",
-                            text: "You successfully updated the selection ...",
-                            icon: "success",
-                            dangerMode: true,
-                          }).then(() => {
-                            location.reload();
-                          });
-                        }
-                      },
-                      error : function () {
-                        resend();
+                function resend() {
+                  return $.ajax({
+                    type: "POST",
+                    url: that.apiUrl + "endoresment/editNurses.aspx/updatedNurse",
+                    data: JSON.stringify({ detail: updateNurse }),
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    beforeSend: function () {
+                      swal({
+                        title: "Sending!",
+                        text: "Please wait!",
+                        buttons: false,
+                        closeOnClickOutside: false,
+                      });
+                    },
+                    success: function () {
+                      if (x == that.filterNurses.length - 1) {
+                        swal({
+                          title: "Sweet!",
+                          text: "You successfully updated the selection ...",
+                          icon: "success",
+                          dangerMode: true,
+                        }).then(() => {
+                          location.reload();
+                        });
                       }
-                    });
-                } 
+                    },
+                    error: function () {
+                      resend();
+                    },
+                  });
+                }
               }
             }
-
           }
         }
       });
@@ -278,12 +274,14 @@ export default {
     let that = this;
 
     this.path = this.$route.params.id;
-    this.updateDate = moment(new Date()).format('YYYY-MM-DD');
+    this.updateDate = moment(new Date()).format("YYYY-MM-DD");
 
     // if current user is charge nurse to this unit
-    if ((this.edits && this.UnitDash.filter(x => x.Unit_id == this.path).length == 0) || 
-    (!this.edits)) {
-      this.$router.go(-1)
+    if (
+      (this.edits && this.UnitDash.filter((x) => x.Unit_id == this.path).length == 0) ||
+      !this.edits
+    ) {
+      this.$router.go(-1);
     }
 
     //get units
@@ -339,7 +337,7 @@ export default {
 <style scoped>
 .select-form {
   min-height: 100vh;
-  padding-bottom:120px;
-  margin-bottom:120px;
+  padding-bottom: 120px;
+  margin-bottom: 120px;
 }
 </style>

@@ -1,16 +1,17 @@
 <template>
   <div class="Nurses text-capitalize pt-5">
     <div class="container-fluid">
-        <div class='card shadow m-auto'>
+      <div class="container">
+        <div class="card shadow m-auto">
           <div class="row align-items-center p-3">
             <div class="col-md-6">
               <h1 style="text-decoration: underline">
                 {{ Units.filter((x) => x.U_id == path)[0].U_name }}
               </h1>
             </div>
-            <div class="col-md-6 p-4" v-if='editCharge'>
+            <div class="col-md-6 p-4" v-if="editCharge">
               <router-link
-                class="btn btn-primary shadow pull-right mt-3 "
+                class="btn btn-primary shadow pull-right mt-3"
                 style="width: 150px"
                 :to="{ name: 'Edit Nurses', params: { id: path } }"
                 ><i class="fa fa-pencil-square-o mr-3" aria-hidden="true"></i>Edit Nurses
@@ -20,60 +21,69 @@
           </div>
         </div>
         <div class="card shadow ml-auto mr-auto mt-5 p-5">
-            <div
-              class="p-4 bg-light mb-3 shadow card"
-              v-for="nurse in Endoresment_Nurses_Units.filter((x) => x.Unit_id == path)"
-              :key="nurse.Id"
-            >
-              <h4 class="pb-3">
-                <i class="fa fa-user-md mr-2 text-info" aria-hidden="true"></i>nurse name :
-                <span class="text-dark">{{
-                  users.filter((x) => x.Emp_id == nurse.Nurse_id)[0].FullName
-                }}</span>
-              </h4>
-              <div class="border-bottom pb-3">
-                <span class="pull-left"
-                  ><i class="fa fa-id-badge mr-3 text-info" aria-hidden="true"></i>emp id :
-                  <span class="badge-secondary badge pt-1 pb-1 pl-3 pr-3 ml-3">{{
-                    nurse.Nurse_id
-                  }}</span></span
+          <div
+            class="p-4 bg-light mb-3 shadow card"
+            v-for="nurse in Endoresment_Nurses_Units.filter((x) => x.Unit_id == path)"
+            :key="nurse.Id"
+          >
+            <div class="row pb-3">
+              <span class="text-dark col-md-6"
+                ><i class="fa fa-user-md mr-2 text-info" aria-hidden="true"></i>nurse name
+                :{{ users.filter((x) => x.Emp_id == nurse.Nurse_id)[0].FullName }}
+              </span>
+              <span class="col-md-6 text-right">
+                <router-link
+                  class="text-danger text-right"
+                  style="text-decoration: underline"
+                  :to="{ name: 'Nurses Pdf', params: { id: nurse.Nurse_id } }"
+                  >nurses details PDF</router-link
                 >
-                <span class="pull-right last-update" v-if="nurse.Last_Update"
-                  ><i class="fa fa-pencil-square-o text-info mr-2" aria-hidden="true"></i
-                  >Last update :
-                  <span class="text-dark">{{ nurse.Last_Update }}</span></span
-                >
-                <span class="pull-right  last-update" v-else
-                  ><i class="fa fa-pencil-square-o text-info mr-2" aria-hidden="true"></i
-                  >last update : <span class="text-dark">no update date found</span></span
-                >
-              </div>
-
-              <div class="pt-3">
-                <span
-                  class="pull-left"
-                  v-if="users.filter((x) => x.Emp_id == nurse.Entry_user).length > 0"
-                  >update from :
-                  <span class="text-success">{{
-                    users.filter((x) => x.Emp_id == nurse.Entry_user)[0].FullName
-                  }}</span>
-                </span>
-                <span class="pull-left" v-else
-                  >update from : <span class="text-success">no avalible data</span></span
-                >
-                <span class="pull-right text-info"
-                  ><a
-                    class="open-pop"
-                    style="text-decoration: underline; cursor: pointer"
-                    data-pop-name="patient-popup"
-                    v-on:click.prevent="popUp(nurse, 'patientPop')"
-                  >
-                    View patients list
-                  </a></span
-                >
-              </div>
+              </span>
             </div>
+            <div class="rowborder-bottom pb-3">
+              <span class="pull-left"
+                ><i class="fa fa-id-badge mr-3 text-info" aria-hidden="true"></i>emp id :
+                <span class="badge-secondary badge pt-1 pb-1 pl-3 pr-3 ml-3">{{
+                  nurse.Nurse_id
+                }}</span></span
+              >
+              <span class="pull-right last-update" v-if="nurse.Last_Update"
+                ><i class="fa fa-pencil-square-o text-info mr-2" aria-hidden="true"></i
+                >Last update :
+                <span class="text-dark">{{ nurse.Last_Update }}</span></span
+              >
+              <span class="pull-right last-update" v-else
+                ><i class="fa fa-pencil-square-o text-info mr-2" aria-hidden="true"></i
+                >last update : <span class="text-dark">no update date found</span></span
+              >
+            </div>
+            <hr />
+            <div class="row pt-3">
+              <span
+                class="col-md-6"
+                v-if="users.filter((x) => x.Emp_id == nurse.Entry_user).length > 0"
+                >update from :
+                <span class="text-success">{{
+                  users.filter((x) => x.Emp_id == nurse.Entry_user)[0].FullName
+                }}</span>
+              </span>
+              <span class="col-md-6" v-else
+                >update from : <span class="text-success">no avalible data</span></span
+              >
+              <span class="col-md-6 text-info text-right"
+                ><a
+                  class="open-pop"
+                  style="text-decoration: underline; cursor: pointer"
+                  data-pop-name="patient-popup"
+                  v-on:click.prevent="popUp(nurse, 'patientPop')"
+                >
+                  View patients list
+                </a></span
+              >
+            </div>
+          </div>
         </div>
+      </div>
     </div>
     <!-- start patients list popup-->
     <div v-if="patientDetails">
@@ -89,7 +99,7 @@
           <div class="container-fluid custom-form m-auto pb-4" style="max-width: 1000px">
             <div class="cu-container">
               <span class="close-pop" v-on:click="close">Close</span>
-              <div class="title text-center text-white  mb-5">
+              <div class="title text-center text-white mb-5">
                 <span class="bg-secondary shadow pt-2 pb-2 pl-3 pr-3">patients list</span>
               </div>
 
@@ -107,7 +117,7 @@
                       users.filter((x) => x.Emp_id == patientDetails.Nurse_id)[0].FullName
                     }}
                   </h4>
-                  <div class="text-right mt-3" v-if='editCharge'>
+                  <div class="text-right mt-3" v-if="editCharge">
                     <router-link
                       class="btn btn-primary shadow"
                       style="width: 200px"
@@ -121,8 +131,9 @@
                   </div>
 
                   <table
-                    class="table table-striped table-bordered shadow  mt-3"
-                    v-if=" Endorsement_Nurse_patients.filter(
+                    class="table table-striped table-bordered shadow mt-3"
+                    v-if="
+                      Endorsement_Nurse_patients.filter(
                         (x) => x.Nurse_id == patientDetails.Nurse_id
                       ).length > 0
                     "
@@ -174,8 +185,8 @@
                   </table>
                   <div v-else>
                     <div class="text-center not-found">
-                        <i class="fa fa-warning text-warning"></i>
-                        No avalible data!
+                      <i class="fa fa-warning text-warning"></i>
+                      No avalible data!
                     </div>
                   </div>
                 </div>
@@ -194,7 +205,7 @@
 <script>
 export default {
   name: "Nurses",
-  props: ["link", 'user', 'edits', 'UnitDash'],
+  props: ["link", "user", "edits", "UnitDash"],
   data() {
     return {
       Units: [],
@@ -206,7 +217,7 @@ export default {
       patientDetails: [],
       path: "",
       apiUrl: this.link,
-      editCharge:false
+      editCharge: false,
     };
   },
   methods: {
@@ -226,10 +237,10 @@ export default {
   },
   watch: {
     UnitDash: function () {
-        if (this.edits && this.UnitDash.filter(x => x.Unit_id == this.path).length > 0) {
-          this.editCharge = true
-        }
-    }
+      if (this.edits && this.UnitDash.filter((x) => x.Unit_id == this.path).length > 0) {
+        this.editCharge = true;
+      }
+    },
   },
 
   created() {
@@ -238,8 +249,8 @@ export default {
     this.path = this.$route.params.id;
 
     // if current user is charge nurse to this unit
-    if (that.edits && that.UnitDash.filter(x => x.Unit_id == this.path).length > 0) {
-      that.editCharge = true
+    if (that.edits && that.UnitDash.filter((x) => x.Unit_id == this.path).length > 0) {
+      that.editCharge = true;
     }
 
     //get units
@@ -302,14 +313,14 @@ export default {
 
 <style scoped>
 .Nurses {
-  min-height:100vh;
-  padding-bottom:60px;
+  min-height: 100vh;
+  padding-bottom: 60px;
   background-color: #f9f9fb;
 }
 .Nurses .card {
-  max-width:1200px;
+  max-width: 1200px;
 }
 .Nurses .card .last-update {
-  font-size:16px;
+  font-size: 16px;
 }
 </style>
