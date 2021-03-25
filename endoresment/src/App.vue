@@ -123,7 +123,7 @@ export default {
         });
       } 
       // if the user is a doctor
-      else if (this.user.Role_id == 10) {
+      else if (this.user.Role_id == 11) {
           $.ajax({
               type: "POST",
               url: that.link + "endoresment/handover.aspx/getUnitDashData2",
