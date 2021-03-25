@@ -22,6 +22,10 @@ import Handover from "@/components/endoresment/Handover";
 import Nurses from "@/components/endoresment/Nurses";
 import editNurses from "@/components/endoresment/editNurses";
 import editPatients from "@/components/endoresment/editPatients";
+import nursesPdf from "@/components/endoresment/nursesPdf";
+import Nursing_schedule from "@/components/endoresment/Nursing_schedule"; 
+import display_schdule from "@/components/endoresment/display_schdule";
+
 
 Vue.use(Router);
 
@@ -252,6 +256,40 @@ const router = new Router({
         cat: "Endoresment",
         viewMenu:false,
         chargeNurse:false
+      },
+    },
+    {
+      path: "/nursesPdf/:id",
+      name: "Nurses Pdf",
+      component: nursesPdf,
+      meta: {
+        requiresAuth: true,
+        cat: "Endoresment",
+        viewMenu:false,
+        chargeNurse:false
+      },
+    },
+    {
+      path: "/Nursing_schedule",
+      name: "Nursing Schedule",
+      component: Nursing_schedule,
+      meta: {
+        requiresAuth: true,
+        cat: "Endoresment",
+        viewMenu:true,
+        chargeNurse:true
+      },
+    },
+    
+    {
+      path: "/display_schdule",
+      name: "Display Nurses Schdule",
+      component: display_schdule,
+      meta: {
+        requiresAuth: true,
+        cat: "Endoresment",
+        viewMenu:true,
+        chargeNurse:true
       },
     },
     

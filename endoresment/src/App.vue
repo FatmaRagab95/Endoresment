@@ -16,20 +16,27 @@
         <upper-nav v-if="user" :username="user.FullName"></upper-nav>
 
         <!-- show alerts for charge nurses to confirm endorsing -->
-        <div v-if='Units.length > 0 && edits  && user'>
-          <div v-for='(data, i) in Units' :key='data.id'>
-            <ul class='list-unstyled alert-charge'>
-              <li v-if='!data.Confirm' class='alert bg-danger text-white p-4'>
-                <i class='text-warning fa fa-warning'></i> <span>You haven't confirmed endorsing for 
-                  <strong class='border-bottom'>{{data.Unit_name}}</strong> yet!</span>
-                <button @click.prevent='confirm(data.id,i)' class='pull-right btn btn-warning text-dark'>
-                  Confirm</button>
+        <div v-if="Units.length > 0 && edits && user">
+          <div v-for="(data, i) in Units" :key="data.id">
+            <ul class="list-unstyled alert-charge">
+              <li v-if="!data.Confirm" class="alert bg-danger text-white p-4">
+                <i class="text-warning fa fa-warning"></i>
+                <span
+                  >You haven't confirmed endorsing for
+                  <strong class="border-bottom">{{ data.Unit_name }}</strong> yet!</span
+                >
+                <button
+                  @click.prevent="confirm(data.id, i)"
+                  class="pull-right btn btn-warning text-dark"
+                >
+                  Confirm
+                </button>
               </li>
             </ul>
           </div>
         </div>
 
-        <router-view :link="link" :user="user" :UnitDash='Units' :edits='edits' />
+        <router-view :link="link" :user="user" :UnitDash="Units" :edits="edits" />
       </div>
     </div>
   </div>
@@ -49,132 +56,130 @@ export default {
   data() {
     return {
       user: JSON.parse(localStorage.getItem("user")),
-      link: `http://localhost:${49638}/endoresment/dist/`,
+      link: `http://localhost:${51026}/endoresment/dist/`,
       Units: [],
-      edits:false
+      edits: false,
     };
   },
   methods: {
-  
     // if user is charge nurse
     getUnits() {
       let that = this;
 
       if (this.user.Role_id == 17) {
-          $.ajax({
-            type: "POST",
-            url: that.link + "endoresment/handover.aspx/getUnitDashData",
-            data:JSON.stringify({"chargeNurse": that.user}),
-            contentType: "application/json; charset=utf-8",
-            dataType: "json",
-            success: function (data) {
-              if (new Date().getHours() < 20 && new Date().getHours() >= 8) {
-                that.Units = JSON.parse(data.d).filter(x => x.Shift.trim() == 'Day');
-              } else {
-                that.Units = JSON.parse(data.d).filter(x => x.Shift.trim() == 'Night');
-              }
-              if (that.Units.length > 0) {
-                that.edits = true;
-              } else {
-                  $.ajax({
-                      type: "POST",
-                      url: that.link + "endoresment/handover.aspx/getUnitDashData2",
-                      data:JSON.stringify({"id": that.user}),
-                      contentType: "application/json; charset=utf-8",
-                      dataType: "json",
-                      success: function (data) {
-                          if (data.d.length > 0) {
-                              that.edits = false;
-                              that.Units = JSON.parse(data.d);
-                          }
-                      },
-                  });
-              }
-
-            },
+        $.ajax({
+          type: "POST",
+          url: that.link + "endoresment/handover.aspx/getUnitDashData",
+          data: JSON.stringify({ chargeNurse: that.user }),
+          contentType: "application/json; charset=utf-8",
+          dataType: "json",
+          success: function (data) {
+            if (new Date().getHours() < 20 && new Date().getHours() >= 8) {
+              that.Units = JSON.parse(data.d).filter((x) => x.Shift.trim() == "Day");
+            } else {
+              that.Units = JSON.parse(data.d).filter((x) => x.Shift.trim() == "Night");
+            }
+            if (that.Units.length > 0) {
+              that.edits = true;
+            } else {
+              $.ajax({
+                type: "POST",
+                url: that.link + "endoresment/handover.aspx/getUnitDashData2",
+                data: JSON.stringify({ id: that.user }),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (data) {
+                  if (data.d.length > 0) {
+                    that.edits = false;
+                    that.Units = JSON.parse(data.d);
+                  }
+                },
+              });
+            }
+          },
         });
 
         // if the user is a nurse
       } else if (this.user.Role_id == 12) {
-          $.ajax({
-              type: "POST",
-              url: that.link + "endoresment/handover.aspx/getUnitDashData3",
-              data:JSON.stringify({"id": that.user}),
-              contentType: "application/json; charset=utf-8",
-              dataType: "json",
-              success: function (data) {
-                  if (data.d.length > 0) {
-                      that.edits = true;
-                      that.Units = JSON.parse(data.d);
-                  }
-              },
-          });
-      } 
+        $.ajax({
+          type: "POST",
+          url: that.link + "endoresment/handover.aspx/getUnitDashData3",
+          data: JSON.stringify({ id: that.user }),
+          contentType: "application/json; charset=utf-8",
+          dataType: "json",
+          success: function (data) {
+            if (data.d.length > 0) {
+              that.edits = true;
+              that.Units = JSON.parse(data.d);
+            }
+          },
+        });
+      }
       // if the user is a doctor
       else if (this.user.Role_id == 11) {
-          $.ajax({
-              type: "POST",
-              url: that.link + "endoresment/handover.aspx/getUnitDashData2",
-              data:JSON.stringify({"id": that.user}),
-              contentType: "application/json; charset=utf-8",
-              dataType: "json",
-              success: function (data) {
-                  if (data.d.length > 0) {
-                      that.edits = true;
-                      that.Units = JSON.parse(data.d);
-                  }
-              },
-          });
-      } 
+        $.ajax({
+          type: "POST",
+          url: that.link + "endoresment/handover.aspx/getUnitDashData2",
+          data: JSON.stringify({ id: that.user }),
+          contentType: "application/json; charset=utf-8",
+          dataType: "json",
+          success: function (data) {
+            if (data.d.length > 0) {
+              that.edits = true;
+              that.Units = JSON.parse(data.d);
+            }
+          },
+        });
+      }
       // if the user is anything else
       else {
-          $.ajax({
-              type: "POST",
-              url: that.link + "endoresment/handover.aspx/getUnitDashData2",
-              data:JSON.stringify({"id": that.user}),
-              contentType: "application/json; charset=utf-8",
-              dataType: "json",
-              success: function (data) {
-                  if (data.d.length > 0) {
-                      that.edits = false;
-                      that.Units = JSON.parse(data.d);
-                  }
-              },
-          });
+        $.ajax({
+          type: "POST",
+          url: that.link + "endoresment/handover.aspx/getUnitDashData2",
+          data: JSON.stringify({ id: that.user }),
+          contentType: "application/json; charset=utf-8",
+          dataType: "json",
+          success: function (data) {
+            if (data.d.length > 0) {
+              that.edits = false;
+              that.Units = JSON.parse(data.d);
+            }
+          },
+        });
       }
     },
 
     // confirm endorsing
     confirm(id, index) {
       let that = this;
-        $.ajax({
-            type: "POST",
-            url: that.link + "endoresment/handover.aspx/confirmEndorsing",
-            data:JSON.stringify({"id": {"id": id}}),
-            contentType: "application/json; charset=utf-8",
-            dataType: "json",
-            success: function (data) {
-                swal({
-                  title: "Confirmed!",
-                  icon: "success",
-                  dangerMode: true,
-                });
+      $.ajax({
+        type: "POST",
+        url: that.link + "endoresment/handover.aspx/confirmEndorsing",
+        data: JSON.stringify({ id: { id: id } }),
+        contentType: "application/json; charset=utf-8",
+        dataType: "json",
+        success: function (data) {
+          swal({
+            title: "Confirmed!",
+            icon: "success",
+            dangerMode: true,
+          });
 
-                that.Units[index].Confirm = true;
-            }
-        });
-    }
+          that.Units[index].Confirm = true;
+        },
+      });
+    },
   },
   watch: {
     $route: function (to, from) {
       this.user = JSON.parse(localStorage.getItem("user"));
     },
     user: function () {
-      this.getUnits()
-    }
+      this.getUnits();
+    },
   },
   created() {
-    this.getUnits()
+    this.getUnits();
   },
 };
 </script>
@@ -184,15 +189,15 @@ export default {
 .badge-primary,
 .btn-primary,
 .bg-primary {
-  background-color:#6534c7 !important;
-  border-color:#6534c7;
+  background-color: #6534c7 !important;
+  border-color: #6534c7;
 }
 .btn-primary:hover {
-    background-color: #4c2797 !important;
-    border-color: #4c2797;
+  background-color: #4c2797 !important;
+  border-color: #4c2797;
 }
 .text-primary {
-  color:#6534c7 !important;
+  color: #6534c7 !important;
 }
 .badge-success,
 .btn-sucsess,
@@ -239,12 +244,12 @@ export default {
   margin: 30px auto;
 }
 .alert-charge {
-  margin-top:120px;
+  margin-top: 120px;
 }
 .modal-content {
-    border: none;
-    border-radius: 5px;
-    box-shadow: 0 0 20px #68696c;
+  border: none;
+  border-radius: 5px;
+  box-shadow: 0 0 20px #68696c;
 }
 @keyframes loader {
   12.5% {
