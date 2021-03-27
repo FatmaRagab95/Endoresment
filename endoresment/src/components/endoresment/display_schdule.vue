@@ -5,7 +5,7 @@
     </div>
 
     <div class="internal-page" id="auth">
-      <form @submit.prevent="InsertPatient">
+      <form @submit.prevent="InsertPatient" v-if="selectedMonth.length == 0">
         <div class="custom-form pt-3">
           <div class="cu-container">
             <div class="cu-form-group special" style="max-width: 900px">
@@ -22,7 +22,7 @@
                 </h3>
                 <div class="f-select">
                   <select class="form-control form-control-sm" v-model="month" required>
-                    <option v-for="month in monthes" :value="month.id" :key="month">
+                    <option v-for="month in monthes" :value="month.id" :key="month.id">
                       {{ month.name }}
                     </option>
                   </select>
@@ -35,14 +35,14 @@
                 </h3>
                 <div class="f-select">
                   <select class="form-control form-control-sm" v-model="unit" required>
-                    <option v-for="unit in Units" :value="unit.U_id" :key="unit.U_name">
+                    <option v-for="unit in Units" :value="unit.U_id" :key="unit.U_id">
                       {{ unit.U_name }}
                     </option>
                   </select>
                 </div>
               </div>
 
-              <div class="cu-field radio-group">
+              <!-- <div class="cu-field radio-group">
                 <div class="row align-items-end">
                   <div class="col-md-6">
                     <div class="cu-field">
@@ -90,66 +90,88 @@
                     </div>
                   </div>
                 </div>
-              </div>
+              </div>-->
 
               <div class="text-center">
-                <button class="special-btn">Display Nursing Schedule</button>
+                <button class="special-btn" @click.prevent="monthDays">
+                  Display Nursing Schedule
+                </button>
               </div>
             </div>
           </div>
         </div>
       </form>
-      <form>
+      <div>{{ selectedMonth }}</div>
+      <form v-if="selectedMonth.length > 0">
         <div class="custom-form pt-3">
           <div class="cu-container">
-            <div class="cu-form-group special" style="max-width: 1200px">
+            <div class="cu-form-group special" style="max-width: 100%">
               <div class="row p-4">
-                <span class="col-md-4"
+                <span class="col-md-6"
                   ><span class="text-info mr-2">Month :</span
                   >{{ monthes.filter((x) => x.id == month)[0].name }}</span
                 >
-                <span class="col-md-4"
+                <span class="col-md-6"
                   ><span class="text-info mr-2">Unit :</span>
                   {{ Units.filter((x) => x.U_id == unit)[0].U_name }}</span
                 >
-                <span class="col-md-4"
-                  ><span class="text-info mr-2">Shift :</span>{{ shift }}</span
-                >
               </div>
-              <table class="table table-striped shadow-sm">
-                <thead>
-                  <tr>
-                    <th scope="col">No</th>
-                    <th scope="col">Nurse Name</th>
-                    <th scope="col">ID</th>
-                    <th scope="col">
-                      <div>1</div>
-                      <hr />
-                      <div>sat</div>
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <th scope="row">1</th>
-                    <td>Mark</td>
-                    <td>Otto</td>
-                    <td>@mdo</td>
-                  </tr>
-                  <tr>
-                    <th scope="row">2</th>
-                    <td>Jacob</td>
-                    <td>Thornton</td>
-                    <td>@fat</td>
-                  </tr>
-                  <tr>
-                    <th scope="row">3</th>
-                    <td>Larry</td>
-                    <td>the Bird</td>
-                    <td>@twitter</td>
-                  </tr>
-                </tbody>
-              </table>
+              <!-- start table-->
+              <div class="scroll-box" v-dragscroll>
+                <table class="table table-bordered text-center">
+                  <thead>
+                    <tr>
+                      <th class="p-0 m-0 bg-secondary text-white">
+                        <div class="mb-1">No</div>
+                      </th>
+                      <th class="p-0 m-0 bg-warning text-white">
+                        <div class="mb-1">Nurse Name</div>
+                      </th>
+                      <th class="p-0 m-0 bg-secondary text-white">
+                        <div class="mb-1">ID</div>
+                      </th>
+                      <th
+                        style="font-size: 12px"
+                        v-for="(day, i) in monthCalendar"
+                        :key="i"
+                        class="p-0 m-0"
+                      >
+                        <div class="bg-warning text-white w-100 m-0 p-0 border-bottom">
+                          {{ day.split("-")[0] }}
+                        </div>
+
+                        <div class="bg-warning text-white w-100 m-0 p-0">
+                          {{ day.split("-")[1] }}
+                        </div>
+                      </th>
+                      <th class="p-0 m-0 bg-secondary text-white">
+                        <div class="mb-1">Total</div>
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr v-for="(nurse, i) in selectedMonth" :key="nurse.Id">
+                      <td class="bg-secondary text-white p-0 m-0">{{ i + 1 }}</td>
+                      <td class="p-0 m-0 text-left pl-3">{{ nurse.Nurse_name }}</td>
+                      <td class="bg-secondary text-white p-0 m-0">
+                        {{ nurse.Nurse_id }}
+                      </td>
+                      <td v-for="(day, i) in monthCalendar" :key="i" class="p-0 m-0">
+                        <div
+                          v-if="day.split('-')[1] == 'Fri'"
+                          class="bg-warning text-warning w-100 h-100 m-0 p-0"
+                        >
+                          {{ day.split("-")[0] }}
+                        </div>
+                        <div v-else class="bg-white text-dark w-100 m-0 p-0">1</div>
+                      </td>
+                      <td class="bg-secondary text-white p-0 m-0">total</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <!-- end table-->
             </div>
           </div>
         </div>
@@ -159,7 +181,12 @@
 </template>
 
 <script>
+import { dragscroll } from "vue-dragscroll";
+
 export default {
+  directives: {
+    dragscroll,
+  },
   name: "display_schdule",
   props: ["link", "user"],
   data() {
@@ -171,26 +198,52 @@ export default {
       today: "",
 
       monthes: [
-        { name: "january", id: "01" },
-        { name: "february", id: "02" },
-        { name: "march", id: "03" },
-        { name: "april", id: "04" },
-        { name: "may", id: "05" },
-        { name: "june", id: "06" },
-        { name: "july", id: "07" },
-        { name: "august", id: "08" },
-        { name: "september", id: "09" },
-        { name: "october", id: "10" },
-        { name: "november", id: "11" },
-        { name: "december", id: "12" },
+        { name: "January", id: "01" },
+        { name: "February", id: "02" },
+        { name: "March", id: "03" },
+        { name: "April", id: "04" },
+        { name: "May", id: "05" },
+        { name: "June", id: "06" },
+        { name: "July", id: "07" },
+        { name: "August", id: "08" },
+        { name: "September", id: "09" },
+        { name: "October", id: "10" },
+        { name: "November", id: "11" },
+        { name: "December", id: "12" },
       ],
 
       month: "01",
       unit: 1,
       shift: "",
+
+      monthCalendar: [],
+      selectedMonth: [],
     };
   },
-  methods: {},
+  methods: {
+    monthDays: function () {
+      function getMonths(month, year) {
+        var arr = [];
+        var start = moment(year + "-" + month, "YYYY-MMM");
+        for (
+          var end = moment(start).add(1, "month");
+          start.isBefore(end);
+          start.add(1, "day")
+        ) {
+          arr.push(start.format("D-ddd"));
+        }
+        return arr;
+      }
+      this.monthCalendar = getMonths(
+        this.monthes.filter((x) => x.id == this.month)[0].name.substring(0, 3),
+        new Date().getFullYear()
+      );
+
+      this.selectedMonth = this.Endorsement_Nursing_schedule.filter(
+        (x) => x.Unit_id == this.unit && x.Date.split("-")[1] == this.month
+      );
+    },
+  },
 
   created() {
     let that = this;
@@ -283,7 +336,7 @@ export default {
   z-index: 2;
 }
 .custom-form .cu-form-group.special {
-  margin-top: 60px;
+  margin-top: 100px;
 }
 .custom-form .cu-form-group .title {
   text-align: initial;
@@ -328,5 +381,48 @@ export default {
 }
 .special-btn i {
   margin-right: 15px;
+}
+
+.calendar {
+  display: grid;
+  width: 100%;
+  grid-template-columns: repeat(7, minmax(60px, 1fr));
+  grid-template-rows: 60px;
+  grid-auto-rows: 60px;
+  overflow: auto;
+}
+.calendar-container {
+  width: 90%;
+  margin: auto;
+  overflow: hidden;
+  box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+  background: #fff;
+  max-width: 500px;
+}
+.day {
+  border-bottom: 1px solid rgba(166, 168, 179, 0.5);
+  border-right: 1px solid rgba(166, 168, 179, 0.5);
+  text-align: right;
+  padding: 14px 20px;
+  letter-spacing: 1px;
+  font-size: 14px;
+  box-sizing: border-box;
+  position: relative;
+  pointer-events: none;
+  z-index: 1;
+}
+.day.today {
+  background-color: #0092ff;
+  color: #fff;
+}
+.day-name {
+  font-size: 16px;
+  text-transform: uppercase;
+  color: #0092ff;
+  text-align: center;
+  border-bottom: 1px solid rgba(166, 168, 179, 0.5);
+  line-height: 50px;
+  font-weight: 500;
 }
 </style>
