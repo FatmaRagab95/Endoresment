@@ -19,7 +19,9 @@
                             <th scope="col"></th>
                             <th colspan="4" scope="col"><span>Date:</span> {{today}}</th>
                             <th colspan="6" scope="col"><span>Shift:</span> <span class='text-primary'><i :class="Shift == 'Day' ? 'fa fa-sun-o' : 'fa fa-moon-o'"></i> {{Shift}}</span></th>
-                            <th colspan="2" scope="col"><span>Total Census:</span> {{unit.Total_Census}}</th>
+                            <th colspan="2" scope="col"><span>Total Census:</span>
+                             {{patients.filter(x => x.Unit.trim() == unit.Unit_name.trim()).length}}
+                            </th>
                             <th colspan="4" scope="col">
                                 <p><span>Endorsing Charge Nurse:</span> {{unit.Endorsing_ChargeNurse}}</p>
                                 <p><span>Recieving Charge Nurse:</span> {{unit.Receive_ChargeNurse}}</p>
@@ -76,11 +78,11 @@
                                     <span v-if='!patient.edit'>{{LOS(patient.Addmission_date)}}</span>
                                 </td>
                                 <td class='bigText'>
-                                    <textarea :disabled="user.Role_id == 12 || user.Role_id == 17 ? 'disabled' : ''" v-if='patient.edit' v-model="FollowData(patient.id).DR_Diagnosis"></textarea>
+                                    <textarea :disabled="user.Role_id != 10" v-if='patient.edit' v-model="FollowData(patient.id).DR_Diagnosis"></textarea>
                                     <span v-else>{{FollowData(patient.id).DR_Diagnosis}}</span>
                                 </td>
                                 <td class='bigText'>
-                                    <textarea  :disabled="user.Role_id == 12 || user.Role_id == 17 ? 'disabled' : ''" v-if='patient.edit' v-model="FollowData(patient.id).DR_ProgressNotes"></textarea>
+                                    <textarea  :disabled="user.Role_id != 10" v-if='patient.edit' v-model="FollowData(patient.id).DR_ProgressNotes"></textarea>
                                     <span v-else>{{FollowData(patient.id).DR_ProgressNotes}}</span>
                                 </td>
                                 <td>
@@ -157,16 +159,26 @@
                                     <span v-else>{{FollowData(patient.id).Surgury_Procedures}}</span>
                                 </td>
                                 <td class='bigText'>
-                                    <textarea  :disabled="user.Role_id == 12 || user.Role_id == 17 ? 'disabled' : ''" v-if='patient.edit' type='text' v-model="FollowData(patient.id).DR_Consultaion_Progress"></textarea>
+                                    <textarea  :disabled="user.Role_id != 10" v-if='patient.edit' type='text' v-model="FollowData(patient.id).DR_Consultaion_Progress"></textarea>
                                     <span v-else>{{FollowData(patient.id).DR_Consultaion_Progress}}</span>
                                 </td>
-                                <td v-if='(user.Role_id == 12 || user.Role_id == 17) && edits'>
+                                <td v-if='(user.Role_id == 17) && edits'>
+                                    <button v-if='patient.edit' class='btn btn-primary btn-sm'
+                                     @click.prevent='SaveEdits(patient.id)'>Save</button>
+                                    <button v-else class='btn btn-success btn-sm' @click.prevent='edit(patient.id)'>Edit</button>
+                                </td>
+                                <td v-else-if='user.Role_id == 12 && edits && NursesPatients.filter(x => x.id == patient.id).length > 0'>
+                                    <button v-if='patient.edit' class='btn btn-primary btn-sm'
+                                     @click.prevent='SaveEdits(patient.id)'>Save</button>
+                                    <button v-else class='btn btn-success btn-sm' @click.prevent='edit(patient.id)'>Edit</button>
+                                </td>
+                                <td v-else-if='user.Role_id == 10 && edits && DoctorPatients.filter(x => x.id == patient.id).length > 0'>
                                     <button v-if='patient.edit' class='btn btn-primary btn-sm'
                                      @click.prevent='SaveEdits(patient.id)'>Save</button>
                                     <button v-else class='btn btn-success btn-sm' @click.prevent='edit(patient.id)'>Edit</button>
                                 </td>
                                 <td >
-                                    <router-link :to='{name:"Patient Data", params:{id:patient.id}}' target='_blank' class='btn btn-info btn-sm'>Details</router-link>
+                                    <router-link :to='{name:"Patient Data", params:{id:patient.id}}' target='_blank' class='btn btn-primary btn-sm'>Details</router-link>
                                 </td>
                             </tr>
                         </tbody>
@@ -190,7 +202,7 @@ export default {
         dragscroll
     },
     name:'Handover',
-    props: ['link', 'user', 'UnitDash', 'edits'],
+    props: ['link', 'user', 'UnitDash', 'edits', 'DoctorPatients', 'NursesPatients'],
     data() {
         return {
             apiUrl: this.link,
@@ -204,8 +216,9 @@ export default {
     },
     methods: {
         FollowData(id) {
-            let checkData =  this.patientsFollow.filter(x => x.Patient_id == id);
-            return checkData[0];
+            let checkData =  this.patientsFollow.filter(x => x.Patient_id == id)[0];
+            Object.keys(checkData).map(x => typeof(checkData[x]) == 'string' ?  checkData[x] = checkData[x].trim() : false);
+            return checkData;
         },
         LOS(date) {
             let length = Math.round((new Date() - new Date(date.trim())) / (1000 * 60 * 60 * 24));
@@ -238,33 +251,46 @@ export default {
                                 // update follow up by nurse
                                 if (that.user.Role_id == 12 || that.user.Role_id == 17) {
 
-                                    dataObj.Insert_Nurse = dataObj.Insert_Nurse != '' ? that.user.Emp_id : dataObj.Insert_Nurse;
-                                    dataObj.Insert_Nurse_Time = dataObj.Insert_Nurse_Time != '' ? moment(new Date).format() : dataObj.Insert_Nurse_Time;
-                                    dataObj.Insert_Doctor = '';
-
-                                    dataObj.Update_Nurse = dataObj.Insert_Nurse != '' ? that.user.Emp_id : '';
-                                    dataObj.Update_Nurse_Time = dataObj.Insert_Nurse_Time != '' ? moment(new Date).format() : '';
+                                    dataObj.Update_Nurse = that.user.Emp_id;
+                                    dataObj.Update_Nurse_Name = that.user.FullName;
+                                    dataObj.Update_Nurse_Time = moment(new Date).format('DD-MM-YYYY A HH-mm');
 
                                     UpdateData();
                                     
-                                } else {
+                                } else if (that.user.Role_id == 10) {
                                     
                                     // update follow up by doctor
+
+                                    dataObj.Update_Doctor = that.user.Emp_id;
+                                    dataObj.Update_Doctor_Name = that.user.FullName;
+                                    dataObj.Update_Doctor_Time = moment(new Date).format('DD-MM-YYYY A HH-mm');
+
+                                    UpdateData();
                                 }
 
                             } else {
 
                                 // insert into follow up by nurse
                                 if (that.user.Role_id == 12 || that.user.Role_id == 17) {
+
+                                    dataObj.Shift = that.Shift;
                                     dataObj.Insert_Nurse = that.user.Emp_id;
-                                    dataObj.Insert_Nurse_Time = moment(new Date).format();
+                                    dataObj.Insert_Nurse_Name = that.user.FullName;
+                                    dataObj.Insert_Nurse_Time = moment(new Date).format('DD-MM-YYYY A HH-mm');
                                     dataObj.Insert_Doctor = 0;
 
                                     InsertData();
                                     
-                                } else {
+                                } else if (that.user.Role_id == 10) {
                                     
                                     // insert into follow up by doctor
+                                    dataObj.Shift = that.Shift;
+                                    dataObj.Insert_Doctor = that.user.Emp_id;
+                                    dataObj.Insert_Doctor_Name = that.user.FullName;
+                                    dataObj.Insert_Doctor_Time = moment(new Date).format('DD-MM-YYYY A HH-mm');
+                                    dataObj.Insert_Nurse = 0;
+
+                                    InsertData();
                                 }
                             }
 
@@ -333,13 +359,144 @@ export default {
                     });
                 }
             }
-        }
+        },
+        getShifts(patientId, Shift) {
+            this.patientsFollow.push(
+                {
+                    Shift: Shift,
+                    Patient_id: patientId,
+                    Diet_id: 0,
+                    Diet_Name: '',
+                    Pain: 0,
+                    P_Isolation: '',
+                    Fall:'',
+                    Allergy: '',
+                    Investegation_ToDo: '',
+                    Investegation_FollowUp: '',
+                    Contraptions_Infusions: '',
+                    Routise_PlanOfCare: '',
+                    Surgury_Procedures :'',
+                    DR_Diagnosis: '',
+                    DR_ProgressNotes: '',
+                    DR_Consultaion_Progress: '',
+                    Insert_Nurse: '',
+                    Insert_Nurse_Name: '',
+                    Insert_Nurse_Time: '',
+                    Update_Nurse: 0,
+                    Update_Nurse_Name: '',
+                    Update_Nurse_Time: '',
+                    Insert_Doctor: 0,
+                    Insert_Doctor_Name: '',
+                    Insert_Doctor_Time: '',
+                    Update_Doctor: 0,
+                    Update_Doctor_Name: '',
+                    Update_Doctor_Time: '',
+                    Consultaion: '',
+                    Transfer_From: '',
+                    Transfer_To: '',
+                    Entry_date:new Date()
+                }
+            );
+        },
+       patientsData() {
+           let that = this;
+
+            if (that.edits && that.user.Role_id == 17) {
+                $.ajax({
+                    type: "POST",
+                    url: that.apiUrl + "endoresment/handover.aspx/getPatientsData",
+                    data:JSON.stringify({"chargeNurse": that.user}),
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function (data) {
+                        that.patients = JSON.parse(data.d);
+                        if (that.patients.length > 0) {
+                            that.patients.map(x => that.$set(x, 'edit', false))
+                        }
+
+                        // get follow ups
+                        for (let i = 0; i < that.patients.length; i++) {
+
+                            that.patients[i].Room = that.patients[i].Room.trim();
+
+                            $.ajax({
+                                type: "POST",
+                                url: that.apiUrl + "endoresment/handover.aspx/getShiftData",
+                                data:JSON.stringify({"data": {"Patient_id":  that.patients[i].id}}),
+                                contentType: "application/json; charset=utf-8",
+                                dataType: "json",
+                                success: function (data) {
+                                    if (JSON.parse(data.d).length > 0) {
+                                        that.patientsFollow.push(JSON.parse(data.d)[0]);
+                                    }
+                                    else {
+                                        let shift = null;
+                                        if (new Date().getHours() < 20 && new Date().getHours() >= 8) {
+                                            shift = 'Day';
+                                        } else {
+                                            shift = 'Night';
+                                        }
+
+                                        that.getShifts(that.patients[i].id, shift)
+                                    }
+                                },
+                            });
+
+                        }
+                    },
+                });
+            } else {
+                $.ajax({
+                    type: "POST",
+                    url: that.apiUrl + "endoresment/handover.aspx/getPatientsData2",
+                    data:JSON.stringify({"chargeNurse": that.user}),
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function (data) {
+                        that.patients = JSON.parse(data.d);
+                        if (that.patients.length > 0) {
+                            that.patients.map(x => that.$set(x, 'edit', false))
+                        }
+
+                        // get follow ups
+                        for (let i = 0; i < that.patients.length; i++) {
+
+                            that.patients[i].Room = that.patients[i].Room.trim();
+
+                            $.ajax({
+                                type: "POST",
+                                url: that.apiUrl + "endoresment/handover.aspx/getShiftData",
+                                data:JSON.stringify({"data": {"Patient_id":  that.patients[i].id}}),
+                                contentType: "application/json; charset=utf-8",
+                                dataType: "json",
+                                success: function (data) {
+                                    if (JSON.parse(data.d).length > 0) {
+                                        that.patientsFollow.push(JSON.parse(data.d)[0]);
+                                    }
+                                    else {
+                                        let shift = null;
+                                        if (new Date().getHours() < 20 && new Date().getHours() >= 8) {
+                                            shift = 'Day';
+                                        } else {
+                                            shift = 'Night';
+                                        }
+
+                                        that.getShifts(that.patients[i].id, shift);
+                                    }
+                                },
+                            });
+
+                        }
+                    },
+                });
+            }
+       }
     },
     watch: {
-       UnitDash: function () {
+       UnitDash: function() {
            let that = this;
             that.getChargeUnits();
-       } 
+       },
     },
     created() {
         let that = this;
@@ -349,157 +506,9 @@ export default {
         that.getChargeUnits();
 
         // get patients data
-        if (that.edits) {
-            $.ajax({
-                type: "POST",
-                url: that.apiUrl + "endoresment/handover.aspx/getPatientsData",
-                data:JSON.stringify({"chargeNurse": that.user}),
-                contentType: "application/json; charset=utf-8",
-                dataType: "json",
-                success: function (data) {
-                    that.patients = JSON.parse(data.d);
-                    if (that.patients.length > 0) {
-                        that.patients.map(x => that.$set(x, 'edit', false))
-                    }
-
-                    // get follow ups
-                    for (let i = 0; i < that.patients.length; i++) {
-
-                        that.patients[i].Room = that.patients[i].Room.trim();
-
-                        $.ajax({
-                            type: "POST",
-                            url: that.apiUrl + "endoresment/handover.aspx/getShiftData",
-                            data:JSON.stringify({"data": {"Patient_id":  that.patients[i].id}}),
-                            contentType: "application/json; charset=utf-8",
-                            dataType: "json",
-                            success: function (data) {
-                                if (JSON.parse(data.d).length > 0) {
-                                    that.patientsFollow.push(JSON.parse(data.d)[0]);
-                                }
-                                else {
-                                    let shift = null;
-                                    if (new Date().getHours() <= 20 && new Date().getHours() >= 8) {
-                                        shift = 'Day';
-                                    } else {
-                                        shift = 'Night';
-                                    }
-
-                                    that.patientsFollow.push(
-                                        {
-                                            Shift: shift,
-                                            Patient_id: that.patients[i].id,
-                                            Diet_id: 0,
-                                            Diet_Name: '',
-                                            Pain: 0,
-                                            P_Isolation: '',
-                                            Fall:'',
-                                            Allergy: '',
-                                            Investegation_ToDo: '',
-                                            Investegation_FollowUp: '',
-                                            Contraptions_Infusions: '',
-                                            Routise_PlanOfCare: '',
-                                            Surgury_Procedures :'',
-                                            DR_Diagnosis: '',
-                                            DR_ProgressNotes: '',
-                                            DR_Consultaion_Progress: '',
-                                            Update_Nurse: 0,
-                                            Update_Nurse_Time: '',
-                                            Update_Doctor: 0,
-                                            Update_Doctor_Time: '',
-                                            Insert_Nurse: '',
-                                            Insert_Nurse_Time: '',
-                                            Insert_Doctor: 0,
-                                            Insert_Doctor_Time: '',
-                                            Consultaion: '',
-                                            Transfer_From: '',
-                                            Transfer_To: '',
-                                            Entry_date:new Date()
-                                        }
-                                    )
-                                }
-                            },
-                        });
-
-                    }
-                },
-            });
-        } else {
-            $.ajax({
-                type: "POST",
-                url: that.apiUrl + "endoresment/handover.aspx/getPatientsData2",
-                data:JSON.stringify({"chargeNurse": that.user}),
-                contentType: "application/json; charset=utf-8",
-                dataType: "json",
-                success: function (data) {
-                    that.patients = JSON.parse(data.d);
-                    if (that.patients.length > 0) {
-                        that.patients.map(x => that.$set(x, 'edit', false))
-                    }
-
-                    // get follow ups
-                    for (let i = 0; i < that.patients.length; i++) {
-
-                        that.patients[i].Room = that.patients[i].Room.trim();
-
-                        $.ajax({
-                            type: "POST",
-                            url: that.apiUrl + "endoresment/handover.aspx/getShiftData",
-                            data:JSON.stringify({"data": {"Patient_id":  that.patients[i].id}}),
-                            contentType: "application/json; charset=utf-8",
-                            dataType: "json",
-                            success: function (data) {
-                                if (JSON.parse(data.d).length > 0) {
-                                    that.patientsFollow.push(JSON.parse(data.d)[0]);
-                                }
-                                else {
-                                    let shift = null;
-                                    if (new Date().getHours() <= 20 && new Date().getHours() >= 8) {
-                                        shift = 'Day';
-                                    } else {
-                                        shift = 'Night';
-                                    }
-
-                                    that.patientsFollow.push(
-                                        {
-                                            Shift: shift,
-                                            Patient_id: that.patients[i].id,
-                                            Diet_id: 0,
-                                            Diet_Name: '',
-                                            Pain: 0,
-                                            P_Isolation: '',
-                                            Fall:'',
-                                            Allergy: '',
-                                            Investegation_ToDo: '',
-                                            Investegation_FollowUp: '',
-                                            Contraptions_Infusions: '',
-                                            Routise_PlanOfCare: '',
-                                            Surgury_Procedures :'',
-                                            DR_Diagnosis: '',
-                                            DR_ProgressNotes: '',
-                                            DR_Consultaion_Progress: '',
-                                            Update_Nurse: 0,
-                                            Update_Nurse_Time: '',
-                                            Update_Doctor: 0,
-                                            Update_Doctor_Time: '',
-                                            Insert_Nurse: '',
-                                            Insert_Nurse_Time: '',
-                                            Insert_Doctor: 0,
-                                            Insert_Doctor_Time: '',
-                                            Consultaion: '',
-                                            Transfer_From: '',
-                                            Transfer_To: '',
-                                            Entry_date:new Date()
-                                        }
-                                    )
-                                }
-                            },
-                        });
-
-                    }
-                },
-            });
-        }
+        setTimeout(function () {
+            that.patientsData();
+        }, 1000);
 
         // get diets 
         $.ajax({

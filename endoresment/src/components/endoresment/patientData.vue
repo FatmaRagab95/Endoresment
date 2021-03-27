@@ -1,6 +1,6 @@
 <template>
   <div class="patientData p-3">
-    <div class="container-fluid mt-2 bg-white pt-3 pb-3 card">
+    <div class="mt-2 bg-white pt-3 pb-3 card">
       <!-- start patient data -->
       <div class="container" v-if='patientData'>
         <div class="row form-group head-info rounded text-center pt-3 pb-3">
@@ -25,40 +25,48 @@
 
         <div class="row form-group text-center mt-4" style="font-size: 25px">
           <div class="col-md-4">
-            <span class="pull-left">
               <span class="text-secondary">Unit :</span
               ><span
                 class="ml-2 badge card badge-success text-uppercase pl-4 pr-4 shadow-sm"
                 >{{patientData.Unit}}</span
-              ></span
-            >
+              >
           </div>
           <div class="col-md-4" style="text-decoration: underline; font-size: 28px">
             <span class="text-success">Date of admission :</span>
             <span class="ml-2 text-secondary">{{patientData.Addmission_date}}</span>
           </div>
           <div class="col-md-4">
-            <span class="pull-right">
               <span class="text-secondary">Room:</span>
               <span class="ml-2 badge card badge-success pl-4 pr-4 shadow-sm">{{patientData.Room}}</span>
-            </span>
           </div>
         </div>
-        <hr />
-        <div class="cu-flex form-group">
-          <div class="mt-3">
-            <span class="pull-left bg-white p-3 shadow">
+        <div class="row text-center pt-3 pb-5">
+          <div class="col-md-6 mt-3">
+            <span class="bg-white p-3 shadow">
               <i class="fa fa-address-card-o text-secondary" aria-hidden="true"></i>
               <span class="ml-2 text-info">Specialty :</span
               ><span class="ml-2 text-danger">{{patientData.Specialty}}</span></span
             >
           </div>
-          <div class="mt-3">
-            <span class="pull-right bg-white p-3 shadow">
+          <div class="col-md-6 mt-3">
+            <span class="bg-white p-3 shadow">
               <i class="fa fa-user-md text-secondary" aria-hidden="true"></i>
               <span class="ml-2 text-info">Consultant :</span
               ><span class="ml-2 text-danger">{{patientData.Consultant_Name}}</span></span
             >
+          </div>
+        </div>
+        
+        
+        <div class="btn-options row border-top text-center pt-5 pb-3 mt-3" v-if='edit && patientData.Patient_Status == 1'>
+          <div class="col-sm-4 mb-3">
+            <button class="btn btn-block btn-primary shadow">Transfer</button>
+          </div>
+          <div class="col-sm-4 mb-3">
+            <button class="btn btn-block btn-danger shadow"  @click.prevent='updateStat(2)'>Disharge</button>
+          </div>
+          <div class="col-sm-4 mb-3">
+            <button class="btn btn-block btn-dark shadow" @click.prevent='updateStat(3)'>Death</button>
           </div>
         </div>
       </div>
@@ -98,8 +106,22 @@
                   {{viewedShift.Insert_Doctor ? 'Dr.' + viewedShift.Insert_Doctor_Name : 'Nurse: ' + viewedShift.Insert_Nurse_Name}}
                 </span>
             </li>
+            <li v-if='viewedShift.Update_Doctor' class="cu-flex detail"><span>Updated From Doctor: </span> 
+                <span>
+                  {{'Dr.' + viewedShift.Update_Doctor_Name}}
+                  <i class='pl-2 pr-2 text-primary fa fa-clock-o'></i>
+                  {{viewedShift.Update_Doctor_Time}}
+                </span>
+            </li>
+            <li v-if='viewedShift.Update_Nurse' class="cu-flex detail"><span>Updated From Nurse: </span> 
+                <span>
+                  {{'Nurse.' + viewedShift.Update_Nurse_Name}}
+                  <i class='pl-2 pr-2 text-primary fa fa-clock-o'></i>
+                  {{viewedShift.Update_Nurse_Time}}
+                </span>
+            </li>
             <li class="cu-flex detail"><span>Shift</span> <span>
-              <i :class="viewedShift.Shift.trim() == 'Day' ? 'fa fa-sun-o' : 'fa fa-moon-o'"></i>
+              <i :class="viewedShift.Shift.trim() == 'Day' ? 'fa fa-sun-o text-primary' : 'fa fa-moon-o  text-primary'"></i>
                 {{viewedShift.Shift}}       
                 </span>
             </li>
@@ -291,7 +313,7 @@
 <script>
 export default {
   name: "patientData",
-  props: ["link", 'user', 'UnitDash'],
+  props: ["link", 'user', 'UnitDash', 'DoctorPatients', 'NursesPatients'],
   data() {
     return {
       apiUrl: this.link,
@@ -319,20 +341,16 @@ export default {
 
         // if user is a nurse check if the patient is the nurses patient or not
         if (that.user.Role_id == 12) {
-          $.ajax({
-              type: "POST",
-              url: that.apiUrl + "endoresment/patientsNurse.aspx/getPatientsData",
-              contentType: "application/json; charset=utf-8",
-              data: JSON.stringify({ id: { Emp_id: that.user.Emp_id } }),
-              dataType: "json",
-              success: function (data) {
-                  that.edit = JSON.parse(data.d).filter(x => x.id == that.id).length > 0 ? true : false;
-              },
-          });
+          that.edit = that.NursesPatients.filter(x => x.id == that.id).length > 0
         } 
         // if the user is a charge nurse check if the patient located in the same unit as current charge nurse
         else if (that.user.Role_id == 17) {
           that.edit = that.UnitDash.filter(x => x.Unit_name.trim() == that.patientData.Unit.trim()).length > 0 ? true : false;
+        }
+  
+        // if the user is a doctor check if the patient is his/her patient
+        else if (that.user.Role_id == 10) {
+          that.edit = that.DoctorPatients.filter(x => x.id == that.id).length > 0
         }
       },
     });
@@ -345,7 +363,7 @@ export default {
       contentType: "application/json; charset=utf-8",
       dataType: "json",
       success: function (data) {
-        that.shiftData = JSON.parse(data.d)[0];
+        that.shiftData = JSON.parse(data.d);
         that.viewedShift = that.shiftData ? that.shiftData.slice(-1)[0] : null;
       },
     });
@@ -370,5 +388,9 @@ export default {
 }
 .infoData ul li:nth-of-type(2n) {
     background-color: #f7f7f7;
+}
+.btn-options button{
+  max-width:120px;
+  margin:auto;
 }
 </style>

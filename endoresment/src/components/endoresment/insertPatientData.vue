@@ -364,69 +364,80 @@ export default {
                   // update follow up by nurse
                   if (that.user.Role_id == 12 || that.user.Role_id == 17) {
 
-                      dataObj.Insert_Nurse = dataObj.Insert_Nurse != '' ? that.user.Emp_id : dataObj.Insert_Nurse;
-                      dataObj.Insert_Nurse_Time = dataObj.Insert_Nurse_Time != '' ? moment(new Date).format() : dataObj.Insert_Nurse_Time;
-                      dataObj.Insert_Doctor = '';
-
-                      dataObj.Update_Nurse = dataObj.Insert_Nurse != '' ? that.user.Emp_id : '';
-                      dataObj.Update_Nurse_Time = dataObj.Insert_Nurse_Time != '' ? moment(new Date).format() : '';
+                      dataObj.Update_Nurse = that.user.Emp_id;
+                      dataObj.Update_Nurse_Name = that.user.FullName;
+                      dataObj.Update_Nurse_Time = moment(new Date).format('DD-MM-YYYY A HH-mm');
 
                       UpdateData();
                       
-                  } else {
+                  } else if (that.user.Role_id == 10) {
                       
                       // update follow up by doctor
+
+                      dataObj.Update_Doctor = that.user.Emp_id;
+                      dataObj.Update_Doctor_Name = that.user.FullName;
+                      dataObj.Update_Doctor_Time = moment(new Date).format('DD-MM-YYYY A HH-mm');
+
+                      UpdateData();
                   }
 
               } else {
 
                   // insert into follow up by nurse
                   if (that.user.Role_id == 12 || that.user.Role_id == 17) {
+
                       dataObj.Shift = that.Shift;
                       dataObj.Insert_Nurse = that.user.Emp_id;
                       dataObj.Insert_Nurse_Name = that.user.FullName;
-                      dataObj.Insert_Nurse_Time = moment(new Date).format();
+                      dataObj.Insert_Nurse_Time = moment(new Date).format('DD-MM-YYYY A HH-mm');
                       dataObj.Insert_Doctor = 0;
 
                       InsertData();
                       
-                  } else {
+                  } else if (that.user.Role_id == 10) {
                       
                       // insert into follow up by doctor
+                      dataObj.Shift = that.Shift;
+                      dataObj.Insert_Doctor = that.user.Emp_id;
+                      dataObj.Insert_Doctor_Name = that.user.FullName;
+                      dataObj.Insert_Doctor_Time = moment(new Date).format('DD-MM-YYYY A HH-mm');
+                      dataObj.Insert_Nurse = 0;
+
+                      InsertData();
                   }
               }
 
               function InsertData () {
-                  $.ajax({
-                      type: "POST",
-                      url: that.apiUrl + "endoresment/insertPatientData.aspx/insertFollowUpData",
-                      data:JSON.stringify({"patient": dataObj}),
-                      contentType: "application/json; charset=utf-8",
-                      dataType: "json",
-                      success: function (data) {
-                          swal({
-                              title: "Updated!",
-                              icon: "success",
-                          });
-                          location.reload(); 
-                      }
-                  });
-              }
+                $.ajax({
+                    type: "POST",
+                    url: that.apiUrl + "endoresment/handover.aspx/insertFollowUpData",
+                    data:JSON.stringify({"patient": dataObj}),
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function (data) {
+                        swal({
+                            title: "Updated!",
+                            icon: "success",
+                        });
+                        location.reload(); 
+                    }
+                });
+            }
 
-              function UpdateData () {
-                  $.ajax({
-                      type: "POST",
-                      url: that.apiUrl + "endoresment/insertPatientData.aspx/updateFollowUpData",
-                      data:JSON.stringify({"patient": dataObj}),
-                      contentType: "application/json; charset=utf-8",
-                      dataType: "json",
-                      success: function (data) {
-                          swal({
-                              title: "Updated!",
-                              icon: "success",
-                          });
-                      }
-                  });
+            function UpdateData () {
+                $.ajax({
+                  type: "POST",
+                  url: that.apiUrl + "endoresment/handover.aspx/updateFollowUpData",
+                  data:JSON.stringify({"patient": dataObj}),
+                  contentType: "application/json; charset=utf-8",
+                  dataType: "json",
+                  success: function (data) {
+                      swal({
+                          title: "Updated!",
+                          icon: "success",
+                      });
+                  }
+                });
               }
             } else {
                 swal("Canceled!");

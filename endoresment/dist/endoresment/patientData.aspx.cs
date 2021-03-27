@@ -55,6 +55,7 @@ public partial class _patientData : System.Web.UI.Page
                     id = idr["id"] != DBNull.Value ? Convert.ToInt32(idr["id"]) : 0,
 					Patient_FullName = idr["Patient_FullName"] != DBNull.Value ? Convert.ToString(idr["Patient_FullName"]) : String.Empty,
                     Branch_id = idr["Branch_id"] != DBNull.Value ? Convert.ToInt32(idr["Branch_id"]) : 0,
+                    Patient_Status = idr["Patient_Status"] != DBNull.Value ? Convert.ToInt32(idr["Patient_Status"]) : 0,
 					Branch_name =  idr["Branch_name"] != DBNull.Value ? Convert.ToString(idr["Branch_name"]) : String.Empty,
 					Gender =  idr["Gender"] != DBNull.Value ? Convert.ToString(idr["Gender"]): String.Empty,
 					Medical_Number =  idr["Medical_Number"] != DBNull.Value ? Convert.ToInt64(idr["Medical_Number"]): 0,
@@ -76,6 +77,7 @@ public partial class _patientData : System.Web.UI.Page
         public int? id { get; set; }
         public string Patient_FullName { get; set; }
         public int? Branch_id { get; set; }
+        public int? Patient_Status { get; set; }
         public string Branch_name { get; set; }
         public string Gender { get; set; }
         public Int64 Medical_Number { get; set; }
