@@ -18,7 +18,7 @@
           </div>
           <div class="col-md-4">
             <div class="shadow bg-white rounded pt-3 pb-3">
-              <span class="text-info">Age:</span><span class="ml-2">{{patientData.Age}} years</span>
+              <span class="text-info">Age:</span><span class="ml-2">{{patientData.Age}}</span>
             </div>
           </div>
         </div>
@@ -58,16 +58,39 @@
         </div>
         
         
-        <div class="btn-options row border-top text-center pt-5 pb-3 mt-3" v-if='edit && patientData.Patient_Status == 1'>
-          <div class="col-sm-4 mb-3">
-            <button class="btn btn-block btn-primary shadow">Transfer</button>
+        <div class="btn-options border-top text-center pt-5 pb-3 mt-3" 
+        v-if='edit && patientData.Patient_Status == 1'>
+          <i v-if='stat > 1' class='close fa fa-close pull-right' @click='stat = 1'></i>
+          <div class="row">
+            <div class="col-sm-4 mb-3">
+              <button class="btn btn-block btn-primary shadow">Transfer</button>
+            </div>
+            <div class="col-sm-4 mb-3">
+              <button class="btn btn-block btn-danger shadow"  @click.prevent='stat = 2;deathDate= ""'>
+                Disharge
+              </button>
+
+              <div v-if='stat == 2' class='mt-3'>
+                <input class='form-control' type='date' :max='today' v-model='dischargeDate'/>
+                <button class='btn btn-success mt-3'  @click.prevent='updateStat(2)'>Submit</button>
+              </div>
+            </div>
+            <div class="col-sm-4 mb-3">
+              <button class="btn btn-block btn-dark shadow" @click.prevent='stat = 3;dischargeDate= ""'>Death</button>
+
+              <div v-if='stat == 3' class='mt-3'>
+                <input class='form-control' type='date' :max='today' v-model='deathDate'/>
+                <button class='btn btn-success mt-3'  @click.prevent='updateStat(3)'>Submit</button>
+              </div>
+            </div>
           </div>
-          <div class="col-sm-4 mb-3">
-            <button class="btn btn-block btn-danger shadow"  @click.prevent='updateStat(2)'>Disharge</button>
-          </div>
-          <div class="col-sm-4 mb-3">
-            <button class="btn btn-block btn-dark shadow" @click.prevent='updateStat(3)'>Death</button>
-          </div>
+        </div>
+        <div v-if='patientData.Patient_Status > 1' class='border-top text-center pt-5 pb-3 mt-3'>
+          <p>
+            Patient status:
+            <span v-if='patientData.Patient_Status == 2' class='text-danger'>Discharged</span>
+            <span v-if='patientData.Patient_Status == 3' class='text-danger'>Dead</span>
+          </p>
         </div>
       </div>
       <!-- end patient data -->
@@ -321,13 +344,52 @@ export default {
       shiftData:null,
       id: this.$route.params.id,
       viewedShift: null,
-      edit:false
+      edit:false,
+      stat:0,
+      today:'',
+      dischargeDate:'',
+      deathDate:''
     };
   },
   methods: {
+    updateStat(stat) {
+      let that = this;
+      swal({
+        title: "Are you sure?",
+        icon: "warning",
+        buttons: true,
+        dangerMode: true,
+      })
+      .then((confirm) => {
+        if (confirm) {
+          let obj = {
+            id: that.id,
+            Patient_Status: stat,
+            Discharged_date: that.dischargeDate,
+            Death_date:that.deathDate
+          };
+          $.ajax({
+            type: "POST",
+            url: that.apiUrl + "endoresment/patientData.aspx/updatePatientData",
+            data: JSON.stringify({ "patient": obj }),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+              swal({
+                  title: "Updated!",
+                  icon: "success",
+              });
+
+              that.patientData.Patient_Status = stat;
+            }
+          });
+        }
+      });
+    }
   },
   created() {
     let that = this;
+    that.today = moment(new Date()).format("YYYY-MM-DD");
 
     // get patient data
     $.ajax({
@@ -338,6 +400,7 @@ export default {
       dataType: "json",
       success: function (data) {
         that.patientData = JSON.parse(data.d)[0];
+        that.stat = that.patientData.Patient_Status;
 
         // if user is a nurse check if the patient is the nurses patient or not
         if (that.user.Role_id == 12) {

@@ -16,6 +16,36 @@ public partial class _patientData : System.Web.UI.Page
     {
     }
 
+    // update patients data
+    [WebMethod]
+    public static string updatePatientData(Endorsement_PatientData patient)
+    {
+        string config =  Convert.ToString(ConfigurationManager.ConnectionStrings["dbcon"]);
+        List<Endorsement_PatientData> Endorsement_PatientData = new List<Endorsement_PatientData>();
+
+        SqlConnection con = new SqlConnection(config);
+
+        con.Open();
+
+        using (SqlCommand cmd = new SqlCommand("update Endorsement_PatientData set Patient_Status = @Patient_Status, Death_date = @Death_date, Discharged_date = @Discharged_date where id = @id ", con))
+        {
+            cmd.Parameters.Add("@id", SqlDbType.Int).Value = patient.id;
+            cmd.Parameters.Add("@Patient_Status", SqlDbType.Int).Value = patient.Patient_Status;
+            cmd.Parameters.Add("@Death_date", SqlDbType.VarChar).Value = patient.Death_date;
+            cmd.Parameters.Add("@Discharged_date", SqlDbType.VarChar).Value = patient.Discharged_date;
+            SqlDataReader idr = cmd.ExecuteReader();
+
+            if (idr.HasRows)
+            {
+                Endorsement_PatientData = populateEndorsement_PatientDataLisst(idr, con);
+            }
+        }
+
+        con.Close();
+
+        return JsonConvert.SerializeObject(Endorsement_PatientData);
+    }
+
     // get patients data
     [WebMethod]
     public static string getPatientData(Endorsement_PatientData id)
@@ -66,6 +96,8 @@ public partial class _patientData : System.Web.UI.Page
 					Consultant_Name =  idr["Consultant_Name"] != DBNull.Value ? Convert.ToString(idr["Consultant_Name"]): String.Empty,
 					Specialty =  idr["Specialty"] != DBNull.Value ? Convert.ToString(idr["Specialty"]): String.Empty,
 					Date_Birth =  idr["Date_Birth"] != DBNull.Value ? Convert.ToString(idr["Date_Birth"]): String.Empty,
+					Death_date =  idr["Death_date"] != DBNull.Value ? Convert.ToString(idr["Death_date"]): String.Empty,
+					Discharged_date =  idr["Discharged_date"] != DBNull.Value ? Convert.ToString(idr["Discharged_date"]): String.Empty,
                 });
         }
 
@@ -88,6 +120,8 @@ public partial class _patientData : System.Web.UI.Page
         public string Consultant_Name { get; set; }
         public string Specialty { get; set; }
         public string Date_Birth { get; set; }
+        public string Death_date { get; set; }
+        public string Discharged_date { get; set; }
     }
 
     /***********************************************************/
