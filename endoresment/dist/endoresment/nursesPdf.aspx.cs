@@ -132,7 +132,11 @@ public partial class nursesPdf : System.Web.UI.Page
                     Active =
                         idr["Active"] != DBNull.Value
                             ? Convert.ToInt32(idr["Active"])
-                            : 1
+                            : 0,
+                    Last_Update =
+                        idr["Last_Update"] != DBNull.Value
+                            ? Convert.ToString(idr["Last_Update"])
+                            : String.Empty
                 });
         }
 
@@ -150,6 +154,8 @@ public partial class nursesPdf : System.Web.UI.Page
         public int? Entry_user { get; set; }
 
         public int? Active { get; set; }
+
+        public string Last_Update { get; set; }
     }
 
     // get admin users data
@@ -281,7 +287,15 @@ public partial class nursesPdf : System.Web.UI.Page
                     Entry_user =
                         idr["Entry_user"] != DBNull.Value
                             ? Convert.ToInt32(idr["Entry_user"])
-                            : 0
+                            : 0,
+                    Date_from =
+                        idr["Date_from"] != DBNull.Value
+                            ? Convert.ToString(idr["Date_from"])
+                            : String.Empty,
+                    Date_to =
+                        idr["Date_to"] != DBNull.Value
+                            ? Convert.ToString(idr["Date_to"])
+                            : String.Empty
                 });
         }
 
@@ -301,6 +315,10 @@ public partial class nursesPdf : System.Web.UI.Page
         public string Nurse_name { get; set; }
 
         public int? Entry_user { get; set; }
+
+        public string Date_from { get; set; }
+
+        public string Date_to { get; set; }
     }
 
     // get shifts
