@@ -237,7 +237,11 @@ export default {
   },
   watch: {
     UnitDash: function () {
-      if (this.edits && this.user.Role_id == 17 && this.UnitDash.filter((x) => x.Unit_id == this.path).length > 0) {
+      if (
+        this.edits &&
+        this.user.Role_id == 17 &&
+        this.UnitDash.filter((x) => x.Unit_id == this.path).length > 0
+      ) {
         this.editCharge = true;
       }
     },
@@ -249,7 +253,11 @@ export default {
     this.path = this.$route.params.id;
 
     // if current user is charge nurse to this unit
-    if (that.edits && this.user.Role_id == 17 && that.UnitDash.filter((x) => x.Unit_id == this.path).length > 0) {
+    if (
+      that.edits &&
+      this.user.Role_id == 17 &&
+      that.UnitDash.filter((x) => x.Unit_id == this.path).length > 0
+    ) {
       that.editCharge = true;
     }
 

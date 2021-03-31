@@ -31,7 +31,8 @@
             </div>
           </div>
 
-          <router-view :link="link"
+          <router-view 
+          :link="link"
           :user="user"
           :UnitDash='Units'
           :edits='edits'

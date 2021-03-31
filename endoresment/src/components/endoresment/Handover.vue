@@ -67,7 +67,7 @@
                                 <th><span>Surgery, Procedures</span></th>
                                 <th class='bg-warning'><span>Progress of consultations</span></th>
                             </tr>
-                            <tr v-for='(patient, i) in patients.filter(x => unit.Unit_name.trim() == x.Unit.trim())' :key='patient.id'>
+                            <tr v-for='(patient) in patients.filter(x => unit.Unit_name.trim() == x.Unit.trim())' :key='patient.id'>
                                 <td>
                                     <span>{{patient.Room}}</span>
                                 </td>

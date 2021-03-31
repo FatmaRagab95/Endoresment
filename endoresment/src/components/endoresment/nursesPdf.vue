@@ -2,33 +2,53 @@
   <div class="nursesPdf text-capitalize pt-5">
     <div class="container-fluid">
       <div class="container card bg-white p-5" id="statistics">
+        <!-- start units-->
         <div class="row card shadow mb-4">
           <div class="card-header" id="units">
-            <h5 class="mb-0">
-              <button class="btn btn-link">Units</button>
-            </h5>
+            <h3 class="text-primary">Units ....</h3>
           </div>
 
           <div class="collapse show">
             <div class="card-body">
-              <div
+              <table
+                class="table"
+                style="font-size: 16px"
                 v-if="
                   Endoresment_Nurses_Units.filter((x) => x.Nurse_id == path).length > 0
                 "
               >
-                <div
-                  v-for="unit in Endoresment_Nurses_Units.filter(
-                    (x) => x.Nurse_id == path
-                  )"
-                  :key="unit.Id"
-                  class="border-bottom p-3"
-                >
-                  <span class="text-secondary">Unit Name :</span>
-                  <span class="mr-2">{{
-                    Units.filter((x) => x.U_id == unit.Unit_id)[0].U_name
-                  }}</span>
-                </div>
-              </div>
+                <thead>
+                  <tr>
+                    <th scope="col">unit</th>
+                    <th scope="col">Updated By</th>
+                    <th scope="col">Updated Date</th>
+                    <th scope="col">Status</th>
+                  </tr>
+                </thead>
+                <tbody class="text-secondary">
+                  <tr
+                    v-for="unit in Endoresment_Nurses_Units.filter(
+                      (x) => x.Nurse_id == path
+                    )"
+                    :key="unit.Id"
+                  >
+                    <td>
+                      {{ Units.filter((x) => x.U_id == unit.Unit_id)[0].U_name }}
+                    </td>
+                    <td>
+                      {{ users.filter((x) => x.Emp_id == unit.Entry_user)[0].FullName }}
+                    </td>
+                    <td class="text-danger" v-if="unit.Last_Update.length == 0">
+                      No Date Registered
+                    </td>
+                    <td v-else-if="unit.Last_Update.length > 0">
+                      {{ unit.Last_Update }}
+                    </td>
+                    <td v-if="unit.Active == 0">Not Registered In The Unit</td>
+                    <td v-else-if="unit.Active == 1">still working in the unit</td>
+                  </tr>
+                </tbody>
+              </table>
               <div class="text-secondary text-center" v-else>
                 <i
                   class="fa fa-exclamation-triangle text-warning mr-2"
@@ -39,33 +59,50 @@
             </div>
           </div>
         </div>
+        <!-- end units-->
+
+        <!-- start patients-->
 
         <div class="row card shadow mb-4">
           <div class="card-header" id="patients">
-            <h5 class="mb-0">
-              <button class="btn btn-link">Patients</button>
-            </h5>
+            <h3 class="text-primary">Patients ....</h3>
           </div>
 
           <div class="collapse show">
             <div class="card-body">
-              <div
+              <table
                 v-if="
                   Endorsement_Nurse_patients.filter((x) => x.Nurse_id == path).length > 0
                 "
+                class="table"
+                style="font-size: 16px"
               >
-                <div
-                  v-for="patient in Endorsement_Nurse_patients.filter(
-                    (x) => x.Nurse_id == path
-                  )"
-                  :key="patient.id"
-                >
-                  <span class="text-secondary">Patient Name :</span>
-                  <span class="mr-2">{{
-                    patients.filter((x) => x.id == patient.Patient_id)[0].Patient_FullName
-                  }}</span>
-                </div>
-              </div>
+                <thead>
+                  <tr>
+                    <th scope="col">Patient</th>
+                    <th scope="col">From</th>
+                    <th scope="col">To</th>
+                  </tr>
+                </thead>
+                <tbody class="text-secondary">
+                  <tr
+                    v-for="patient in Endorsement_Nurse_patients.filter(
+                      (x) => x.Nurse_id == path
+                    )"
+                    :key="patient.id"
+                  >
+                    <td>
+                      {{
+                        patients.filter((x) => x.id == patient.Patient_id)[0]
+                          .Patient_FullName
+                      }}
+                    </td>
+                    <td>{{ patient.Date_from.split(" ")[0] }}</td>
+                    <td v-if="patient.Date_to.length > 0">{{ patient.Date_to }}</td>
+                    <td v-else>Tell Now</td>
+                  </tr>
+                </tbody>
+              </table>
               <div class="text-secondary text-center" v-else>
                 <i
                   class="fa fa-exclamation-triangle text-warning mr-2"
@@ -77,20 +114,27 @@
           </div>
         </div>
 
+        <!-- end patients-->
+
+        <!-- start shift -->
+
         <div class="row card shadow">
           <div class="card-header" id="shifts">
-            <h3 class="text-info">Shifts ....</h3>
+            <h3 class="text-primary">Shifts ....</h3>
           </div>
 
           <div class="collapse show">
             <div class="card-body">
               <div v-if="ShiftsData.filter((x) => x.Nurse_id == path).length > 0">
-                <table class="table shadow">
+                <table class="table" style="font-size: 16px">
                   <thead>
                     <tr>
-                      <th scope="col">unit</th>
-                      <th scope="col">completed shift</th>
-                      <th scope="col">Received shift</th>
+                      <th scope="col">Unit</th>
+                      <th scope="col">Received From</th>
+                      <th scope="col">Type</th>
+                      <th scope="col">Shift Date</th>
+                      <th scope="col">Confirmed</th>
+                      <th scope="col">Completed</th>
                     </tr>
                   </thead>
                   <tbody class="text-secondary">
@@ -101,8 +145,15 @@
                       <td>
                         {{ Units.filter((x) => x.U_id == shift.Unit_id)[0].U_name }}
                       </td>
-                      <td>{{ shift.Confirm }}</td>
-                      <td>{{ shift.Completed }}</td>
+                      <td>{{ shift.Receive_name }}</td>
+                      <td>{{ shift.Shift }}</td>
+                      <td>{{ shift.Shift_date }}</td>
+                      <td v-if="shift.Confirm == 0" class="text-danger">Not Confirmed</td>
+                      <td v-else>Confirmed</td>
+                      <td v-if="shift.Completed == 0" class="text-danger">
+                        Not Completed
+                      </td>
+                      <td v-else>Completed</td>
                     </tr>
                   </tbody>
                 </table>
@@ -117,6 +168,7 @@
             </div>
           </div>
         </div>
+        <!-- end shift -->
       </div>
       <div class="d-flex justify-content-center mt-4">
         <button @click.prevent="pdf" class="btn btn-danger" style="width: 100px">
