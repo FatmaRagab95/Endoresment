@@ -46,7 +46,8 @@ const router = new Router({
         requiresAuth: true,
         cat: "Endoresment",
         viewMenu: true,
-        chargeNurse: false,
+        auth: 'all',
+        authCheck:true
       },
     },
     {
@@ -57,7 +58,8 @@ const router = new Router({
         requiresAuth: true,
         cat: "Endoresment",
         viewMenu: true,
-        chargeNurse: true,
+        auth: '17',
+        authCheck:false
       },
     },
     {
@@ -68,7 +70,8 @@ const router = new Router({
         requiresAuth: true,
         cat: "Endoresment",
         viewMenu: true,
-        chargeNurse: true,
+        auth: 'all',
+        authCheck:true
       },
     },
     {
@@ -79,7 +82,8 @@ const router = new Router({
         requiresAuth: true,
         cat: "Endoresment",
         viewMenu: true,
-        chargeNurse: false,
+        auth: 'all',
+        authCheck:true
       },
     },
     {
@@ -90,7 +94,8 @@ const router = new Router({
         requiresAuth: true,
         cat: "Endoresment",
         viewMenu: false,
-        chargeNurse: false,
+        auth: 'all',
+        authCheck:true
       },
     },
     {
@@ -101,7 +106,8 @@ const router = new Router({
         requiresAuth: true,
         cat: "Endoresment",
         viewMenu: false,
-        chargeNurse: false,
+        auth: 'all',
+        authCheck:true
       },
     },
     {
@@ -112,7 +118,8 @@ const router = new Router({
         requiresAuth: true,
         cat: "Endoresment",
         viewMenu: false,
-        chargeNurse: true,
+        auth: '17',
+        authCheck:true
       },
     },
     {
@@ -123,7 +130,8 @@ const router = new Router({
         requiresAuth: true,
         cat: "Endoresment",
         viewMenu: true,
-        chargeNurse: false,
+        auth: 'all',
+        authCheck:true
       },
     },
     {
@@ -134,7 +142,8 @@ const router = new Router({
         requiresAuth: true,
         cat: "Endoresment",
         viewMenu: true,
-        chargeNurse: false,
+        auth: '10',
+        authCheck:false
       },
     },
     {
@@ -145,7 +154,8 @@ const router = new Router({
         requiresAuth: true,
         cat: "Endoresment",
         viewMenu: true,
-        chargeNurse: false,
+        auth: '12',
+        authCheck:false
       },
     },
     {
@@ -156,7 +166,8 @@ const router = new Router({
         requiresAuth: true,
         cat: "Endoresment",
         viewMenu: false,
-        chargeNurse: false,
+        auth: 'all',
+        authCheck:true
       },
     },
     {
@@ -167,7 +178,8 @@ const router = new Router({
         requiresAuth: true,
         cat: "Endoresment",
         viewMenu: false,
-        chargeNurse: false,
+        auth: 'all',
+        authCheck:true
       },
     },
     {
@@ -178,7 +190,8 @@ const router = new Router({
         requiresAuth: true,
         cat: "Endoresment",
         viewMenu: false,
-        chargeNurse: false,
+        auth: 'all',
+        authCheck:true
       },
     },
     {
@@ -189,7 +202,8 @@ const router = new Router({
         requiresAuth: true,
         cat: "Endoresment",
         viewMenu: false,
-        chargeNurse: false,
+        auth: 'all',
+        authCheck:true
       },
     },
     {
@@ -200,7 +214,8 @@ const router = new Router({
         requiresAuth: true,
         cat: "Endoresment",
         viewMenu: false,
-        chargeNurse: false,
+        auth: 'all',
+        authCheck:true
       },
     },
     {
@@ -211,7 +226,8 @@ const router = new Router({
         requiresAuth: true,
         cat: "Endoresment",
         viewMenu: true,
-        chargeNurse: true,
+        auth: 'all',
+        authCheck:true
       },
     },
 
@@ -223,7 +239,8 @@ const router = new Router({
         requiresAuth: true,
         cat: "Endoresment",
         viewMenu: true,
-        chargeNurse: true,
+        auth: 'all',
+        authCheck:true
       },
     },
 
@@ -235,7 +252,8 @@ const router = new Router({
         requiresAuth: true,
         cat: "Endoresment",
         viewMenu: true,
-        chargeNurse: true,
+        auth: 'all',
+        authCheck:true
       },
     },
     {
@@ -246,7 +264,8 @@ const router = new Router({
         requiresAuth: true,
         cat: "Endoresment",
         viewMenu: true,
-        chargeNurse: false,
+        auth: 'all',
+        authCheck:true
       },
     },
     {
@@ -257,7 +276,8 @@ const router = new Router({
         requiresAuth: true,
         cat: "Endoresment",
         viewMenu: true,
-        chargeNurse: false,
+        auth: 'all',
+        authCheck:true
       },
     },
     {
@@ -268,7 +288,8 @@ const router = new Router({
         requiresAuth: true,
         cat: "Endoresment",
         viewMenu: false,
-        chargeNurse: false,
+        auth: 'all',
+        authCheck:true
       },
     },
     {
@@ -279,7 +300,8 @@ const router = new Router({
         requiresAuth: true,
         cat: "Endoresment",
         viewMenu: false,
-        chargeNurse: false,
+        auth: 'all',
+        authCheck:true
       },
     },
     {
@@ -290,7 +312,8 @@ const router = new Router({
         requiresAuth: true,
         cat: "Endoresment",
         viewMenu: false,
-        chargeNurse: false,
+        auth: '17',
+        authCheck:false
       },
     },
     {
@@ -301,21 +324,21 @@ const router = new Router({
         requiresAuth: true,
         cat: "Endoresment",
         viewMenu: false,
-        chargeNurse: false,
+        auth: '17',
+        authCheck:false
       },
     }
   ],
 });
 
+let user = localStorage.getItem("user");
+
 router.beforeEach((to, from, next) => {
   // check to see if route requires auth
   if (to.matched.some((rec) => rec.meta.requiresAuth)) {
     // check auth state of user
-    let user = localStorage.getItem("user");
     if (user) {
       // user signed in, proceed to route
-      if (to.matched.some((rec) => rec.meta.requiresAuth)) {
-      }
       next();
     } else {
       // no user signed in, redirect to login
@@ -324,6 +347,12 @@ router.beforeEach((to, from, next) => {
   } else {
     next();
   }
+});
+
+// authorization
+let r = router.options.routes;
+r.map(x=> {
+  x.meta.authCheck =  x.meta.auth == 'all' || x.meta.auth == JSON.parse(localStorage.getItem("user")).Role_id
 });
 
 export default router;

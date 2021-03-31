@@ -133,6 +133,10 @@ public partial class Nursing_schedule : System.Web.UI.Page
                     Role_id =
                         idr["Role_id"] != DBNull.Value
                             ? Convert.ToInt32(idr["Role_id"])
+                            : 0,
+                    Area_id =
+                        idr["Area_id"] != DBNull.Value
+                            ? Convert.ToInt32(idr["Area_id"])
                             : 0
                 });
         }
@@ -149,6 +153,8 @@ public partial class Nursing_schedule : System.Web.UI.Page
         public int? Branch_ID { get; set; }
 
         public int? Role_id { get; set; }
+
+        public int? Area_id { get; set; }
     }
 
     // get units

@@ -19,8 +19,10 @@
         v-if="getRoomsData.filter((x) => x.unit_id == path).length > 0">
         <!--- start double rooms --->
         <ul class='list-unstyled'>
-          <li class='cube-container'><span class='cube bg-success rounded'></span> Available rooms</li>
-          <li class='cube-container'><span class='cube bg-danger rounded'></span> Occupied rooms</li>
+          <li class='cube-container'>
+            <span class='cube bg-success rounded'>{{RoomsDashboard.filter((x) => x.Status_id == 1).length}}</span> Available Beds
+          </li>
+          <li class='cube-container'><span class='cube bg-danger rounded'>{{RoomsDashboard.filter((x) => x.Status_id == 2).length}}</span> Occupied Beds</li>
         </ul>
         <h4
           v-if="filterUnits.filter((x) => x.Room_type_id == 1).length > 0"
@@ -864,8 +866,7 @@ export default {
         $.ajax({
             type: "POST",
             url: that.apiUrl + "endoresment/roomDetails.aspx/getConsultantsData",
-            // data:JSON.stringify({"info": {"Spcy_id": Specialty, 'Branch_ID': that.user.Branch_ID}}),
-            data:JSON.stringify({"info": {"Spcy_id": Specialty, 'Branch_ID': 2}}),
+            data:JSON.stringify({"info": {"Spcy_id": Specialty, 'Branch_ID': that.user.Branch_ID}}),
             contentType: "application/json; charset=utf-8",
             dataType: "json",
             success: function (data) {
@@ -917,6 +918,7 @@ export default {
     $.ajax({
       type: "POST",
       url: that.apiUrl + "endoresment/roomDetails.aspx/getPatientsData",
+      data:JSON.stringify({"info": {'Branch_id': that.user.Branch_ID}}),
       contentType: "application/json; charset=utf-8",
       dataType: "json",
       success: function (data) {
@@ -965,10 +967,13 @@ export default {
   align-items: center;
 }
 .cube {
-  width:20px;
-  height:20px;
+  min-width:30px;
+  height:25px;
+  line-height:25px;
   display:inline-block;
   margin:0 5px;
+  color:#fff;
+  font-size:14px;
 }
 .bed-background {
   background: #fff url("../../assets/layout/img/bed5.png") center no-repeat;

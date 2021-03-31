@@ -791,7 +791,7 @@ public partial class _Handover : System.Web.UI.Page
 
         con.Open();
 
-        using (SqlCommand cmd = new SqlCommand("select * from adminusers where Role_id = 17 and Emp_ID in (select Nurse_id from Endorsement_Nursing_schedule where Unit_id = @Unit_id and Shift_date = @Date and (Shift = @Shift or Shift = 'All'))", con))
+        using (SqlCommand cmd = new SqlCommand("select * from adminusers where Role_id = 17 and Emp_ID in (select Nurse_id from Endorsement_Nursing_schedule where Unit_id = @Unit_id and Shift_date = @Date and (Shift = @Shift))", con))
         {
             cmd.Parameters.Add("@Unit_id", SqlDbType.Int).Value = data.Unit_id;
             cmd.Parameters.Add("@Shift", SqlDbType.VarChar).Value = data.Shift;

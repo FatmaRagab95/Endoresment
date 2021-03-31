@@ -35,7 +35,6 @@
                     v-model="newSchdule.Shift"
                     required
                   >
-                    <option value='All'>All</option>
                     <option value='Day'>Day</option>
                     <option value='Night'>Night</option>
                   </select>
@@ -120,7 +119,7 @@
                     required
                   >
                     <option
-                      v-for="nurse in adminusers.filter((x) => x.Role_id == 12)"
+                      v-for="nurse in displayNurses.filter((x) => x.Role_id == 12)"
                       :value="nurse.Emp_id"
                       :key="nurse.Emp_id"
                     >
@@ -141,7 +140,7 @@
                     required
                   >
                     <option
-                      v-for="nurse in adminusers.filter((x) => x.Role_id == 17)"
+                      v-for="nurse in displayNurses.filter((x) => x.Role_id == 17)"
                       :value="nurse.Emp_id"
                       :key="nurse.Emp_id"
                     >
@@ -171,6 +170,7 @@ export default {
       apiUrl: this.link,
       Units: [],
       adminusers: [],
+      displayNurses: [],
       today: "",
 
       newSchdule: {
@@ -183,6 +183,11 @@ export default {
         Nurse_name: "",
       },
     };
+  },
+  watch: {
+    'newSchdule.Unit_id': function () {
+      this.displayNurses = this.adminusers.filter(x => x.Area_id == this.newSchdule.Unit_id);
+    }
   },
   methods: {
     InsertPatient() {
@@ -209,7 +214,6 @@ export default {
               text: "You successfully added a new schedule ...",
               icon: "success",
             });
-            location.reload();
           },
         });
       } else {

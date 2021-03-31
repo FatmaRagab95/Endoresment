@@ -231,7 +231,7 @@ public partial class _roomDetails : System.Web.UI.Page
 
     // get patients data
     [WebMethod]
-    public static string getPatientsData()
+    public static string getPatientsData(Endorsement_PatientData info)
     {
         string config =
             Convert.ToString(ConfigurationManager.ConnectionStrings["dbcon"]);
@@ -244,10 +244,11 @@ public partial class _roomDetails : System.Web.UI.Page
 
         using (
             SqlCommand cmd =
-                new SqlCommand("select * from Endorsement_PatientData WHERE Patient_Status = 1",
-                    con)
+                new SqlCommand("select * from Endorsement_PatientData WHERE Patient_Status = 1 and Branch_id = @Branch_id",con)
         )
         {
+            cmd.Parameters.Add("@Branch_id", SqlDbType.VarChar).Value =
+                info.Branch_id;
             SqlDataReader idr = cmd.ExecuteReader();
 
             if (idr.HasRows)
@@ -311,6 +312,7 @@ public partial class _roomDetails : System.Web.UI.Page
         public string Patient_FullName { get; set; }
 
         public int? Bed_id { get; set; }
+        public int? Branch_id { get; set; }
 
         public string Room { get; set; }
 
@@ -555,7 +557,7 @@ public partial class _roomDetails : System.Web.UI.Page
         con.Open();
 
         using (
-            SqlCommand cmd = new SqlCommand("select * from Doctors_Data where Type = 'Consultant' and Spcy_id = @Spcy_id and Dr_Code in (select Emp_ID from adminusers where Branch_ID = @Branch_ID)", con)
+            SqlCommand cmd = new SqlCommand("select * from Doctors_Data where Type = 'Consultant' and Spcy_id = @Spcy_id and Branch = @Branch_ID", con)
         )
         {
             cmd.Parameters.Add("@Spcy_id", SqlDbType.Int).Value = info.Spcy_id;

@@ -419,7 +419,7 @@ export default {
                             title: "Updated!",
                             icon: "success",
                         });
-                        location.reload(); 
+                        that.$route.push('/patientData/${id}')
                     }
                 });
             }

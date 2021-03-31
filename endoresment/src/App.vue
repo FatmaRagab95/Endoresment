@@ -233,7 +233,11 @@ export default {
       this.user = JSON.parse(localStorage.getItem("user"));
     },
     user: function () {
-      this.getUnits()
+      this.getUnits();
+      let r = this.$router.options.routes;
+      r.map(x=> {
+        x.meta.authCheck =  x.meta.auth == 'all' || x.meta.auth == this.user.Role_id
+      });
     }
   },
   created() {

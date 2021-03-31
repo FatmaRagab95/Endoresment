@@ -644,13 +644,9 @@ export default {
                       if (moment(that.scheduleShifts[i].Date) >= moment(scheduleDate)) {
                         if (JSON.parse(data.d).length > 0) {
                           that.scheduleShifts[i].EndoresingNurse = JSON.parse(data.d)[0];
-                        } else {
-                          that.scheduleShifts[i].EndoresingNurse = {FullName:'Unknown', Emp_ID: 0}
-                        }
-                      } else {
-                        if (JSON.parse(data.d).length > 0) {
                           that.scheduleShifts[i].handNurse = JSON.parse(data.d)[0];
                         } else {
+                          that.scheduleShifts[i].EndoresingNurse = {FullName:'Unknown', Emp_ID: 0}
                           that.scheduleShifts[i].handNurse = {FullName:'Unknown', Emp_ID: 0}
                         }
                       }
