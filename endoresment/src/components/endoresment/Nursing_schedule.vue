@@ -35,8 +35,9 @@
                     v-model="newSchdule.Shift"
                     required
                   >
-                    <option>Day</option>
-                    <option>Night</option>
+                    <option value='All'>All</option>
+                    <option value='Day'>Day</option>
+                    <option value='Night'>Night</option>
                   </select>
                 </div>
               </div>

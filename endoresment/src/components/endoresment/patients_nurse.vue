@@ -1,39 +1,39 @@
 <template>
     <div class="viewPatients">
 
-            <div class='endoresment-options pt-3 text-center border rounded'>
-                <div class="row align-items-center border-bottom border-white pt-3 pb-3" v-for='unit in Units' :key='unit.U_id'>
-                    <div class="col-md-6">
-                        <h3 class='text-primary'> {{unit.U_name}} </h3>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="receive-shift" v-if='Shifts.filter(x => x.Unit_id == unit.U_id).length == 0'>
+        <div class='endoresment-options pt-3 text-center border rounded'>
+            <div class="row align-items-center border-bottom border-white pt-3 pb-3" v-for='unit in Units' :key='unit.U_id'>
+                <div class="col-md-6">
+                    <h3 class='text-primary'> {{unit.U_name}} </h3>
+                </div>
+                <div class="col-md-6">
+                    <div class="receive-shift" v-if='Shifts.filter(x => x.Unit_id == unit.U_id).length == 0'>
 
-                            <button v-if='unConfirmedShifts.filter(x => x.Unit_id == unit.U_id).length == 0'
-                            type="button" class="btn btn-primary btn-block shadow" data-toggle="modal" data-target="#exampleModal2"
-                            @click.prevent='clickedUnit.Unit_id = unit.U_id; clickedUnit.Unit_name = unit.U_name'>
-                                Receive Shift
-                            </button>
-
-                            <button v-else
-                            type="button" class="btn btn-success btn-block shadow" data-toggle="modal" data-target="#exampleModal3"
-                            @click.prevent='clickedUnit.Unit_id = unit.U_id; ; clickedUnit.Unit_name = unit.U_name; confirmShift = unConfirmedShifts.filter(x => x.Unit_id == unit.U_id)[0]'>
-                                Confirm receiving shift
-                            </button>
-                        </div>
-
-                        <p class='text-success' v-else-if='Shifts.filter(x => x.Unit_id == unit.U_id)[0].Completed'>
-                            <i class='fa fa-check-circle pr-1'></i> You handoverd current shift!
-                        </p>
-                        
-                        <button v-else
-                         type="button" class="btn btn-danger btn-block shadow" data-toggle="modal" data-target="#exampleModal"
+                        <button v-if='unConfirmedShifts.filter(x => x.Unit_id == unit.U_id).length == 0'
+                        type="button" class="btn btn-primary btn-block shadow" data-toggle="modal" data-target="#exampleModal2"
                         @click.prevent='clickedUnit.Unit_id = unit.U_id; clickedUnit.Unit_name = unit.U_name'>
-                            Handover Shift
+                            Receive Shift
+                        </button>
+
+                        <button v-else
+                        type="button" class="btn btn-success btn-block shadow" data-toggle="modal" data-target="#exampleModal3"
+                        @click.prevent='clickedUnit.Unit_id = unit.U_id; ; clickedUnit.Unit_name = unit.U_name; confirmShift = unConfirmedShifts.filter(x => x.Unit_id == unit.U_id)[0]'>
+                            Confirm receiving shift
                         </button>
                     </div>
+
+                    <p class='text-success' v-else-if='Shifts.filter(x => x.Unit_id == unit.U_id)[0].Completed'>
+                        <i class='fa fa-check-circle pr-1'></i> You handoverd current shift!
+                    </p>
+                    
+                    <button v-else
+                        type="button" class="btn btn-danger btn-block shadow" data-toggle="modal" data-target="#exampleModal"
+                    @click.prevent='clickedUnit.Unit_id = unit.U_id; clickedUnit.Unit_name = unit.U_name'>
+                        Handover Shift
+                    </button>
                 </div>
             </div>
+        </div>
         <div class="container">
 
             <h1 class='pt-5 pb-3  border-bottom mainColor'>
@@ -72,10 +72,17 @@
                     </div>
                 </div>
             </div>
-            <div class="card text-center" v-else>
-                <p class='mt-3 alert'><i class='fa fa-warning text-warning'></i> You have no assigned patients yet!</p>
-            </div>
 
+            <v-alert v-else
+            border="right"
+            colored-border
+            type="error"
+            elevation="2"
+            class='bg-white text-danger'
+            style='max-width:500px;margin:60px auto'
+            >
+            You have no assigned patients yet!
+            </v-alert>
 
             <!-- popup endorsing-nurse-->
             <div class="endorsing-nurse">
@@ -536,7 +543,7 @@ export default {
             success: function (data) {
                 that.Shifts = JSON.parse(data.d);
                 that.unConfirmedShifts = that.Shifts.filter(x => x.Confirm == 0);
-                if (new Date().getHours() <= 20 && new Date().getHours() >= 8) {
+                if (new Date().getHours() < 20 && new Date().getHours() >= 8) {
                     that.Shifts = that.Shifts.filter(x => x.Shift_date.substr(0,10) == moment(new Date()).format('DD/MM/YYYY') && x.Shift.trim() == 'Day')
                 } else {
                     that.Shifts = that.Shifts.filter(x => x.Shift.trim() == 'Night')
@@ -553,11 +560,11 @@ export default {
 .viewPatients {
     min-height:100vh;
     background-color:#f6f8fb;
-    background:#fff url('../../assets/layout/img/backgrounds/bg20.png') top no-repeat;
+    background:#fff url('../../assets/layout/img/backgrounds/bg20.svg') top no-repeat;
     background-size:contain
 }
 .endoresment-options {
-    background-color:#e9edfb
+    background-color:rgba(255,255,255,.8);
 }
 .endoresment-options .row:last-of-type {
     border-bottom:none !important;

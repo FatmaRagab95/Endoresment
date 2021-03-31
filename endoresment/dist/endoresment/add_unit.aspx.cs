@@ -54,9 +54,33 @@ public partial class _addUnit : System.Web.UI.Page
         return JsonConvert.SerializeObject(Endorsement_UnitsDashboard);
 
 	}
+
+    // if it's handover shift update the handed shift as completed
+    [WebMethod]
+    public static string completeNurseShift(Endorsement_UnitsDashboard shift)
+    {
+        string config =  Convert.ToString(ConfigurationManager.ConnectionStrings["dbcon"]);
+        List<Endorsement_UnitsDashboard> Endorsement_UnitsDashboard = new List<Endorsement_UnitsDashboard>();
+
+        SqlConnection con = new SqlConnection(config);
+
+        con.Open();
+
+        
+        using (SqlCommand cmd = new SqlCommand("update Endorsement_UnitsDashboard set Completed = 1 where Id = @Id", con))
+        {
+            cmd.Parameters.Add("@Id", SqlDbType.Int).Value = shift.Id;
+            SqlDataReader idr = cmd.ExecuteReader();
+        }
+
+        con.Close();
+
+        return JsonConvert.SerializeObject(Endorsement_UnitsDashboard);
+    }
     
     public class Endorsement_UnitsDashboard
     {
+        public int? Id { get; set; }
         public int? Unit_id { get; set; }
         public int? Branch_id { get; set; }
         public string Unit_name { get; set; }

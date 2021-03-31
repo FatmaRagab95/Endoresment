@@ -30,7 +30,7 @@ public partial class Nursing_schedule : System.Web.UI.Page
         con.Open();
         using (
             SqlCommand cmd1 =
-                new SqlCommand("insert into Endorsement_Nursing_schedule (Date,Shift,Unit_id,Unit_name,Nurse_id,Nurse_role,Nurse_name) values (@Date,@Shift,@Unit_id,@Unit_name,@Nurse_id,@Nurse_role,@Nurse_name)",
+                new SqlCommand("insert into Endorsement_Nursing_schedule (Shift_date,Shift,Unit_id,Unit_name,Nurse_id,Nurse_role,Nurse_name) values (@Date,@Shift,@Unit_id,@Unit_name,@Nurse_id,@Nurse_role,@Nurse_name)",
                     con)
         )
         {

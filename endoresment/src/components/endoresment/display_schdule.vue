@@ -1,99 +1,37 @@
 <template>
   <div class="display_schdule">
-    <div class="container-wave">
-      <div class="wave"></div>
-    </div>
-
-    <div class="internal-page" id="auth">
-      <form @submit.prevent="InsertPatient" v-if="selectedMonth.length == 0">
-        <div class="custom-form pt-3">
+    <div class="internal-page">
+      <form @submit.prevent="InsertPatient" v-if="!displayTable">
+        <div class="custom-form">
           <div class="cu-container">
             <div class="cu-form-group special" style="max-width: 900px">
               <div class="title">
                 <span>
                   <i class="fa fa-hospital-o mainColor mr-1"></i>Display Nursing
-                  Schedule</span
-                >
+                  Schedule</span>
               </div>
 
               <div class="cu-field">
-                <h3 class="cu-label">
-                  <label>Select month :</label>
-                </h3>
-                <div class="f-select">
-                  <select class="form-control form-control-sm" v-model="month" required>
-                    <option v-for="month in monthes" :value="month.id" :key="month.id">
-                      {{ month.name }}
-                    </option>
-                  </select>
-                </div>
+                <v-select
+                  :items="Units"
+                  item-text="U_name"
+                  :item-value="'U_id'"
+                  label="Select Unit"
+                  name="unit"
+                  v-model="unit"
+                ></v-select>
               </div>
 
-              <div class="cu-field">
-                <h3 class="cu-label">
-                  <label>Select Unit :</label>
-                </h3>
-                <div class="f-select">
-                  <select class="form-control form-control-sm" v-model="unit" required>
-                    <option v-for="unit in Units" :value="unit.U_id" :key="unit.U_id">
-                      {{ unit.U_name }}
-                    </option>
-                  </select>
-                </div>
-              </div>
-
-              <!-- <div class="cu-field radio-group">
-                <div class="row align-items-end">
-                  <div class="col-md-6">
-                    <div class="cu-field">
-                      <h3 class="cu-label">
-                        <label>Select shift</label>
-                      </h3>
-                    </div>
-                    <div class="cu-field">
-                      <input
-                        id="Day"
-                        type="radio"
-                        name="shift"
-                        value="Day"
-                        required
-                        v-model="shift"
-                      />
-                      <label for="Day">
-                        <div class="cu-input cu-radio normal">
-                          <div class="contain">
-                            <span class="fa fa-check"></span>
-                            <div>Day</div>
-                          </div>
-                        </div>
-                      </label>
-                    </div>
-                  </div>
-                  <div class="col-md-6">
-                    <div class="cu-field">
-                      <input
-                        id="Night"
-                        type="radio"
-                        name="shift"
-                        value="Night"
-                        required
-                        v-model="shift"
-                      />
-                      <label for="Night">
-                        <div class="cu-input cu-radio normal">
-                          <div class="contain">
-                            <span class="fa fa-check"></span>
-                            <div>Night</div>
-                          </div>
-                        </div>
-                      </label>
-                    </div>
-                  </div>
-                </div>
-              </div>-->
+              <v-row justify="center" class='mt-3'>
+                <v-date-picker
+              class='bg-primary shadow m-auto'
+              v-model="month"
+              type="month"
+                ></v-date-picker>
+              </v-row>
 
               <div class="text-center">
-                <button class="special-btn" @click.prevent="monthDays">
+                <button class="special-btn shadow" @click.prevent="monthDays">
                   Display Nursing Schedule
                 </button>
               </div>
@@ -101,78 +39,78 @@
           </div>
         </div>
       </form>
-      <div>{{ selectedMonth }}</div>
-      <form v-if="selectedMonth.length > 0">
-        <div class="custom-form pt-3">
-          <div class="cu-container">
-            <div class="cu-form-group special" style="max-width: 100%">
-              <div class="row p-4">
-                <span class="col-md-6"
-                  ><span class="text-info mr-2">Month :</span
-                  >{{ monthes.filter((x) => x.id == month)[0].name }}</span
-                >
-                <span class="col-md-6"
-                  ><span class="text-info mr-2">Unit :</span>
-                  {{ Units.filter((x) => x.U_id == unit)[0].U_name }}</span
-                >
-              </div>
-              <!-- start table-->
-              <div class="scroll-box" v-dragscroll>
-                <table class="table table-bordered text-center">
-                  <thead>
-                    <tr>
-                      <th class="p-0 m-0 bg-secondary text-white">
-                        <div class="mb-1">No</div>
-                      </th>
-                      <th class="p-0 m-0 bg-warning text-white">
-                        <div class="mb-1">Nurse Name</div>
-                      </th>
-                      <th class="p-0 m-0 bg-secondary text-white">
-                        <div class="mb-1">ID</div>
-                      </th>
-                      <th
-                        style="font-size: 12px"
-                        v-for="(day, i) in monthCalendar"
-                        :key="i"
-                        class="p-0 m-0"
-                      >
-                        <div class="bg-warning text-white w-100 m-0 p-0 border-bottom">
-                          {{ day.split("-")[0] }}
-                        </div>
 
-                        <div class="bg-warning text-white w-100 m-0 p-0">
-                          {{ day.split("-")[1] }}
-                        </div>
-                      </th>
-                      <th class="p-0 m-0 bg-secondary text-white">
-                        <div class="mb-1">Total</div>
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr v-for="(nurse, i) in selectedMonth" :key="nurse.Id">
-                      <td class="bg-secondary text-white p-0 m-0">{{ i + 1 }}</td>
-                      <td class="p-0 m-0 text-left pl-3">{{ nurse.Nurse_name }}</td>
-                      <td class="bg-secondary text-white p-0 m-0">
-                        {{ nurse.Nurse_id }}
-                      </td>
-                      <td v-for="(day, i) in monthCalendar" :key="i" class="p-0 m-0">
-                        <div
-                          v-if="day.split('-')[1] == 'Fri'"
-                          class="bg-warning text-warning w-100 h-100 m-0 p-0"
-                        >
-                          {{ day.split("-")[0] }}
-                        </div>
-                        <div v-else class="bg-white text-dark w-100 m-0 p-0">1</div>
-                      </td>
-                      <td class="bg-secondary text-white p-0 m-0">total</td>
-                    </tr>
-                  </tbody>
-                </table>
+      <form v-if="displayTable">
+        
+        <div class="container-fluid pt-5">
+          <div class="card shadow">
+            <div class="row p-4 align-items-center">
+              <div class="col-lg-4 col-md-6"><span class="text-dark mr-2 font-weight-bold">Month :</span>
+                {{date}}
               </div>
-
-              <!-- end table-->
+              <div class="col-lg-4 col-md-6"><span class="text-dark mr-2 font-weight-bold">Unit :</span>
+                {{ Units.filter((x) => x.U_id == unit)[0].U_name }}
+              </div>
+              <div class="col-lg-4 col-md-6">
+                  <v-select
+                    :items="items"
+                    label="Filter"
+                    v-model='filtered'
+                    @change='filterTable()'
+                  ></v-select>
+              </div>
             </div>
+
+            <v-btn
+              class="mx-2"
+              fab
+              bottom
+              left
+              absolute
+              dark
+              big
+              color="green accent-3"
+              @click='displayTable = !displayTable'
+            >
+              <v-icon dark>
+                mdi-pencil
+              </v-icon>
+            </v-btn>
+          </div>
+        </div>
+
+        <div class="container-fluid pt-5 pb-5">
+          <div class="card shadow p-3">
+            <v-simple-table 
+              fixed-header
+              height="350px">
+              <template v-slot:default>
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Staff Name</th>
+                    <th>ID</th>
+                    <th v-for='(day, i) in monthCalendar' :key='day.day' class='text-center pl-1 pr-1' :class='day.day.substr(-3,3) == "Fri" ? "bg-grey" : "bg-white"'>
+                      <span class='d-block'>{{i + 1}}</span>
+                      <span class='d-block'>{{day.day.substr(-3,3)}}</span>
+                    </th>
+                    <th class='bg-primary text-white'>Total</th>
+                  </tr>
+                </thead>
+                <tbody v-if='displayed.length > 0'>
+                  <tr v-for='(nurse, i) in displayed' :key='nurse.Nurse_id'>
+                    <td>{{i + 1}}</td>
+                    <td style='min-width:120px'>{{nurse.Nurse_name}}</td>
+                    <td>{{nurse.Nurse_id}}</td>
+                    <td v-for='shift in nurse.shifts' :key='shift.fullDate'>
+                      <span class='calendar-span' 
+                      :class='shift.shift ? "bg-success" : shift.name.substr(-3,3) != "Fri" ?  "bg-light border" :"bg-grey"'>{{shift.shift}}</span>
+                    </td>
+                    <td class='bg-primary text-white text-center'>{{nurse.Total}}</td>
+                  </tr>
+                </tbody>
+              </template>
+            </v-simple-table>
           </div>
         </div>
       </form>
@@ -181,38 +119,29 @@
 </template>
 
 <script>
-import { dragscroll } from "vue-dragscroll";
+
+import { dragscroll } from 'vue-dragscroll'
 
 export default {
-  directives: {
-    dragscroll,
-  },
   name: "display_schdule",
   props: ["link", "user"],
+  directives: {
+      dragscroll
+  },
   data() {
     return {
       apiUrl: this.link,
+      items: ['All', 'Nurses', 'Charge Nurses'],
+      filtered:'All',
       Units: [],
-      adminusers: [],
+      Nurses: [],
+      displayed: [],   
       Endorsement_Nursing_schedule: [],
-      today: "",
 
-      monthes: [
-        { name: "January", id: "01" },
-        { name: "February", id: "02" },
-        { name: "March", id: "03" },
-        { name: "April", id: "04" },
-        { name: "May", id: "05" },
-        { name: "June", id: "06" },
-        { name: "July", id: "07" },
-        { name: "August", id: "08" },
-        { name: "September", id: "09" },
-        { name: "October", id: "10" },
-        { name: "November", id: "11" },
-        { name: "December", id: "12" },
-      ],
+      displayTable:false,
+      date:'',
 
-      month: "01",
+      month: "",
       unit: 1,
       shift: "",
 
@@ -222,31 +151,95 @@ export default {
   },
   methods: {
     monthDays: function () {
-      function getMonths(month, year) {
+      function getMonths(date) {
         var arr = [];
-        var start = moment(year + "-" + month, "YYYY-MMM");
+        var start = moment(date, "YYYY-MM");
         for (
           var end = moment(start).add(1, "month");
           start.isBefore(end);
           start.add(1, "day")
         ) {
-          arr.push(start.format("D-ddd"));
+          arr.push(
+            {
+              fullDate: start.format("YYYY-MM-DD"),
+              day: start.format("D-ddd")
+            }
+          );
         }
         return arr;
       }
-      this.monthCalendar = getMonths(
-        this.monthes.filter((x) => x.id == this.month)[0].name.substring(0, 3),
-        new Date().getFullYear()
+      this.monthCalendar = getMonths(this.month);
+      this.date  = moment(this.month).format('MMMM-YYYY');
+
+      //get getEndorsement_Nursing_scheduleData
+      let that = this;
+      $.ajax({
+        type: "POST",
+        url:
+          that.apiUrl +
+          "endoresment/display_schdule.aspx/getEndorsement_Nursing_scheduleData",
+        contentType: "application/json; charset=utf-8",
+        data: JSON.stringify({ unit: { U_id: that.unit } }),
+        dataType: "json",
+        success: function (data) {
+          that.Endorsement_Nursing_schedule = JSON.parse(data.d);
+          that.selectedMonth = that.Endorsement_Nursing_schedule;
+          that.tableData();
+          that.displayTable = true;
+        }
+      });
+
+    },
+    tableData() {
+      // 1- get nurses names in Endorsement_Nursing_schedule without duplicate
+      this.Nurses = this.Endorsement_Nursing_schedule.filter((thing, index, self) =>
+        index === self.findIndex((t) => (
+          t.Nurse_id === thing.Nurse_id
+        ))
       );
 
-      this.selectedMonth = this.Endorsement_Nursing_schedule.filter(
-        (x) => x.Unit_id == this.unit && x.Date.split("-")[1] == this.month
-      );
+      // 2- push all shift data for 30 days
+      let that = this;
+
+      this.Nurses.map((x, n) => {
+        x.shifts = [];
+        x.Total = 0;
+        that.monthCalendar.map(z => {
+          let obj = {};
+          obj.name = z.day;
+
+          if (that.Endorsement_Nursing_schedule.filter(i => i.Nurse_name == x.Nurse_name && z.fullDate.trim() == i.Date.trim()).length > 0) {
+            obj.shift = that.Endorsement_Nursing_schedule.filter(i => i.Nurse_name == x.Nurse_name && z.fullDate.trim() == i.Date.trim())[0].Shift.substr(0,1);
+            obj.work = true;
+            x.Total++;
+          } else {
+            obj.shift = '';
+            obj.work = false;
+          }
+
+          x.shifts.push(obj);
+        });
+
+        if (n == this.Nurses.length - 1) {
+          this.displayed = this.Nurses;
+        }
+      });
     },
+    filterTable() {
+      if (this.filtered == 'All') {
+        this.displayed = this.Nurses;
+
+      } else if (this.filtered == 'Nurses') {
+        this.displayed = this.Nurses.filter(x => x.Nurse_role == 12);
+      } else {
+        this.displayed = this.Nurses.filter(x => x.Nurse_role == 17);
+      }
+    }
   },
 
   created() {
     let that = this;
+    that.month = new Date().toISOString().substr(0, 10);
 
     //get Units
     $.ajax({
@@ -259,73 +252,16 @@ export default {
         that.Units = JSON.parse(data.d);
       },
     });
-
-    //get getadminusersData
-    $.ajax({
-      type: "POST",
-      url: that.apiUrl + "endoresment/display_schdule.aspx/getadminusersData",
-      contentType: "application/json; charset=utf-8",
-      dataType: "json",
-      success: function (data) {
-        that.adminusers = JSON.parse(data.d);
-      },
-    });
-
-    //get getEndorsement_Nursing_scheduleData
-    $.ajax({
-      type: "POST",
-      url:
-        that.apiUrl +
-        "endoresment/display_schdule.aspx/getEndorsement_Nursing_scheduleData",
-      contentType: "application/json; charset=utf-8",
-      dataType: "json",
-      success: function (data) {
-        that.Endorsement_Nursing_schedule = JSON.parse(data.d);
-      },
-    });
   },
 };
 </script>
 
 <style scoped>
-.container-wave {
-  position: absolute;
-  background: #fff;
-  height: 50vh;
-  width: 100%;
-  left: 0;
-  top: 0;
-}
-
-.wave {
-  position: absolute;
-  height: 250px;
-  width: 100%;
-  background: #fff;
-  bottom: 0;
-}
-
-.wave::before,
-.wave::after {
-  content: "";
-  display: block;
-  position: absolute;
-  border-radius: 100% 50%;
-}
-
-.wave::before {
-  width: 55%;
-  height: 109%;
-  background-color: #f0f0f0;
-  right: -1.5%;
-  top: 60%;
-}
-.wave::after {
-  width: 55%;
-  height: 100%;
-  background-color: #fff;
-  left: -1.5%;
-  top: 40%;
+.display_schdule {
+    min-height:100vh;
+    background-color:#f6f8fb;
+    background:#f6f8fb url('../../assets/layout/img/backgrounds/bg9.svg') top no-repeat;
+    background-size:contain;
 }
 .custom-form {
   margin: 15px;
@@ -382,47 +318,24 @@ export default {
 .special-btn i {
   margin-right: 15px;
 }
-
-.calendar {
-  display: grid;
-  width: 100%;
-  grid-template-columns: repeat(7, minmax(60px, 1fr));
-  grid-template-rows: 60px;
-  grid-auto-rows: 60px;
-  overflow: auto;
+th {
+  font-size:16px;
 }
-.calendar-container {
-  width: 90%;
-  margin: auto;
-  overflow: hidden;
-  box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
-  border-radius: 10px;
-  background: #fff;
-  max-width: 500px;
+.calendar-span {
+  display:block;
+  width:20px;
+  height:20px;
+  line-height:20px;
+  text-align:center;
+  color:#fff;
+  border-radius:5px;
+  font-size:12px;
 }
-.day {
-  border-bottom: 1px solid rgba(166, 168, 179, 0.5);
-  border-right: 1px solid rgba(166, 168, 179, 0.5);
-  text-align: right;
-  padding: 14px 20px;
-  letter-spacing: 1px;
-  font-size: 14px;
-  box-sizing: border-box;
-  position: relative;
-  pointer-events: none;
-  z-index: 1;
+.v-data-table > .v-data-table__wrapper > table > thead > tr > th {
+  font-size:14px;
 }
-.day.today {
-  background-color: #0092ff;
-  color: #fff;
-}
-.day-name {
-  font-size: 16px;
-  text-transform: uppercase;
-  color: #0092ff;
-  text-align: center;
-  border-bottom: 1px solid rgba(166, 168, 179, 0.5);
-  line-height: 50px;
-  font-weight: 500;
+table th, table td {
+    display: table-cell;
+    vertical-align: middle;
 }
 </style>

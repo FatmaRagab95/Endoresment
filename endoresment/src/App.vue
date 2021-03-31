@@ -10,39 +10,39 @@
 <style src="./assets/layout/css/main.css"></style>
 
 <template>
-  <div id="app">
-    <div :class="user ? 'page-container' : ''">
-      <div :class="user ? 'main-contnet' : ''">
-        <upper-nav v-if="user" :username="user.FullName"></upper-nav>
+  <v-app>
+      <div :class="user ? 'page-container' : ''">
+        <div :class="user ? 'main-contnet' : ''">
+          <upper-nav v-if="user" :username="user.FullName"></upper-nav>
 
-        <!-- show alerts for charge nurses to confirm endorsing -->
-        <div v-if='Units.length > 0 && edits  && user'>
-          <div v-if='user.Role_id == 17'>
-            <div v-for='(data, i) in Units' :key='data.id'>
-              <ul class='list-unstyled alert-charge'>
-                <li v-if='!data.Confirm' class='alert bg-danger text-white p-4'>
-                  <i class='text-warning fa fa-warning'></i> <span>You haven't confirmed endorsing for 
-                    <strong class='border-bottom'>{{data.Unit_name}}</strong> yet!</span>
-                  <button @click.prevent='confirm(data.id,i)' class='pull-right btn btn-warning text-dark'>
-                    Confirm</button>
-                </li>
-              </ul>
+          <!-- show alerts for charge nurses to confirm endorsing -->
+          <div v-if='Units.length > 0 && edits  && user'>
+            <div v-if='user.Role_id == 17'>
+              <div v-for='(data, i) in Units' :key='data.id'>
+                <ul class='list-unstyled alert-charge' v-if='!data.Confirm'>
+                  <li class='alert bg-danger text-white p-4'>
+                    <i class='text-warning fa fa-warning'></i> <span>You haven't confirmed endorsing for 
+                      <strong class='border-bottom'>{{data.Unit_name}}</strong> yet!</span>
+                    <button @click.prevent='confirm(data.id,i)' class='pull-right btn btn-warning text-dark'>
+                      Confirm</button>
+                  </li>
+                </ul>
+              </div>
             </div>
           </div>
+
+          <router-view :link="link"
+          :user="user"
+          :UnitDash='Units'
+          :edits='edits'
+          :NursesPatients='NursesPatients'
+          :DoctorPatients='DoctorPatients'
+          :DoctorData='DoctorData'
+          :Doctors='Doctors'/>
+
         </div>
-
-        <router-view :link="link"
-        :user="user"
-        :UnitDash='Units'
-        :edits='edits'
-        :NursesPatients='NursesPatients'
-        :DoctorPatients='DoctorPatients'
-        :DoctorData='DoctorData'
-        :Doctors='Doctors'/>
-
       </div>
-    </div>
-  </div>
+  </v-app>
 </template>
 
 <script>
@@ -245,21 +245,28 @@ export default {
 /* edit bootstrap classes */
 .badge-primary,
 .btn-primary,
-.bg-primary {
-  background-color:#6534c7 !important;
-  border-color:#6534c7;
+.bg-primary,
+.v-btn--active {
+  background-color:#29b770 !important;
+  border-color:#29b770;
 }
 .btn-primary:hover {
-    background-color: #4c2797 !important;
-    border-color: #4c2797;
+    background-color: #009245 !important;
+    border-color: #009245;
 }
 .text-primary {
-  color:#6534c7 !important;
+  color:#29b770 !important;
 }
 .badge-success,
 .btn-success,
 .bg-success {
   background-color: #29b770;
+}
+.bg-grey {
+  background-color:#d6ddda !important;
+}
+.text-grey {
+  color:#d6ddda !important;
 }
 /* end edit bootstrap classes */
 
@@ -308,6 +315,42 @@ export default {
     border-radius: 5px;
     box-shadow: 0 0 20px #68696c;
 }
+
+/* reset vuetify theme */
+.theme--light.v-application {
+    background: inherit;
+    color: inherit;
+}
+.v-application {
+    display:inherit;
+    display: inherit;
+    display:inherit;
+}
+.v-application {
+    font-family: inherit;
+    line-height: inherit;
+}
+.v-application .headline, .v-application .title {
+    line-height: inherit;
+    font-family: 'PTSansNarrow' !important;
+}
+.v-application .pt-5 {
+  padding-top: 60px !important;
+}
+.v-application .pb-5 {
+  padding-bottom: 60px !important;
+}
+.theme--light.v-label,.theme--light.v-select .v-select__selections {
+    color: inherit;
+}
+.v-application ol, .v-application ul {
+  padding:0;
+}
+button, input, select, textarea {
+  background-color:#fff;
+}
+/* end reset vuetify theme */
+
 @keyframes loader {
   12.5% {
     transform: rotate(45deg);

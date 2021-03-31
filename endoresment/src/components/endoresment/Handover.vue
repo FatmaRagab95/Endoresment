@@ -1,12 +1,17 @@
 <template>
-    <div class="Handover pb-5">
-        <h1 class='text-center mb-5 bg-white p-3 pt-5'>Endoresment / Handover</h1>
+    <div class="Handover pb-5 pt-5">
         <div class="container-fluid">
 
-            <p v-if='(user.Role_id == 17) && !edits' class='alert text-danger'>
-                <i class='fa fa-warning text-warning'></i>
-                You haven't recieved any units as a charge nurse for current shift yet!
-            </p>
+            <v-alert v-if='(user.Role_id == 17) && !edits'
+            border="right"
+            colored-border
+            type="error"
+            elevation="2"
+            class='bg-white text-danger'
+            style='max-width:500px;margin:60px auto'
+            >
+            You haven't recieved any units as a charge nurse for current shift yet!
+            </v-alert>
 
             <div class='bg-white shadow table-responsive mb-5' v-for='(unit) in UnitDash' :key='unit.id'>
                 <h4 class='cu-flex p-3 shadow'>
@@ -165,20 +170,20 @@
                                 <td v-if='(user.Role_id == 17) && edits'>
                                     <button v-if='patient.edit' class='btn btn-primary btn-sm'
                                      @click.prevent='SaveEdits(patient.id)'>Save</button>
-                                    <button v-else class='btn btn-success btn-sm' @click.prevent='edit(patient.id)'>Edit</button>
+                                    <button v-else class='btn btn-primary btn-sm shadow' @click.prevent='edit(patient.id)'>Edit</button>
                                 </td>
                                 <td v-else-if='user.Role_id == 12 && edits && NursesPatients.filter(x => x.id == patient.id).length > 0'>
                                     <button v-if='patient.edit' class='btn btn-primary btn-sm'
                                      @click.prevent='SaveEdits(patient.id)'>Save</button>
-                                    <button v-else class='btn btn-success btn-sm' @click.prevent='edit(patient.id)'>Edit</button>
+                                    <button v-else class='btn btn-primary btn-sm shadow' @click.prevent='edit(patient.id)'>Edit</button>
                                 </td>
                                 <td v-else-if='user.Role_id == 10 && edits && DoctorPatients.filter(x => x.id == patient.id).length > 0'>
                                     <button v-if='patient.edit' class='btn btn-primary btn-sm'
                                      @click.prevent='SaveEdits(patient.id)'>Save</button>
-                                    <button v-else class='btn btn-success btn-sm' @click.prevent='edit(patient.id)'>Edit</button>
+                                    <button v-else class='btn btn-primary btn-sm shadow' @click.prevent='edit(patient.id)'>Edit</button>
                                 </td>
                                 <td >
-                                    <router-link :to='{name:"Patient Data", params:{id:patient.id}}' target='_blank' class='btn btn-primary btn-sm'>Details</router-link>
+                                    <router-link :to='{name:"Patient Data", params:{id:patient.id}}' target='_blank' class='btn btn-info shadow btn-sm'>Details</router-link>
                                 </td>
                             </tr>
                         </tbody>
@@ -211,7 +216,7 @@ export default {
             Diets: [],
             Rooms: [],
             Shift: '',
-            today:''
+            today:'',
         }
     },
     methods: {
@@ -537,6 +542,11 @@ export default {
 </script>
 
 <style scoped>
+.Handover {
+    background:#fff url('../../assets/layout/img/backgrounds/bg20.svg') top no-repeat;
+    min-height:100vh;
+    background-size:contain
+}
 .Handover .scroll-box {
     max-height:600px;
 }

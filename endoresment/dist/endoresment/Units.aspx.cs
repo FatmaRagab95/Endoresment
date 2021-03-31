@@ -34,7 +34,7 @@ public partial class _Units : System.Web.UI.Page
 
         con.Open();
 
-        using (SqlCommand cmd = new SqlCommand("SELECT u.U_id,u.U_name, Units_Rooms.U_id, COUNT(Units_Rooms.R_id) AS  RoomsNum from Units_Rooms RIGHT JOIN Units as u On u.Branch_id = @Branch_id and Units_Rooms.U_id = u.U_id GROUP BY Units_Rooms.U_id, u.U_id,u.U_name", con))
+        using (SqlCommand cmd = new SqlCommand("SELECT u.U_id,u.U_name, Endorsement_Rooms.Unit_id, COUNT(Endorsement_Rooms.id) AS  RoomsNum from Endorsement_Rooms RIGHT JOIN Units as u On u.Branch_id = @Branch_id and Endorsement_Rooms.Unit_id = u.U_id GROUP BY Endorsement_Rooms.Unit_id, u.U_id,u.U_name", con))
         {
             cmd.Parameters.Add("@Branch_id", SqlDbType.Int).Value = branch.id;
             SqlDataReader idr = cmd.ExecuteReader();
