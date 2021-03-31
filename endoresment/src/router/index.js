@@ -23,9 +23,9 @@ import Nurses from "@/components/endoresment/Nurses";
 import editNurses from "@/components/endoresment/editNurses";
 import editPatients from "@/components/endoresment/editPatients";
 import nursesPdf from "@/components/endoresment/nursesPdf";
-import Nursing_schedule from "@/components/endoresment/Nursing_schedule"; 
+import Nursing_schedule from "@/components/endoresment/Nursing_schedule";
 import display_schdule from "@/components/endoresment/display_schdule";
-
+import doctorInfo from "@/components/endoresment/doctorInfo";
 
 Vue.use(Router);
 
@@ -45,8 +45,8 @@ const router = new Router({
       meta: {
         requiresAuth: true,
         cat: "Endoresment",
-        viewMenu:true,
-        chargeNurse:false
+        viewMenu: true,
+        chargeNurse: false,
       },
     },
     {
@@ -56,8 +56,8 @@ const router = new Router({
       meta: {
         requiresAuth: true,
         cat: "Endoresment",
-        viewMenu:true,
-        chargeNurse:true
+        viewMenu: true,
+        chargeNurse: true,
       },
     },
     {
@@ -67,8 +67,8 @@ const router = new Router({
       meta: {
         requiresAuth: true,
         cat: "Endoresment",
-        viewMenu:true,
-        chargeNurse:true
+        viewMenu: true,
+        chargeNurse: true,
       },
     },
     {
@@ -78,8 +78,8 @@ const router = new Router({
       meta: {
         requiresAuth: true,
         cat: "Endoresment",
-        viewMenu:true,
-        chargeNurse:false
+        viewMenu: true,
+        chargeNurse: false,
       },
     },
     {
@@ -89,8 +89,8 @@ const router = new Router({
       meta: {
         requiresAuth: true,
         cat: "Endoresment",
-        viewMenu:false,
-        chargeNurse:false
+        viewMenu: false,
+        chargeNurse: false,
       },
     },
     {
@@ -100,8 +100,8 @@ const router = new Router({
       meta: {
         requiresAuth: true,
         cat: "Endoresment",
-        viewMenu:false,
-        chargeNurse:false
+        viewMenu: false,
+        chargeNurse: false,
       },
     },
     {
@@ -111,8 +111,8 @@ const router = new Router({
       meta: {
         requiresAuth: true,
         cat: "Endoresment",
-        viewMenu:false,
-        chargeNurse:true
+        viewMenu: false,
+        chargeNurse: true,
       },
     },
     {
@@ -122,8 +122,8 @@ const router = new Router({
       meta: {
         requiresAuth: true,
         cat: "Endoresment",
-        viewMenu:true,
-        chargeNurse:false
+        viewMenu: true,
+        chargeNurse: false,
       },
     },
     {
@@ -133,8 +133,8 @@ const router = new Router({
       meta: {
         requiresAuth: true,
         cat: "Endoresment",
-        viewMenu:true,
-        chargeNurse:false
+        viewMenu: true,
+        chargeNurse: false,
       },
     },
     {
@@ -144,8 +144,8 @@ const router = new Router({
       meta: {
         requiresAuth: true,
         cat: "Endoresment",
-        viewMenu:true,
-        chargeNurse:false
+        viewMenu: true,
+        chargeNurse: false,
       },
     },
     {
@@ -155,8 +155,8 @@ const router = new Router({
       meta: {
         requiresAuth: true,
         cat: "Endoresment",
-        viewMenu:false,
-        chargeNurse:false
+        viewMenu: false,
+        chargeNurse: false,
       },
     },
     {
@@ -166,8 +166,8 @@ const router = new Router({
       meta: {
         requiresAuth: true,
         cat: "Endoresment",
-        viewMenu:false,
-        chargeNurse:false
+        viewMenu: false,
+        chargeNurse: false,
       },
     },
     {
@@ -177,8 +177,8 @@ const router = new Router({
       meta: {
         requiresAuth: true,
         cat: "Endoresment",
-        viewMenu:false,
-        chargeNurse:false
+        viewMenu: false,
+        chargeNurse: false,
       },
     },
     {
@@ -188,8 +188,8 @@ const router = new Router({
       meta: {
         requiresAuth: true,
         cat: "Endoresment",
-        viewMenu:true,
-        chargeNurse:false
+        viewMenu: true,
+        chargeNurse: false,
       },
     },
     {
@@ -199,8 +199,8 @@ const router = new Router({
       meta: {
         requiresAuth: true,
         cat: "Endoresment",
-        viewMenu:false,
-        chargeNurse:false
+        viewMenu: false,
+        chargeNurse: false,
       },
     },
     {
@@ -210,8 +210,8 @@ const router = new Router({
       meta: {
         requiresAuth: true,
         cat: "Endoresment",
-        viewMenu:true,
-        chargeNurse:false
+        viewMenu: true,
+        chargeNurse: false,
       },
     },
     {
@@ -221,8 +221,8 @@ const router = new Router({
       meta: {
         requiresAuth: true,
         cat: "Endoresment",
-        viewMenu:false,
-        chargeNurse:false
+        viewMenu: false,
+        chargeNurse: false,
       },
     },
     {
@@ -232,8 +232,8 @@ const router = new Router({
       meta: {
         requiresAuth: true,
         cat: "Endoresment",
-        viewMenu:false,
-        chargeNurse:false
+        viewMenu: false,
+        chargeNurse: false,
       },
     },
     {
@@ -243,8 +243,8 @@ const router = new Router({
       meta: {
         requiresAuth: true,
         cat: "Endoresment",
-        viewMenu:false,
-        chargeNurse:false
+        viewMenu: false,
+        chargeNurse: false,
       },
     },
     {
@@ -254,8 +254,8 @@ const router = new Router({
       meta: {
         requiresAuth: true,
         cat: "Endoresment",
-        viewMenu:false,
-        chargeNurse:false
+        viewMenu: false,
+        chargeNurse: false,
       },
     },
     {
@@ -265,8 +265,8 @@ const router = new Router({
       meta: {
         requiresAuth: true,
         cat: "Endoresment",
-        viewMenu:false,
-        chargeNurse:false
+        viewMenu: false,
+        chargeNurse: false,
       },
     },
     {
@@ -276,11 +276,11 @@ const router = new Router({
       meta: {
         requiresAuth: true,
         cat: "Endoresment",
-        viewMenu:true,
-        chargeNurse:true
+        viewMenu: true,
+        chargeNurse: true,
       },
     },
-    
+
     {
       path: "/display_schdule",
       name: "Display Nurses Schdule",
@@ -288,12 +288,22 @@ const router = new Router({
       meta: {
         requiresAuth: true,
         cat: "Endoresment",
-        viewMenu:true,
-        chargeNurse:true
+        viewMenu: true,
+        chargeNurse: true,
       },
     },
-    
-    
+
+    {
+      path: "/doctorInfo",
+      name: "Doctors Info",
+      component: doctorInfo,
+      meta: {
+        requiresAuth: true,
+        cat: "Endoresment",
+        viewMenu: true,
+        chargeNurse: true,
+      },
+    },
   ],
 });
 
@@ -305,7 +315,6 @@ router.beforeEach((to, from, next) => {
     if (user) {
       // user signed in, proceed to route
       if (to.matched.some((rec) => rec.meta.requiresAuth)) {
-
       }
       next();
     } else {
