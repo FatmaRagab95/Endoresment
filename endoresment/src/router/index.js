@@ -50,8 +50,8 @@ const router = new Router({
       },
     },
     {
-      path: "/add_Unit",
-      name: "Add shift details",
+      path: "/Charge",
+      name: "Charge Nurse Endorsing",
       component: addUnit,
       meta: {
         requiresAuth: true,
@@ -182,17 +182,6 @@ const router = new Router({
       },
     },
     {
-      path: "/or_patient",
-      name: "Schedule Procedure",
-      component: or_patient,
-      meta: {
-        requiresAuth: true,
-        cat: "Endoresment",
-        viewMenu: true,
-        chargeNurse: false,
-      },
-    },
-    {
       path: "/or_patient_edit:id",
       name: "Edit Procedure",
       component: or_patient_edit,
@@ -200,6 +189,63 @@ const router = new Router({
         requiresAuth: true,
         cat: "Endoresment",
         viewMenu: false,
+        chargeNurse: false,
+      },
+    },
+    {
+      path: "/nursesPdf/:id",
+      name: "Nurses Pdf",
+      component: nursesPdf,
+      meta: {
+        requiresAuth: true,
+        cat: "Endoresment",
+        viewMenu: false,
+        chargeNurse: false,
+      },
+    },
+    {
+      path: "/Nursing_schedule",
+      name: "Nursing Schedule",
+      component: Nursing_schedule,
+      meta: {
+        requiresAuth: true,
+        cat: "Endoresment",
+        viewMenu: true,
+        chargeNurse: true,
+      },
+    },
+
+    {
+      path: "/display_schdule",
+      name: "Display Nurses Schdule",
+      component: display_schdule,
+      meta: {
+        requiresAuth: true,
+        cat: "Endoresment",
+        viewMenu: true,
+        chargeNurse: true,
+      },
+    },
+
+    {
+      path: "/doctorInfo",
+      name: "Doctors Info",
+      component: doctorInfo,
+      meta: {
+        requiresAuth: true,
+        cat: "Endoresment",
+        viewMenu: true,
+        chargeNurse: true,
+      },
+    },
+    {
+      path: "/or_patient",
+      name: "Schedule Procedure",
+      component: or_patient,
+      meta: {
+        requiresAuth: true,
+        cat: "Endoresment",
+        viewMenu: true,
         chargeNurse: false,
       },
     },
@@ -257,53 +303,7 @@ const router = new Router({
         viewMenu: false,
         chargeNurse: false,
       },
-    },
-    {
-      path: "/nursesPdf/:id",
-      name: "Nurses Pdf",
-      component: nursesPdf,
-      meta: {
-        requiresAuth: true,
-        cat: "Endoresment",
-        viewMenu: false,
-        chargeNurse: false,
-      },
-    },
-    {
-      path: "/Nursing_schedule",
-      name: "Nursing Schedule",
-      component: Nursing_schedule,
-      meta: {
-        requiresAuth: true,
-        cat: "Endoresment",
-        viewMenu: true,
-        chargeNurse: true,
-      },
-    },
-
-    {
-      path: "/display_schdule",
-      name: "Display Nurses Schdule",
-      component: display_schdule,
-      meta: {
-        requiresAuth: true,
-        cat: "Endoresment",
-        viewMenu: true,
-        chargeNurse: true,
-      },
-    },
-
-    {
-      path: "/doctorInfo",
-      name: "Doctors Info",
-      component: doctorInfo,
-      meta: {
-        requiresAuth: true,
-        cat: "Endoresment",
-        viewMenu: true,
-        chargeNurse: true,
-      },
-    },
+    }
   ],
 });
 
