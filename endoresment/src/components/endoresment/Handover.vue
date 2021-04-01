@@ -167,12 +167,12 @@
                                     <textarea  :disabled="user.Role_id != 10" v-if='patient.edit' type='text' v-model="FollowData(patient.id).DR_Consultaion_Progress"></textarea>
                                     <span v-else>{{FollowData(patient.id).DR_Consultaion_Progress}}</span>
                                 </td>
-                                <td v-if='(user.Role_id == 17) && edits'>
+                                <td v-if='edits'>
                                     <button v-if='patient.edit' class='btn btn-primary btn-sm'
                                      @click.prevent='SaveEdits(patient.id)'>Save</button>
                                     <button v-else class='btn btn-primary btn-sm shadow' @click.prevent='edit(patient.id)'>Edit</button>
                                 </td>
-                                <td v-else-if='user.Role_id == 12 && edits && NursesPatients.filter(x => x.id == patient.id).length > 0'>
+                                <!-- <td v-else-if='user.Role_id == 12 && edits && NursesPatients.filter(x => x.id == patient.id).length > 0'>
                                     <button v-if='patient.edit' class='btn btn-primary btn-sm'
                                      @click.prevent='SaveEdits(patient.id)'>Save</button>
                                     <button v-else class='btn btn-primary btn-sm shadow' @click.prevent='edit(patient.id)'>Edit</button>
@@ -181,7 +181,7 @@
                                     <button v-if='patient.edit' class='btn btn-primary btn-sm'
                                      @click.prevent='SaveEdits(patient.id)'>Save</button>
                                     <button v-else class='btn btn-primary btn-sm shadow' @click.prevent='edit(patient.id)'>Edit</button>
-                                </td>
+                                </td> -->
                                 <td >
                                     <router-link :to='{name:"Patient Data", params:{id:patient.id}}' target='_blank' class='btn btn-info shadow btn-sm'>Details</router-link>
                                 </td>

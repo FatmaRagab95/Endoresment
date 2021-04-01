@@ -97,6 +97,164 @@ public partial class _addUnit : System.Web.UI.Page
         public int? Receive_ChargeNurse_id { get; set; }
     }
 
+            // get Endorsement_Nursing_schedule
+    [WebMethod]
+    public static string getScheduleData(Endorsement_Nursing_schedule data)
+    {
+        string config =
+            Convert.ToString(ConfigurationManager.ConnectionStrings["dbcon"]);
+        List<Endorsement_Nursing_schedule> Endorsement_Nursing_schedule =
+            new List<Endorsement_Nursing_schedule>();
+
+        SqlConnection con = new SqlConnection(config);
+
+        con.Open();
+
+        using (
+            SqlCommand cmd =
+                new SqlCommand("select * from Endorsement_Nursing_schedule where Nurse_id = @Nurse_id and Shift_date >=  DATEADD(day,-2, GETDATE()) and Shift_date <  DATEADD(day,0, GETDATE())",
+                    con)
+        )
+        {
+            cmd.Parameters.Add("@Nurse_id", SqlDbType.Int).Value = data.Nurse_id;
+            SqlDataReader idr = cmd.ExecuteReader();
+
+            if (idr.HasRows)
+            {
+                Endorsement_Nursing_schedule =
+                    populateEndorsement_Nursing_scheduleLisst(idr, con);
+            }
+        }
+
+        con.Close();
+
+        return JsonConvert.SerializeObject(Endorsement_Nursing_schedule);
+    }
+
+    public static List<Endorsement_Nursing_schedule>
+    populateEndorsement_Nursing_scheduleLisst(
+        SqlDataReader idr,
+        SqlConnection con
+    )
+    {
+        List<Endorsement_Nursing_schedule> Endorsement_Nursing_scheduleI =
+            new List<Endorsement_Nursing_schedule>();
+
+        while (idr.Read())
+        {
+            Endorsement_Nursing_scheduleI
+                .Add(new Endorsement_Nursing_schedule {
+                    Id =
+                        idr["Id"] != DBNull.Value
+                            ? Convert.ToInt32(idr["Id"])
+                            : 0,
+                    Date =
+                        idr["Shift_date"] != DBNull.Value
+                            ? Convert.ToString(idr["Shift_date"])
+                            : String.Empty,
+                    Shift =
+                        idr["Shift"] != DBNull.Value
+                            ? Convert.ToString(idr["Shift"])
+                            : String.Empty,
+                    Unit_id =
+                        idr["Unit_id"] != DBNull.Value
+                            ? Convert.ToInt32(idr["Unit_id"])
+                            : 0,
+                    Unit_name =
+                        idr["Unit_name"] != DBNull.Value
+                            ? Convert.ToString(idr["Unit_name"])
+                            : String.Empty,
+                    Nurse_role =
+                        idr["Nurse_role"] != DBNull.Value
+                            ? Convert.ToInt32(idr["Nurse_role"])
+                            : 0,
+                    Nurse_name =
+                        idr["Nurse_name"] != DBNull.Value
+                            ? Convert.ToString(idr["Nurse_name"])
+                            : String.Empty,
+                    Nurse_id =
+                        idr["Nurse_id"] != DBNull.Value
+                            ? Convert.ToInt32(idr["Nurse_id"])
+                            : 0
+                });
+        }
+
+        return Endorsement_Nursing_scheduleI;
+    }
+
+    public class Endorsement_Nursing_schedule
+    {
+        public int? Id { get; set; }
+
+        public string Date { get; set; }
+
+        public string Shift { get; set; }
+
+        public int? Unit_id { get; set; }
+
+        public string Unit_name { get; set; }
+
+        public int? Nurse_role { get; set; }
+
+        public string Nurse_name { get; set; }
+
+        public int? Nurse_id { get; set; }
+    }
+
+        // get Charge Nurses
+    [WebMethod]
+    public static string getChargeNursesData(Endorsement_Nursing_schedule data)
+    {
+        string config =
+            Convert.ToString(ConfigurationManager.ConnectionStrings["dbcon"]);
+        List<Endorsement_Nursing_schedule> user = new List<Endorsement_Nursing_schedule>();
+        List<ChargeNurses> ChargeNurses = new List<ChargeNurses>();
+
+        SqlConnection con = new SqlConnection(config);
+
+        con.Open();
+
+        using (SqlCommand cmd = new SqlCommand("select * from adminusers where Role_id = 17 and Emp_ID in (select Nurse_id from Endorsement_Nursing_schedule where Unit_id = @Unit_id and Shift_date = @Date and (Shift = @Shift))", con))
+        {
+            cmd.Parameters.Add("@Unit_id", SqlDbType.Int).Value = data.Unit_id;
+            cmd.Parameters.Add("@Shift", SqlDbType.VarChar).Value = data.Shift;
+            cmd.Parameters.Add("@Date", SqlDbType.VarChar).Value = data.Date;
+            SqlDataReader idr = cmd.ExecuteReader();
+
+            if (idr.HasRows)
+            {
+                ChargeNurses = populateChargeNursesLisst(idr, con);
+            }
+        }
+
+        con.Close();
+
+        return JsonConvert.SerializeObject(ChargeNurses);
+    }
+
+    public static List<ChargeNurses>
+    populateChargeNursesLisst(SqlDataReader idr, SqlConnection con)
+    {
+        List<ChargeNurses> ChargeNursesI = new List<ChargeNurses>();
+
+        while (idr.Read())
+        {
+            ChargeNursesI
+                .Add(new ChargeNurses {
+                    Emp_ID = idr["Emp_ID"] != DBNull.Value ? Convert.ToInt32(idr["Emp_ID"]) : 0,
+                    FullName = Convert.ToString(idr["FullName"]),
+                });
+        }
+
+        return ChargeNursesI;
+    }
+
+    public class ChargeNurses
+    {
+        public int? Emp_ID { get; set; }
+        public string FullName { get; set; }
+    }
+
 
     // get Nurses
     [WebMethod]

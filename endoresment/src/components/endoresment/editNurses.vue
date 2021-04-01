@@ -279,7 +279,7 @@ export default {
     // if current user is charge nurse to this unit
     if (
       (this.edits && this.UnitDash.filter((x) => x.Unit_id == this.path).length == 0) ||
-      !this.edits
+      this.edits == false
     ) {
       this.$router.go(-1);
     }
