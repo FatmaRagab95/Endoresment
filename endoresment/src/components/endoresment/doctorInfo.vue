@@ -14,21 +14,34 @@
               </div>
 
               <div class="cu-field">
-                <h3 class="cu-label">
-                  <label>Select Specialities :</label>
-                </h3>
-                <div class="f-select">
-                  <select class="form-control form-control-sm" v-model="Special" required>
-                    <option
-                      v-for="Special in Specialities"
-                      :value="Special.Spcy_id"
-                      :key="Special.Spcy_id"
-                    >
-                      {{ Special.Spcy_name_En }}
-                    </option>
-                  </select>
-                </div>
+                <v-select
+                  :items="Specialities"
+                  item-text="Spcy_name_En"
+                  :item-value="'Spcy_id'"
+                  label="Select Specialities :"
+                  name="Special"
+                  v-model="Special"
+                ></v-select>
               </div>
+
+              <v-row justify="center" class="mt-3 mb-3">
+                <v-date-picker
+                  class="bg-primary shadow m-auto"
+                  v-model="month"
+                  type="month"
+                ></v-date-picker>
+              </v-row>
+
+              <!--  <div>
+                {{
+                  Doctors_Shifts.filter(
+                    (x) =>
+                      new Date(x.Shift_date).toISOString().slice(0, 10).split("-")[1] ==
+                        month.split("-")[1] &&
+                      x.Shift_date.split(" ")[0].split("/")[2] == month.split("-")[0]
+                  )
+                }}
+              </div>-->
             </div>
           </div>
         </div>
@@ -41,7 +54,7 @@
           <div class="cu-container mt-0">
             <div class="cu-form-group special mt-0" style="max-width: 1000px">
               <div class="row">
-                <div class="col-md-8">
+                <div class="col-md-9">
                   <div class="cu-field">
                     <h3 class="cu-label">
                       <label>search for specific name:</label>
@@ -57,19 +70,16 @@
                     </div>
                   </div>
                 </div>
-                <div class="col-md-4">
-                  <a
-                    class="open-pop btn btn-primary text-white mt-5 pull-right ml-2"
-                    data-pop-name="patient-popup"
-                  >
-                    View Patients list
-                  </a>
-                  <a
-                    class="btn btn-danger text-white mt-5 pull-right"
-                    @click.prevent="pdf"
-                  >
-                    View Pdf
-                  </a>
+                <div class="col-md-3">
+                  <div class="w-100 h-100 d-flex justify-content-center">
+                    <a
+                      class="btn btn-danger text-white"
+                      style="height: 37px; margin-top: 55px"
+                      @click.prevent="pdf"
+                    >
+                      View Pdf
+                    </a>
+                  </div>
                 </div>
               </div>
               <hr />
@@ -83,97 +93,236 @@
                   :key="doctor.Dr_Code"
                 >
                   <div class="row">
-                    <div class="col-md-6">
-                      <div class="card bg-white h-100 p-2">
-                        <div class="row pb-3">
-                          <span class="text-dark col-md-12"
-                            >Doctor Name :<span
-                              class="ml-2 text-secondary font-weight-bold text-capitalize"
-                              >{{ doctor.DR_Name }}</span
-                            >
-                          </span>
-                        </div>
-                        <div class="rowborder-bottom pb-3">
-                          <span class="pull-left"
-                            >Type :
-                            <span class="text-success">{{ doctor.Type }}</span></span
-                          >
-                        </div>
-                      </div>
-                    </div>
-                    <div class="col-md-6">
-                      <div class="card bg-white h-100 p-2">
-                        <span
-                          class="col-md-6"
-                          style="text-decoration: underline; font-size: 18px"
-                        >
-                          Patients Consulting
-                        </span>
-                      </div>
-                    </div>
+                    <span class="text-dark col-md-6"
+                      >Doctor Name :<span
+                        class="ml-2 text-secondary font-weight-bold text-capitalize"
+                        >{{ doctor.DR_Name }}</span
+                      >
+                    </span>
+                    <span class="text-dark col-md-6"
+                      >Type :<span class="text-success ml-2">{{ doctor.Type }}</span>
+                    </span>
                   </div>
-
                   <hr />
-                  <div class="row" style="font-size: 16px">
-                    <div
-                      class="col-md-4"
-                      v-if="
-                        Doctors_Shifts.filter((x) => x.Doctor_id == doctor.Dr_Code)
-                          .length > 0
-                      "
-                    >
-                      Received Shifts :
-                      <span class="text-secondary"
-                        >{{
-                          Doctors_Shifts.filter((x) => x.Doctor_id == doctor.Dr_Code)[0]
-                            .ReceiveNum
-                        }}
-                        shifts</span
-                      >
-                    </div>
-                    <div class="col-md-4" v-else>
-                      Received Shifts : <span class="text-danger">No Shifts</span>
-                    </div>
-                    <div
-                      class="col-md-4"
-                      v-if="
-                        Doctors_Shifts.filter((x) => x.Doctor_id == doctor.Dr_Code)
-                          .length > 0
-                      "
-                    >
-                      Confirmed Shifts :
-                      <span class="text-secondary"
-                        >{{
-                          Doctors_Shifts.filter((x) => x.Doctor_id == doctor.Dr_Code)[0]
-                            .ConfirmNum
-                        }}
-                        shifts</span
-                      >
-                    </div>
-                    <div class="col-md-4" v-else>
-                      Confirmed Shifts : <span class="text-danger">No Shifts</span>
-                    </div>
-                    <div
-                      class="col-md-4"
-                      v-if="
-                        Doctors_Shifts.filter((x) => x.Doctor_id == doctor.Dr_Code)
-                          .length > 0
-                      "
-                    >
-                      Completed Shifts :
-                      <span class="text-secondary"
-                        >{{
-                          Doctors_Shifts.filter((x) => x.Doctor_id == doctor.Dr_Code)[0]
-                            .CompleteNum
-                        }}
-                        shifts</span
-                      >
-                    </div>
-                    <div class="col-md-4" v-else>
-                      Completed Shifts : <span class="text-danger">No Shifts</span>
+                  <div class="row">
+                    <div class="col-md-12">
+                      <div class="card bg-white p-3">
+                        <h5 style="text-decoration: underline" class="text-info">
+                          Consultation Patients List
+                        </h5>
+
+                        <table
+                          class="table mt-4 shadow"
+                          v-if="
+                            PatientsData.filter(
+                              (x) =>
+                                x.Consultant_id == doctor.Dr_Code &&
+                                x.Addmission_date.split('-')[0] == month.split('-')[0] &&
+                                x.Addmission_date.split('-')[1] == month.split('-')[1]
+                            ).length > 0
+                          "
+                        >
+                          <thead>
+                            <tr>
+                              <th scope="col">No</th>
+                              <th scope="col">Name</th>
+                              <th scope="col">Medicl No</th>
+                              <th scope="col">Gender</th>
+                              <th scope="col">Room</th>
+                              <th scope="col">Unit</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr
+                              v-for="(pat, i) in PatientsData.filter(
+                                (x) =>
+                                  x.Consultant_id == doctor.Dr_Code &&
+                                  x.Addmission_date.split('-')[0] ==
+                                    month.split('-')[0] &&
+                                  x.Addmission_date.split('-')[1] == month.split('-')[1]
+                              )"
+                              :key="pat.id"
+                            >
+                              <th>{{ i + 1 }}</th>
+                              <td>{{ pat.Patient_FullName }}</td>
+                              <td class="text-success">{{ pat.Medical_Number }}</td>
+                              <td>{{ pat.Gender }}</td>
+                              <td>{{ pat.Room }}</td>
+                              <td>{{ pat.Unit }}</td>
+                            </tr>
+                          </tbody>
+                        </table>
+                        <div v-else class="p-4 bg-light text-center text-secondary mt-4">
+                          No Avaliable Data For Consulting Patients
+                        </div>
+
+                        <!-- Primary patients ------------------------------------------>
+                        <h5 style="text-decoration: underline" class="text-info">
+                          Primary Patients List
+                        </h5>
+                        <table
+                          class="table mt-4 shadow"
+                          v-if="
+                            PatientFollow.filter(
+                              (x) =>
+                                new Date(x.Entry_date)
+                                  .toISOString()
+                                  .slice(0, 10)
+                                  .split('-')[1] == month.split('-')[1] &&
+                                x.Entry_date.split(' ')[0].split('/')[2] ==
+                                  month.split('-')[0] &&
+                                x.Consultaion == doctor.Dr_Code
+                            ).length > 0
+                          "
+                        >
+                          <thead>
+                            <tr>
+                              <th scope="col">No</th>
+                              <th scope="col">Name</th>
+                              <th scope="col">Medicl No</th>
+                              <th scope="col">Gender</th>
+                              <th scope="col">Room</th>
+                              <th scope="col">Unit</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr
+                              v-for="(pat, i) in PatientFollow.filter(
+                                (x) =>
+                                  new Date(x.Entry_date)
+                                    .toISOString()
+                                    .slice(0, 10)
+                                    .split('-')[1] == month.split('-')[1] &&
+                                  x.Entry_date.split(' ')[0].split('/')[2] ==
+                                    month.split('-')[0] &&
+                                  x.Consultaion == doctor.Dr_Code
+                              )"
+                              :key="pat.id"
+                            >
+                              <th>{{ i + 1 }}</th>
+                              <td
+                                v-if="
+                                  PatientsData.filter((x) => x.id == pat.Patient_id)
+                                    .length > 0
+                                "
+                              >
+                                {{
+                                  PatientsData.filter((x) => x.id == pat.Patient_id)[0]
+                                    .Patient_FullName
+                                }}
+                              </td>
+                              <td class="text-secondary" v-else>no data registered</td>
+                              <td
+                                v-if="
+                                  PatientsData.filter((x) => x.id == pat.Patient_id)
+                                    .length > 0
+                                "
+                                class="text-success"
+                              >
+                                {{
+                                  PatientsData.filter((x) => x.id == pat.Patient_id)[0]
+                                    .Medical_Number
+                                }}
+                              </td>
+                              <td class="text-secondary" v-else>no data registered</td>
+                              <td
+                                v-if="
+                                  PatientsData.filter((x) => x.id == pat.Patient_id)
+                                    .length > 0
+                                "
+                              >
+                                {{
+                                  PatientsData.filter((x) => x.id == pat.Patient_id)[0]
+                                    .Gender
+                                }}
+                              </td>
+                              <td class="text-secondary" v-else>no data registered</td>
+                              <td
+                                v-if="
+                                  PatientsData.filter((x) => x.id == pat.Patient_id)
+                                    .length > 0
+                                "
+                              >
+                                {{
+                                  PatientsData.filter((x) => x.id == pat.Patient_id)[0]
+                                    .Room
+                                }}
+                              </td>
+                              <td class="text-secondary" v-else>no data registered</td>
+                              <td
+                                v-if="
+                                  PatientsData.filter((x) => x.id == pat.Patient_id)
+                                    .length > 0
+                                "
+                              >
+                                {{
+                                  PatientsData.filter((x) => x.id == pat.Patient_id)[0]
+                                    .Unit
+                                }}
+                              </td>
+                              <td class="text-secondary" v-else>no data registered</td>
+                            </tr>
+                          </tbody>
+                        </table>
+                        <div v-else class="p-4 bg-light text-center text-secondary mt-4">
+                          No Avaliable Data For Primary Patients
+                        </div>
+
+                        <!-- Shifts patients in Resident doctors-->
+                        <div v-if="doctor.Type == 'Resident'">
+                          <h5 style="text-decoration: underline" class="text-info">
+                            Primary Patients List
+                          </h5>
+                          <div
+                            v-if="
+                              Doctors_Shifts.filter((x) => x.Doctor_id == doctor.Dr_Code)
+                                .length > 0
+                            "
+                          >
+                            <div class="row">
+                              <div
+                                class="col-md-6"
+                                v-for="(shift, i) in Doctors_Shifts.filter(
+                                  (x) => x.Doctor_id == doctor.Dr_Code
+                                )"
+                                :key="i + 'r'"
+                              >
+                                <h6 class="ml-2 text-success">
+                                  Shift date {{ shift.Shift_date.split(" ")[0] }}
+                                </h6>
+
+                                <ul>
+                                  <li
+                                    class="ml-5"
+                                    style="list-style-type: none"
+                                    v-for="(patient, i) in PatientsData"
+                                    :key="patient.id"
+                                    v-if="
+                                      new Date(shift.Shift_date.trim()) <
+                                        new Date(patient.Discharged_date.trim()) ||
+                                      patient.Discharged_date == false
+                                    "
+                                  >
+                                    <span>{{ i + 1 }} - </span
+                                    >{{ patient.Patient_FullName }}
+                                  </li>
+                                </ul>
+                              </div>
+                            </div>
+                          </div>
+                          <div
+                            v-else
+                            class="p-4 bg-light text-center text-secondary mt-4"
+                          >
+                            No Avaliable Data For Shifts Patients
+                          </div>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
+
+                <hr />
               </div>
             </div>
           </div>
@@ -181,66 +330,6 @@
       </form>
       <!--end display doctors data-->
     </div>
-    <!-- start patients list popup-->
-    <div class="patient-popup popup">
-      <div class="popup-body" style="max-width: 1000px">
-        <div class="container-fluid custom-form m-auto pb-4" style="max-width: 1000px">
-          <div class="cu-container bg-white">
-            <span class="close-pop">Close</span>
-            <div class="title text-center text-white mb-5">
-              <span class="bg-secondary shadow pt-2 pb-2 pl-3 pr-3">patients list</span>
-              <table
-                class="table table-striped mt-4 shadow"
-                v-if="
-                  PatientsData.filter(
-                    (x) =>
-                      x.Specialty ==
-                      Specialities.filter((z) => z.Spcy_id == Special)[0].Spcy_name_En
-                  ).length > 0
-                "
-              >
-                <thead>
-                  <tr>
-                    <th scope="col">No</th>
-                    <th scope="col">Name</th>
-                    <th scope="col">Medicl No</th>
-                    <th scope="col">Gender</th>
-                    <th scope="col">Room</th>
-                    <th scope="col">Unit</th>
-                    <th scope="col">Addmission Date</th>
-                    <th scope="col">Consultant Name</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr
-                    v-for="(patient, i) in PatientsData.filter(
-                      (x) =>
-                        x.Specialty ==
-                        Specialities.filter((z) => z.Spcy_id == Special)[0].Spcy_name_En
-                    )"
-                    :key="patient.id"
-                  >
-                    <th>{{ i + 1 }}</th>
-                    <td>{{ patient.Patient_FullName }}</td>
-                    <td class="text-success">{{ patient.Medical_Number }}</td>
-                    <td>{{ patient.Gender }}</td>
-                    <td>{{ patient.Room }}</td>
-                    <td>{{ patient.Unit }}</td>
-                    <td>{{ patient.Addmission_date }}</td>
-                    <td>{{ patient.Consultant_Name }}</td>
-                  </tr>
-                </tbody>
-              </table>
-              <div v-else class="p-4 bg-light text-center text-secondary mt-4">
-                No Avaliable Data
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- end patients list popup -->
   </div>
 </template>
 
@@ -256,6 +345,9 @@ export default {
       Doctors_Data: [],
       Doctors_Shifts: [],
       PatientsData: [],
+      PatientFollow: [],
+
+      month: "2021-03",
 
       Special: 40,
       filterData: [],
@@ -264,7 +356,35 @@ export default {
       Names: [],
     };
   },
+  watch: {
+    month: function () {
+      this.shiftData();
+    },
+    Special: function () {
+      this.shiftData();
+    },
+  },
   methods: {
+    shiftData() {
+      let that = this;
+      $.ajax({
+        type: "POST",
+        url: that.apiUrl + "endoresment/doctorInfo.aspx/getDoctors_ShiftsData",
+        data: JSON.stringify({
+          shift: {
+            Branch_id: that.user.Branch_ID,
+            Spcy_id: that.Special,
+            Shift_date: that.month + "-01",
+            endDate: moment(that.month).add(1, "Month").format("YYYY-MM-DD"),
+          },
+        }),
+        contentType: "application/json; charset=utf-8",
+        dataType: "json",
+        success: function (data) {
+          that.Doctors_Shifts = JSON.parse(data.d);
+        },
+      });
+    },
     filterNames(list, value) {
       return list.filter((x) => x.DR_Name.toLowerCase().indexOf(value) > -1);
     },
@@ -302,6 +422,17 @@ export default {
       },
     });
 
+    // get Endorsement_PatientFollow
+    $.ajax({
+      type: "POST",
+      url: that.apiUrl + "endoresment/doctorInfo.aspx/getPatientFollowData",
+      contentType: "application/json; charset=utf-8",
+      dataType: "json",
+      success: function (data) {
+        that.PatientFollow = JSON.parse(data.d);
+      },
+    });
+
     //get Specialities
     $.ajax({
       type: "POST",
@@ -325,15 +456,7 @@ export default {
     });
 
     //get Endoresment_Doctors_Shifts
-    $.ajax({
-      type: "POST",
-      url: that.apiUrl + "endoresment/doctorInfo.aspx/getDoctors_ShiftsData",
-      contentType: "application/json; charset=utf-8",
-      dataType: "json",
-      success: function (data) {
-        that.Doctors_Shifts = JSON.parse(data.d);
-      },
-    });
+    that.shiftData();
 
     // get patients data
     $.ajax({
@@ -443,5 +566,6 @@ export default {
 }
 .special-btn i {
   margin-right: 15px;
+  list-style-type: none;
 }
 </style>
