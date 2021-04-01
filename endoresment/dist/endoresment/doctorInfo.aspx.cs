@@ -205,7 +205,7 @@ public partial class doctorInfo : System.Web.UI.Page
 
     // get Endoresment_Doctors_Shifts data
     [WebMethod]
-    public static string getDoctors_ShiftsData()
+    public static string getDoctors_ShiftsData(Doctors_Shifts shift)
     {
         string config =
             Convert.ToString(ConfigurationManager.ConnectionStrings["dbcon"]);
@@ -217,10 +217,17 @@ public partial class doctorInfo : System.Web.UI.Page
 
         using (
             SqlCommand cmd =
-                new SqlCommand("SELECT  d.Doctor_id,d.Doctor_name, Endoresment_Doctors_Shifts.Doctor_id,COUNT(DISTINCT Endoresment_Doctors_Shifts.Id) AS  ReceiveNum, SUM(Endoresment_Doctors_Shifts.Confirm) / COUNT(DISTINCT Endoresment_Doctors_Shifts.Id) AS  ConfirmNum, SUM(Endoresment_Doctors_Shifts.Completed) / COUNT(DISTINCT Endoresment_Doctors_Shifts.Id) AS  CompleteNum from Endoresment_Doctors_Shifts RIGHT JOIN Endoresment_Doctors_Shifts as d On Endoresment_Doctors_Shifts.Doctor_id = d.Doctor_id GROUP BY Endoresment_Doctors_Shifts.Doctor_id, d.Doctor_id,d.Doctor_name",
+                new SqlCommand("SELECT * from Endoresment_Doctors_Shifts where Spcy_id = @Spcy_id and Shift_date >= @Shift_date and Shift_date < @endDate and  Doctor_id in (select Dr_Code from Doctors_Data where Branch = @Branch_id )",
                     con)
         )
         {
+            cmd.Parameters.Add("@Spcy_id", SqlDbType.Int).Value = shift.Spcy_id;
+            cmd.Parameters.Add("@Branch_id", SqlDbType.Int).Value =
+                shift.Branch_id;
+            cmd.Parameters.Add("@Shift_date", SqlDbType.VarChar).Value =
+                shift.Shift_date;
+            cmd.Parameters.Add("@endDate", SqlDbType.VarChar).Value =
+                shift.endDate;
             SqlDataReader idr = cmd.ExecuteReader();
 
             if (idr.HasRows)
@@ -243,25 +250,21 @@ public partial class doctorInfo : System.Web.UI.Page
         {
             Doctors_ShiftsI
                 .Add(new Doctors_Shifts {
+                    id =
+                        idr["id"] != DBNull.Value
+                            ? Convert.ToInt32(idr["id"])
+                            : 0,
                     Doctor_name =
                         idr["Doctor_name"] != DBNull.Value
                             ? Convert.ToString(idr["Doctor_name"])
                             : String.Empty,
+                    Shift_date =
+                        idr["Shift_date"] != DBNull.Value
+                            ? Convert.ToString(idr["Shift_date"])
+                            : String.Empty,
                     Doctor_id =
                         idr["Doctor_id"] != DBNull.Value
                             ? Convert.ToInt32(idr["Doctor_id"])
-                            : 0,
-                    ReceiveNum =
-                        idr["ReceiveNum"] != DBNull.Value
-                            ? Convert.ToInt32(idr["ReceiveNum"])
-                            : 0,
-                    ConfirmNum =
-                        idr["ConfirmNum"] != DBNull.Value
-                            ? Convert.ToInt32(idr["ConfirmNum"])
-                            : 0,
-                    CompleteNum =
-                        idr["CompleteNum"] != DBNull.Value
-                            ? Convert.ToInt32(idr["CompleteNum"])
                             : 0
                 });
         }
@@ -271,15 +274,19 @@ public partial class doctorInfo : System.Web.UI.Page
 
     public class Doctors_Shifts
     {
+        public int? id { get; set; }
+
         public string Doctor_name { get; set; }
+
+        public int? Branch_id { get; set; }
 
         public int? Doctor_id { get; set; }
 
-        public int? ReceiveNum { get; set; }
+        public int? Spcy_id { get; set; }
 
-        public int? ConfirmNum { get; set; }
+        public string endDate { get; set; }
 
-        public int? CompleteNum { get; set; }
+        public string Shift_date { get; set; }
     }
 
     // get patients data
@@ -328,6 +335,10 @@ public partial class doctorInfo : System.Web.UI.Page
                         idr["id"] != DBNull.Value
                             ? Convert.ToInt32(idr["id"])
                             : 0,
+                    Consultant_id =
+                        idr["Consultant_id"] != DBNull.Value
+                            ? Convert.ToInt32(idr["Consultant_id"])
+                            : 0,
                     Patient_FullName =
                         Convert.ToString(idr["Patient_FullName"]),
                     Gender = Convert.ToString(idr["Gender"]),
@@ -335,6 +346,7 @@ public partial class doctorInfo : System.Web.UI.Page
                     Unit = Convert.ToString(idr["Unit"]),
                     Room = Convert.ToString(idr["Room"]),
                     Addmission_date = Convert.ToString(idr["Addmission_date"]),
+                    Discharged_date = Convert.ToString(idr["Discharged_date"]),
                     Consultant_Name = Convert.ToString(idr["Consultant_Name"]),
                     Specialty = Convert.ToString(idr["Specialty"])
                 });
@@ -346,6 +358,8 @@ public partial class doctorInfo : System.Web.UI.Page
     public class Endorsement_PatientData
     {
         public int? id { get; set; }
+
+        public int? Consultant_id { get; set; }
 
         public string Patient_FullName { get; set; }
 
@@ -359,8 +373,151 @@ public partial class doctorInfo : System.Web.UI.Page
 
         public string Addmission_date { get; set; }
 
+        public string Discharged_date { get; set; }
+
         public string Consultant_Name { get; set; }
 
         public string Specialty { get; set; }
+    }
+
+    // get Endoresment_Doctors_Shifts data
+    /*
+    [WebMethod]
+    public static string getDoctors_ShiftsData()
+    {
+        string config =
+            Convert.ToString(ConfigurationManager.ConnectionStrings["dbcon"]);
+        List<Doctors_Shifts> Doctors_Shifts = new List<Doctors_Shifts>();
+
+        SqlConnection con = new SqlConnection(config);
+
+        con.Open();
+
+        using (
+            SqlCommand cmd =
+                new SqlCommand("select * from Endoresment_Doctors_Shifts", con)
+        )
+        {
+            SqlDataReader idr = cmd.ExecuteReader();
+
+            if (idr.HasRows)
+            {
+                Doctors_Shifts = populateDoctors_ShiftsLisst(idr, con);
+            }
+        }
+
+        con.Close();
+
+        return JsonConvert.SerializeObject(Doctors_Shifts);
+    }
+
+    public static List<Doctors_Shifts>
+    populateDoctors_ShiftsLisst(SqlDataReader idr, SqlConnection con)
+    {
+        List<Doctors_Shifts> Doctors_ShiftsI = new List<Doctors_Shifts>();
+
+        while (idr.Read())
+        {
+            Doctors_ShiftsI
+                .Add(new Doctors_Shifts {
+                    id =
+                        idr["id"] != DBNull.Value
+                            ? Convert.ToInt32(idr["id"])
+                            : 0,
+                    Doctor_name =
+                        idr["Doctor_name"] != DBNull.Value
+                            ? Convert.ToString(idr["Doctor_name"])
+                            : String.Empty,
+                    Shift_date =
+                        idr["Shift_date"] != DBNull.Value
+                            ? Convert.ToString(idr["Shift_date"])
+                            : String.Empty,
+                    Doctor_id =
+                        idr["Doctor_id"] != DBNull.Value
+                            ? Convert.ToInt32(idr["Doctor_id"])
+                            : 0
+                });
+        }
+
+        return Doctors_ShiftsI;
+    }*/
+    /*
+    public class Doctors_Shifts
+    {
+        public int? id { get; set; }
+
+        public string Doctor_name { get; set; }
+
+        public int? Doctor_id { get; set; }
+
+        public string Shift_date { get; set; }
+    }*/
+    // get Endorsement_PatientFollow
+    [WebMethod]
+    public static string getPatientFollowData()
+    {
+        string config =
+            Convert.ToString(ConfigurationManager.ConnectionStrings["dbcon"]);
+        List<PatientFollow> PatientFollow = new List<PatientFollow>();
+
+        SqlConnection con = new SqlConnection(config);
+
+        con.Open();
+
+        using (
+            SqlCommand cmd =
+                new SqlCommand("select * from Endorsement_PatientFollow", con)
+        )
+        {
+            SqlDataReader idr = cmd.ExecuteReader();
+
+            if (idr.HasRows)
+            {
+                PatientFollow = populatePatientFollowLisst(idr, con);
+            }
+        }
+
+        con.Close();
+
+        return JsonConvert.SerializeObject(PatientFollow);
+    }
+
+    public static List<PatientFollow>
+    populatePatientFollowLisst(SqlDataReader idr, SqlConnection con)
+    {
+        List<PatientFollow> PatientFollowI = new List<PatientFollow>();
+
+        while (idr.Read())
+        {
+            PatientFollowI
+                .Add(new PatientFollow {
+                    id =
+                        idr["id"] != DBNull.Value
+                            ? Convert.ToInt32(idr["id"])
+                            : 0,
+                    Consultaion =
+                        idr["Consultaion"] != DBNull.Value
+                            ? Convert.ToInt32(idr["Consultaion"])
+                            : 0,
+                    Patient_id =
+                        idr["Patient_id"] != DBNull.Value
+                            ? Convert.ToInt32(idr["Patient_id"])
+                            : 0,
+                    Entry_date = Convert.ToString(idr["Entry_date"])
+                });
+        }
+
+        return PatientFollowI;
+    }
+
+    public class PatientFollow
+    {
+        public int? id { get; set; }
+
+        public int? Patient_id { get; set; }
+
+        public int? Consultaion { get; set; }
+
+        public string Entry_date { get; set; }
     }
 }
