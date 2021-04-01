@@ -13,7 +13,8 @@
             You haven't recieved any units as a charge nurse for current shift yet!
             </v-alert>
 
-            <div class='bg-white shadow table-responsive mb-5' v-for='(unit) in UnitDash' :key='unit.id'>
+            <div class='bg-white shadow table-responsive mb-5' v-for='(unit) in UnitDash' :key='unit.id'
+            v-if='patients.filter(x => unit.Unit_name.trim() == x.Unit.trim()).length > 0'>
                 <h4 class='cu-flex p-3 shadow'>
                     <span><i class='fa fa-hospital-o'></i> {{unit.Unit_name}}</span>
                     <router-link class='btn btn-primary shadow' :to='{name:"Nurses", params:{id:unit.Unit_id}}'>Nurses List</router-link>
@@ -67,7 +68,7 @@
                                 <th><span>Surgery, Procedures</span></th>
                                 <th class='bg-warning'><span>Progress of consultations</span></th>
                             </tr>
-                            <tr v-for='(patient) in patients.filter(x => unit.Unit_name.trim() == x.Unit.trim())' :key='patient.id'>
+                            <tr v-if='user.Role_id != 17' v-for='(patient) in patients.filter(x => unit.Unit_name.trim() == x.Unit.trim())' :key='patient.id'>
                                 <td>
                                     <span>{{patient.Room}}</span>
                                 </td>
@@ -83,11 +84,13 @@
                                     <span v-if='!patient.edit'>{{LOS(patient.Addmission_date)}}</span>
                                 </td>
                                 <td class='bigText'>
-                                    <textarea :disabled="user.Role_id != 10" v-if='patient.edit' v-model="FollowData(patient.id).DR_Diagnosis"></textarea>
+                                    <textarea 
+                                    :disabled="user.Role_id == 12 || user.Role_id == 17 ? 'disabled' : ''" v-if='patient.edit' v-model="FollowData(patient.id).DR_Diagnosis"></textarea>
                                     <span v-else>{{FollowData(patient.id).DR_Diagnosis}}</span>
                                 </td>
                                 <td class='bigText'>
-                                    <textarea  :disabled="user.Role_id != 10" v-if='patient.edit' v-model="FollowData(patient.id).DR_ProgressNotes"></textarea>
+                                    <textarea  
+                                    :disabled="user.Role_id == 12 || user.Role_id == 17 ? 'disabled' : ''" v-if='patient.edit' v-model="FollowData(patient.id).DR_ProgressNotes"></textarea>
                                     <span v-else>{{FollowData(patient.id).DR_ProgressNotes}}</span>
                                 </td>
                                 <td>
@@ -164,7 +167,8 @@
                                     <span v-else>{{FollowData(patient.id).Surgury_Procedures}}</span>
                                 </td>
                                 <td class='bigText'>
-                                    <textarea  :disabled="user.Role_id != 10" v-if='patient.edit' type='text' v-model="FollowData(patient.id).DR_Consultaion_Progress"></textarea>
+                                    <textarea  
+                                    :disabled="user.Role_id == 12 || user.Role_id == 17 ? 'disabled' : ''" v-if='patient.edit' type='text' v-model="FollowData(patient.id).DR_Consultaion_Progress"></textarea>
                                     <span v-else>{{FollowData(patient.id).DR_Consultaion_Progress}}</span>
                                 </td>
                                 <td v-if='edits'>
@@ -172,16 +176,119 @@
                                      @click.prevent='SaveEdits(patient.id)'>Save</button>
                                     <button v-else class='btn btn-primary btn-sm shadow' @click.prevent='edit(patient.id)'>Edit</button>
                                 </td>
-                                <!-- <td v-else-if='user.Role_id == 12 && edits && NursesPatients.filter(x => x.id == patient.id).length > 0'>
+                                <td >
+                                    <router-link :to='{name:"Patient Data", params:{id:patient.id}}' target='_blank' class='btn btn-info shadow btn-sm'>Details</router-link>
+                                </td>
+                            </tr>
+                            <tr v-if='user.Role_id == 17' 
+                            v-for='(patient) in DoctorPatients.filter(x => unit.Unit_name.trim() == x.Unit.trim())' :key='patient.id'>
+                                <td>
+                                    <span>{{patient.Room}}</span>
+                                </td>
+                                <td>
+                                    <input v-if='patient.edit' type='text' v-model='patient.Patient_FullName'>
+                                    <span v-else>{{patient.Patient_FullName}}</span>
+                                </td>
+                                <td>
+                                    
+                                    <input v-if='patient.edit' type='date' v-model='patient.Addmission_date'>
+                                    <span v-else>{{patient.Addmission_date}}</span>
+                                    <br>
+                                    <span v-if='!patient.edit'>{{LOS(patient.Addmission_date)}}</span>
+                                </td>
+                                <td class='bigText'>
+                                    <textarea 
+                                    :disabled="user.Role_id == 12 || user.Role_id == 17 ? 'disabled' : ''" v-if='patient.edit' v-model="FollowData(patient.id).DR_Diagnosis"></textarea>
+                                    <span v-else>{{FollowData(patient.id).DR_Diagnosis}}</span>
+                                </td>
+                                <td class='bigText'>
+                                    <textarea  
+                                    :disabled="user.Role_id == 12 || user.Role_id == 17 ? 'disabled' : ''" v-if='patient.edit' v-model="FollowData(patient.id).DR_ProgressNotes"></textarea>
+                                    <span v-else>{{FollowData(patient.id).DR_ProgressNotes}}</span>
+                                </td>
+                                <td>
+                                    <input v-if='patient.edit' type='text' v-model='patient.Age'>
+                                    <span v-else>{{patient.Age}}</span>
+                                </td>
+                                <td>
+                                    <select v-if='patient.edit' v-model="FollowData(patient.id).Diet_Name">
+                                        <option v-for='diet in Diets' :key='diet.id' 
+                                        :value="diet.Diet_Name"  @click='FollowData(patient.id).Diet_id = diet.id '>{{diet.Diet_Name}}</option>
+                                    </select>
+                                    <span v-else>{{FollowData(patient.id).Diet_Name}}</span>
+                                </td>
+                                <td>
+                                    <input v-if='patient.edit' type='text' v-model='patient.Consultant_Name'>
+                                    <span v-else>{{patient.Consultant_Name}}</span>
+                                </td>
+                                <td>
+                                    <select v-if='patient.edit' v-model="FollowData(patient.id).Pain">
+                                        <option value='0'>0</option>
+                                        <option value='1'>1</option>
+                                        <option value='2'>2</option>
+                                        <option value='3'>3</option>
+                                        <option value='4'>4</option>
+                                        <option value='5'>5</option>
+                                        <option value='6'>6</option>
+                                        <option value='7'>7</option>
+                                        <option value='8'>8</option>
+                                        <option value='9'>9</option>
+                                        <option value='10'>10</option>
+                                    </select>
+                                    <span v-else>{{FollowData(patient.id).Pain}}</span>
+                                </td>
+                                <td class='bigText'>
+                                    <textarea v-if='patient.edit' v-model="FollowData(patient.id).Allergy"></textarea>
+                                    <span v-else>{{FollowData(patient.id).Allergy}}</span>
+                                </td>
+                                <td>
+                                    <select v-if='patient.edit' v-model="FollowData(patient.id).P_Isolation">
+                                        <option value='None'>None</option>
+                                        <option value='Contact'>Contact</option>
+                                        <option value='Droplet'>Droplet</option>
+                                        <option value='Airborn'>Airborn</option>
+                                        <option value='Contact Droplet'>Contact Droplet</option>
+                                        <option value='Contact Airborn'>Contact Airborn</option>
+                                    </select>
+                                    <span v-else>{{FollowData(patient.id).P_Isolation}}</span>
+                                </td>
+                                <td>
+                                    <select v-if='patient.edit' v-model="FollowData(patient.id).Fall">
+                                        <option value='None'>None</option>
+                                        <option value='F'>F</option>
+                                    </select>
+                                    <span v-else>{{FollowData(patient.id).Fall}}</span>
+                                </td>
+                                <td class='bigText'>
+                                    <textarea v-if='patient.edit' v-model="FollowData(patient.id).Investegation_ToDo"></textarea>
+                                    <span v-else>{{FollowData(patient.id).Investegation_ToDo}}</span>
+                                </td>
+                                <td class='bigText'>
+                                    <textarea v-if='patient.edit' v-model="FollowData(patient.id).Investegation_FollowUp"></textarea>
+                                    <span v-else>{{FollowData(patient.id).Investegation_FollowUp}}</span>
+                                </td>
+                                <td class='bigText'>
+                                    <textarea v-if='patient.edit' v-model="FollowData(patient.id).Contraptions_Infusions"></textarea>
+                                    <span v-else>{{FollowData(patient.id).Contraptions_Infusions}}</span>
+                                </td>
+                                <td class='bigText'>
+                                    <textarea v-if='patient.edit' v-model="FollowData(patient.id).Routise_PlanOfCare"></textarea>
+                                    <span v-else>{{FollowData(patient.id).Routise_PlanOfCare}}</span>
+                                </td>
+                                <td>
+                                    <input v-if='patient.edit' type='text' v-model="FollowData(patient.id).Surgury_Procedures">
+                                    <span v-else>{{FollowData(patient.id).Surgury_Procedures}}</span>
+                                </td>
+                                <td class='bigText'>
+                                    <textarea  
+                                    :disabled="user.Role_id == 12 || user.Role_id == 17 ? 'disabled' : ''" v-if='patient.edit' type='text' v-model="FollowData(patient.id).DR_Consultaion_Progress"></textarea>
+                                    <span v-else>{{FollowData(patient.id).DR_Consultaion_Progress}}</span>
+                                </td>
+                                <td v-if='edits'>
                                     <button v-if='patient.edit' class='btn btn-primary btn-sm'
                                      @click.prevent='SaveEdits(patient.id)'>Save</button>
                                     <button v-else class='btn btn-primary btn-sm shadow' @click.prevent='edit(patient.id)'>Edit</button>
                                 </td>
-                                <td v-else-if='user.Role_id == 10 && edits && DoctorPatients.filter(x => x.id == patient.id).length > 0'>
-                                    <button v-if='patient.edit' class='btn btn-primary btn-sm'
-                                     @click.prevent='SaveEdits(patient.id)'>Save</button>
-                                    <button v-else class='btn btn-primary btn-sm shadow' @click.prevent='edit(patient.id)'>Edit</button>
-                                </td> -->
                                 <td >
                                     <router-link :to='{name:"Patient Data", params:{id:patient.id}}' target='_blank' class='btn btn-info shadow btn-sm'>Details</router-link>
                                 </td>

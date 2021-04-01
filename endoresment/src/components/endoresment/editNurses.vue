@@ -49,7 +49,7 @@
         <div class="row">
           <div class="col-lg-7">
             <h3 class="text-info" style="text-decoration: underline">
-              Nurses list in {{ Units.filter((x) => x.U_id == path)[0].U_name }}
+              Nurses list - {{ Units.filter((x) => x.U_id == path)[0].U_name }}
             </h3>
             <div class="card overflow-auto p-3 shadow rounded" style="height: 500px">
               <div
@@ -95,7 +95,7 @@
           </div>
           <div class="col-md-5">
             <h3 class="text-info" style="text-decoration: underline">
-              Selected nurses in {{ Units.filter((x) => x.U_id == path)[0].U_name }}
+              Selected nurses - {{ Units.filter((x) => x.U_id == path)[0].U_name }}
             </h3>
             <div class="card overflow-auto p-3 shadow rounded" style="height: 500px">
               <div

@@ -138,7 +138,7 @@
             </li>
             <li v-if='viewedShift.Update_Nurse' class="cu-flex detail"><span>Updated From Nurse: </span> 
                 <span>
-                  {{'Nurse.' + viewedShift.Update_Nurse_Name}}
+                  {{viewedShift.Update_Nurse_Name}}
                   <i class='pl-2 pr-2 text-primary fa fa-clock-o'></i>
                   {{viewedShift.Update_Nurse_Time}}
                 </span>

@@ -20,9 +20,9 @@
             </div>
           </div>
         </div>
-        <div class="card shadow ml-auto mr-auto mt-5 p-5">
+        <div class="bg-white shadow ml-auto mr-auto mt-5 p-3 row">
           <div
-            class="p-4 bg-light mb-3 shadow card"
+            class="p-4 bg-light mb-3 shadow card col-md-6"
             v-for="nurse in Endoresment_Nurses_Units.filter((x) => x.Unit_id == path)"
             :key="nurse.Id"
           >
@@ -32,7 +32,7 @@
                 :{{ users.filter((x) => x.Emp_id == nurse.Nurse_id)[0].FullName }}
               </span>
               <span class="col-md-6 text-right">
-                <router-link
+                <router-link v-if='user.Role_id != 12'
                   class="text-danger text-right"
                   style="text-decoration: underline"
                   :to="{ name: 'Nurses Pdf', params: { id: nurse.Nurse_id } }"
@@ -40,24 +40,6 @@
                 >
               </span>
             </div>
-            <div class="rowborder-bottom pb-3">
-              <span class="pull-left"
-                ><i class="fa fa-id-badge mr-3 text-info" aria-hidden="true"></i>emp id :
-                <span class="badge-secondary badge pt-1 pb-1 pl-3 pr-3 ml-3">{{
-                  nurse.Nurse_id
-                }}</span></span
-              >
-              <span class="pull-right last-update" v-if="nurse.Last_Update"
-                ><i class="fa fa-pencil-square-o text-info mr-2" aria-hidden="true"></i
-                >Last update :
-                <span class="text-dark">{{ nurse.Last_Update }}</span></span
-              >
-              <span class="pull-right last-update" v-else
-                ><i class="fa fa-pencil-square-o text-info mr-2" aria-hidden="true"></i
-                >last update : <span class="text-dark">no update date found</span></span
-              >
-            </div>
-            <hr />
             <div class="row pt-3">
               <span
                 class="col-md-6"

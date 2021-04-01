@@ -249,7 +249,6 @@ export default {
       r.map((x) => {
         x.meta.authCheck = x.meta.auth == "all" || x.meta.auth == this.user.Role_id;
       });
-      location.reload();
     }
   },
   created() {

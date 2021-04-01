@@ -18,7 +18,7 @@
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" @click.prevent   :class='currentPage == "Endoresment" ? "" : ""' id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" href='#'>
                         <i class="fa fa-hospital-o"></i>
-                        <span class="link-text">Endoresment</span>
+                        <span class="link-text">Endorsement</span>
                         </a>
                         <ul class="dropdown-menu"  aria-labelledby="navbarDropdown">
                             <li v-for="route in routes.filter(x=> x.meta.cat == 'Endoresment' && x.meta.viewMenu && x.meta.authCheck)" :key="route.path">

@@ -20,7 +20,7 @@
         <!--- start double rooms --->
         <ul class='list-unstyled'>
           <li class='cube-container'>
-            <span class='cube bg-success rounded'>{{RoomsDashboard.filter((x) => x.Status_id == 1).length}}</span> Available Beds
+            <span class='cube bg-success rounded'>{{RoomsDashboard.filter((x) => x.Status_id == 1 ).length}}</span> Available Beds
           </li>
           <li class='cube-container'><span class='cube bg-danger rounded'>{{RoomsDashboard.filter((x) => x.Status_id == 2).length}}</span> Occupied Beds</li>
         </ul>

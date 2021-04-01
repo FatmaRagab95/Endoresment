@@ -10,7 +10,7 @@
                 <div class="cu-container">
                     <div class="cu-form-group special" style="max-width: 900px">
                         <div class="title">
-                            <span> <i class='fa fa-hospital-o mainColor mr-1'></i> admission Form</span>
+                            <span> <i class='fa fa-hospital-o mainColor mr-1'></i> Admission Form</span>
                         </div>
 
                         <div class="cu-field">

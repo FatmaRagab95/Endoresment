@@ -82,9 +82,6 @@
                               <li class='border-bottom p-3 cu-flex'>
                                   <span class='keyWords'>Shift Date:</span>
                                   <span class='values text-secondary'>{{currentShift.Date}}</span>
-                              </li>
-                              <li class='p-3 cu-flex'>
-                                  <span class='keyWords'>Shift:</span>
                                   <span class='values text-secondary'>
                                       {{currentShift.Shift}}
                                       <span class='text-success'><i :class="currentShift.Shift.trim() == 'Day' ? 'fa fa-sun-o' : 'fa fa-moon-o'"></i></span>
@@ -106,7 +103,7 @@
                                     </div>
                                   </div>
                                 </div>
-                                <div class="col-md-6">
+                                <!-- <div class="col-md-6">
                                   <div class="cu-field">
                                     <h3 class="cu-label">
                                       <label>Total Census :</label>
@@ -116,7 +113,7 @@
                                       <input type="number" v-model="newUnit.Total_Census" required />
                                     </div>
                                   </div>
-                                </div>
+                                </div> -->
                               </div>
                             </div>
                           </div>
@@ -152,8 +149,6 @@
                               <li class='border-bottom p-3 cu-flex'>
                                   <span class='keyWords'>Shift Date:</span>
                                   <span class='values text-secondary'>{{currentShift.handoverDate}}</span>
-                              </li>
-                              <li class='p-3 cu-flex'>
                                   <span class='keyWords'>Shift:</span>
                                   <span class='values text-secondary'>
                                       {{currentShift.Shift.trim() == 'Day' ? 'Night' : 'Day'}}
@@ -176,7 +171,7 @@
                                     </div>
                                   </div>
                                 </div>
-                                <div class="col-md-6">
+                                <!-- <div class="col-md-6">
                                   <div class="cu-field">
                                     <h3 class="cu-label">
                                       <label>Total Census :</label>
@@ -186,7 +181,7 @@
                                       <input type="number" v-model="newUnit.Total_Census" required />
                                     </div>
                                   </div>
-                                </div>
+                                </div> -->
                               </div>
                             </div>
                           </div>

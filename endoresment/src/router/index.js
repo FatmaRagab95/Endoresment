@@ -39,8 +39,20 @@ const router = new Router({
       meta: {},
     },
     {
+      path: "/Units",
+      name: "Units Dashboard",
+      component: Units,
+      meta: {
+        requiresAuth: true,
+        cat: "Endoresment",
+        viewMenu: true,
+        auth: 'all',
+        authCheck:true
+      },
+    },
+    {
       path: "/",
-      name: "Dashboard",
+      name: "Endorsement",
       component: Handover,
       meta: {
         requiresAuth: true,
@@ -63,20 +75,8 @@ const router = new Router({
       },
     },
     {
-      path: "/Units",
-      name: "Units",
-      component: Units,
-      meta: {
-        requiresAuth: true,
-        cat: "Endoresment",
-        viewMenu: true,
-        auth: 'all',
-        authCheck:true
-      },
-    },
-    {
       path: "/selectUnit",
-      name: "Rooms",
+      name: "Rooms Dashboard",
       component: selectUnit,
       meta: {
         requiresAuth: true,
@@ -220,7 +220,7 @@ const router = new Router({
     },
     {
       path: "/Nursing_schedule",
-      name: "Nursing Schedule",
+      name: "Create Schedule",
       component: Nursing_schedule,
       meta: {
         requiresAuth: true,
@@ -233,7 +233,7 @@ const router = new Router({
 
     {
       path: "/display_schdule",
-      name: "Display Nurses Schdule",
+      name: "Display Nurses Schedule",
       component: display_schdule,
       meta: {
         requiresAuth: true,
@@ -263,7 +263,7 @@ const router = new Router({
       meta: {
         requiresAuth: true,
         cat: "Endoresment",
-        viewMenu: true,
+        viewMenu: false,
         auth: 'all',
         authCheck:true
       },
@@ -275,7 +275,7 @@ const router = new Router({
       meta: {
         requiresAuth: true,
         cat: "Endoresment",
-        viewMenu: true,
+        viewMenu: false,
         auth: 'all',
         authCheck:true
       },

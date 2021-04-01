@@ -4,7 +4,7 @@
 
             <div class='statisics'>
                     
-                <h4 class="text-center"><span class='text-secondary'>latest statistics data for day</span> 
+                <h4 class="text-center"><span class='text-secondary'>Units Dashboard for</span> 
                         {{new Date().toDateString()}}.</h4>
                 <p class='mb-5 text-center text-secondary'>
                     Current shift 
@@ -42,7 +42,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="">
+                    <!-- <div class="">
                         <div class='outer'>
                             <div class='inner bg-white shadow text-center'>
 
@@ -61,7 +61,7 @@
 
                             </div>
                         </div>
-                    </div>
+                    </div> -->
                     <div class="">
                         <div class='outer'>
                             <div class='inner bg-white shadow text-center'>
@@ -76,54 +76,57 @@
                 </div>
             </div>
 
-            <div class='row align-items-baseline'>
-                <div class='col-md-8'>
-                    <h1 class='pt-3 pb-3  border-bottom mainColor'>
-                        <i class='ml-3 mr-3 fa fa-hospital-o'></i>
-                        Units List
-                    </h1>
-                </div>
+            <div class="container">
 
-                <div class="col-md-4">
-                    <div class="input-group">
-                        <div class="input-group-prepend">
-                            <span class="input-group-text fa fa-search" id="basic-addon1"></span>
+                <div class='row align-items-baseline'>
+                    <div class='col-md-8'>
+                        <h1 class='pt-3 pb-3  border-bottom mainColor'>
+                            <i class='ml-3 mr-3 fa fa-hospital-o'></i>
+                            Units List
+                        </h1>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text fa fa-search" id="basic-addon1"></span>
+                            </div>
+                            <input type="text" class="form-control" v-model='search' placeholder="Search for unit" aria-label="Search for unit" aria-describedby="basic-addon1">
                         </div>
-                        <input type="text" class="form-control" v-model='search' placeholder="Search for unit" aria-label="Search for unit" aria-describedby="basic-addon1">
                     </div>
                 </div>
-            </div>
-            <div class='row'>
-                <div class="col-xl-4 col-lg-6" v-for='unit in filtered' :key='unit.U_id'>
-                    <div class='details'>
-                        <div class="inner shadow">
-                            <h3 class='pb-2'>{{unit.U_name}}</h3>
+                <div class='row'>
+                    <div class="col-xl-4 col-lg-6" v-for='unit in filtered' :key='unit.U_id'>
+                        <div class='details'>
+                            <div class="inner shadow">
+                                <h3 class='pb-2'>{{unit.U_name}}</h3>
 
-                            <span class='Census badge badge-light border font-weight-normal'>
-                                Total Census: <span class='text-danger'>{{filterDash('Total_Census',unit.U_id)}} </span>
-                            </span>
+                                <span class='Census badge badge-light border font-weight-normal'>
+                                    Total Census: <span class='text-danger'>{{filterDash('Total_Census',unit.U_id)}} </span>
+                                </span>
 
-                            <span class='Admission badge font-weight-normal'>
-                                Admission: {{filterDash('Admission',unit.U_id)}}
-                            </span>
+                                <span class='Admission badge font-weight-normal'>
+                                    Admission: {{filterDash('Admission',unit.U_id)}}
+                                </span>
 
-                            <div class='row mt-3 p-2 border rounded Transfer'>
-                                <div class="col-6 border-right text-success">
-                                    <span>Transfer In:</span> {{filterDash('Transfer_In',unit.U_id)}}
+                                <div class='row mt-3 p-2 border rounded Transfer'>
+                                    <div class="col-6 border-right text-success">
+                                        <span>Transfer In:</span> {{filterDash('Transfer_In',unit.U_id)}}
+                                    </div>
+                                    <div class="col-6 text-danger">
+                                        <span>Transfer Out:</span> {{filterDash('Transfer_Out',unit.U_id)}}
+                                    </div>
                                 </div>
-                                <div class="col-6 text-danger">
-                                    <span>Transfer Out:</span> {{filterDash('Transfer_Out',unit.U_id)}}
-                                </div>
-                            </div>
-                            
-                            <p class='RoomsNum mt-3'>
-                                <i class='fa fa-hospital-o mainColor'></i>
-                                <span>Rooms Number:</span>
-                                {{unit.RoomsNum}}
-                            </p>
+                                
+                                <p class='RoomsNum mt-3'>
+                                    <i class='fa fa-hospital-o mainColor'></i>
+                                    <span>Rooms #:</span>
+                                    {{unit.RoomsNum}}
+                                </p>
 
-                            <div class='text-right'>
-                                <router-link :to='{name:"Unit Details", params:{id:unit.U_id}}' class='btn'>View Details</router-link >
+                                <div class='text-right'>
+                                    <router-link :to='{name:"Unit Details", params:{id:unit.U_id}}' class='btn'>View Details</router-link >
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -221,18 +224,18 @@ export default {
 }
 
 .statisics {
-    padding:60px 15px;
+    padding:60px 15px 30px 15px;
 }
 .statisics .outer{
     background-color: #ddeeda;
-    max-width: 135px;
+    max-width: 200px;
     margin: auto;
 }
 .statisics .inner {
     padding: 29px;
-    width: 135px;
+    width: 200px;
     margin: auto;
-    font-size: 15px;
+    font-size: 18px;
     color: #046132;
     border-radius:5px;
 }

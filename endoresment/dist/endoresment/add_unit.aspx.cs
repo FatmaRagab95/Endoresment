@@ -28,7 +28,7 @@ public partial class _addUnit : System.Web.UI.Page
 		SqlConnection con = new SqlConnection(config);
 
 		con.Open();
-        using (SqlCommand cmd1 = new SqlCommand("insert into Endorsement_UnitsDashboard (Unit_id,Branch_id, Unit_name, Shift,Shift_date,Total_Census,Received,Admission,Transfer_In,Transfer_Out,Endorsing_ChargeNurse,Endorsing_ChargeNurse_id,Receive_ChargeNurse,Receive_ChargeNurse_id) values (@Unit_id,@Branch_id, @Unit_name, @Shift,@Shift_date,@Total_Census,@Received,@Admission,@Transfer_In,@Transfer_Out,@Endorsing_ChargeNurse,@Endorsing_ChargeNurse_id,@Receive_ChargeNurse,@Receive_ChargeNurse_id)", con))
+        using (SqlCommand cmd1 = new SqlCommand("insert into Endorsement_UnitsDashboard (Unit_id,Branch_id, Unit_name, Shift,Shift_date,Total_Census,Received,Admission,Transfer_In,Transfer_Out,Endorsing_ChargeNurse,Endorsing_ChargeNurse_id,Receive_ChargeNurse,Receive_ChargeNurse_id, Confirm) values (@Unit_id,@Branch_id, @Unit_name, @Shift,@Shift_date,@Received,@Received,@Admission,@Transfer_In,@Transfer_Out,@Endorsing_ChargeNurse,@Endorsing_ChargeNurse_id,@Receive_ChargeNurse,@Receive_ChargeNurse_id, 'True')", con))
 
         {
             cmd1.Parameters.Add("@Unit_id", SqlDbType.Int).Value  = data.Unit_id;
