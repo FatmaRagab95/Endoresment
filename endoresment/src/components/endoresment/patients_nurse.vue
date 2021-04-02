@@ -551,6 +551,70 @@ export default {
             },
         });
 
+        $.ajax({
+            type: "POST",
+            url: that.apiUrl + "endoresment/add_unit.aspx/getScheduleData",
+            data:JSON.stringify({"data": {"Nurse_id":  that.user.Emp_id}}),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+                that.scheduleShifts = JSON.parse(data.d);
+                if (new Date().getHours() < 20 && new Date().getHours() >= 8) {
+                    that.scheduleShifts = that.scheduleShifts.filter(x => x.Date.trim() == moment(new Date()).format('YYYY-MM-DD') && x.Shift.trim() == 'Day');
+                } else {
+                    that.scheduleShifts = that.scheduleShifts.filter(x => {
+                    let checkDate = moment(moment(new Date()).format('YYYY-MM-DD') + ' 20:00');
+                    let check = new Date().getHours() < 8;
+                    return x.Shift.trim() == 'Night' && (check ? moment(x.Date.trim() + ' 19:59').add(12,'Hour') < checkDate : moment(x.Date.trim() + ' 20:01').add(12,'Hour') > checkDate)
+                    });
+                }
+
+                // if there is scheduled shift get endorsing and receiving charge nurse at the same unit
+                for (let i = 0; i < that.scheduleShifts.length; i++) {
+
+                    let shift = that.scheduleShifts[i].Shift.trim() == 'Day' ? 'Night' : 'Day';
+                    let scheduleDate = that.scheduleShifts[i].Shift == 'Night' ? that.scheduleShifts[i].Date : moment(that.scheduleShifts[i].Date.trim()).add(-1, "day").format('YYYY-MM-DD');
+                    getNurse(shift,scheduleDate, i);
+
+                }
+
+                for (let i = 0; i < that.scheduleShifts.length; i++) {
+
+                    let shift = that.scheduleShifts[i].Shift.trim() == 'Day' ? 'Night' : 'Day';
+                    let scheduleDate = that.scheduleShifts[i].Shift == 'Day' ? that.scheduleShifts[i].Date : moment(that.scheduleShifts[i].Date.trim()).add(1, "day").format('YYYY-MM-DD');
+                    getNurse(shift,scheduleDate, i);
+
+                }
+
+                function getNurse (shift,scheduleDate, i) {
+                $.ajax({
+                    type: "POST",
+                    url: that.apiUrl + "endoresment/add_Unit.aspx/getChargeNursesData",
+                    data:JSON.stringify({"data": 
+                        {"Unit_id":  that.scheduleShifts[i].Unit_id,"Shift": shift, "Date": scheduleDate}
+                    }),
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function (data) {
+                        if (moment(that.scheduleShifts[i].Date) >= moment(scheduleDate)) {
+                            if (JSON.parse(data.d).length > 0) {
+                            that.scheduleShifts[i].EndoresingNurse = JSON.parse(data.d)[0];
+                            that.scheduleShifts[i].handNurse = JSON.parse(data.d)[0];
+                            } else {
+                            that.scheduleShifts[i].EndoresingNurse = {FullName:'Unknown', Emp_ID: 0}
+                            that.scheduleShifts[i].handNurse = {FullName:'Unknown', Emp_ID: 0}
+                            }
+                        }
+
+
+                        that.scheduleShifts[i].handoverDate = that.scheduleShifts[i].Shift == 'Day' ? that.scheduleShifts[i].Date : moment(that.scheduleShifts[i].Date.trim()).add(1, "day").format('YYYY-MM-DD');
+                        
+                    }
+                });
+                }
+            }
+        });
+
         
     }
 }

@@ -20,10 +20,10 @@
                         <i class="fa fa-hospital-o"></i>
                         <span class="link-text">Endorsement</span>
                         </a>
-                        <ul class="dropdown-menu"  aria-labelledby="navbarDropdown">
-                            <li v-for="route in routes.filter(x=> x.meta.cat == 'Endoresment' && x.meta.viewMenu && x.meta.authCheck)" :key="route.path">
+                        <ul class="dropdown-menu shadow"  aria-labelledby="navbarDropdown">
+                            <li class='border-bottom pt-1 pb-1 border-light' v-for="route in routes.filter(x=> x.meta.cat == 'Endoresment' && x.meta.viewMenu && x.meta.authCheck)" :key="route.path">
                                 <router-link class="dropdown-item" :to="route.path">
-                                <span class="link-text">{{route.name}}</span>
+                                    <span class="link-text">{{route.name}}</span>
                                 </router-link>
                             </li>
                         </ul>

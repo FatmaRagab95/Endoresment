@@ -194,21 +194,13 @@ export default {
                 that.UnitsDash = JSON.parse(data.d);
                 if (new Date().getHours() < 20 && new Date().getHours() >= 8) {
                     that.Shift = 'Day';
-                    that.UnitsDash.map(x => {
-                        if (x.Shift.trim() == 'Night') {
-                            x.Received = 0;
-                            x.Admission = 0;
-                            x.Total_Census = 0;
-                        }
-                    });
+                    that.UnitsDash = that.UnitsDash.filter(x => x.Shift_date.trim() == moment(new Date()).format('YYYY-MM-DD') && x.Shift.trim() == 'Day');
                 } else {
                     that.Shift = 'Night';
-                    that.UnitsDash.map(x => {
-                        if (x.Shift.trim() == 'Day') {
-                            x.Received = 0;
-                            x.Admission = 0;
-                            x.Total_Census = 0;
-                        }
+                    that.UnitsDash = that.UnitsDash.filter(x => {
+                    let checkDate = moment(moment(new Date()).format('YYYY-MM-DD') + ' 20:00');
+                    let check = new Date().getHours() < 8;
+                    return x.Shift.trim() == 'Night' && (check ? moment(x.Shift_date.trim() + ' 19:59').add(12,'Hour') < checkDate : moment(x.Shift_date.trim() + ' 20:01').add(12,'Hour') > checkDate)
                     });
                 }
             },

@@ -1,10 +1,9 @@
 <template>
   <div class="Nurses text-capitalize pt-5">
-    <div class="container-fluid">
       <div class="container">
         <div class="card shadow m-auto">
           <div class="row align-items-center p-3">
-            <div class="col-md-6">
+            <div class="col-lg-6">
               <h1 style="text-decoration: underline">
                 {{ Units.filter((x) => x.U_id == path)[0].U_name }}
               </h1>
@@ -20,18 +19,19 @@
             </div>
           </div>
         </div>
-        <div class="bg-white shadow ml-auto mr-auto mt-5 p-3 row">
+        <div class="nurses-container border bg-white shadow rounded row">
           <div
-            class="p-4 bg-light mb-3 shadow card col-md-6"
+            class="mb-3 card bg-light col-md-6 nurse-card"
             v-for="nurse in Endoresment_Nurses_Units.filter((x) => x.Unit_id == path)"
             :key="nurse.Id"
           >
-            <div class="row pb-3">
-              <span class="text-dark col-md-6"
-                ><i class="fa fa-user-md mr-2 text-info" aria-hidden="true"></i>nurse name
-                :{{ users.filter((x) => x.Emp_id == nurse.Nurse_id)[0].FullName }}
+            <div class="row">
+              <span class="col-md-8 text-secondary">
+                <i class="fa fa-user-md mr-1 text-primary" aria-hidden="true"></i>
+                Nurse Name:
+                <span class='text-dark'>{{ users.filter((x) => x.Emp_id == nurse.Nurse_id)[0].FullName }}</span>
               </span>
-              <span class="col-md-6 text-right">
+              <span class="col-lg-4 text-right">
                 <router-link v-if='user.Role_id != 12'
                   class="text-danger text-right"
                   style="text-decoration: underline"
@@ -42,30 +42,31 @@
             </div>
             <div class="row pt-3">
               <span
-                class="col-md-6"
-                v-if="users.filter((x) => x.Emp_id == nurse.Entry_user).length > 0"
-                >update from :
-                <span class="text-success">{{
+                class="col-lg-12 text-secondary"
+                v-if="users.filter((x) => x.Emp_id == nurse.Entry_user).length > 0">
+                <i class="fa fa-edit mr-1 text-primary" aria-hidden="true"></i>
+                Assigned by :
+                <span class="text-dark">
+                  {{
                   users.filter((x) => x.Emp_id == nurse.Entry_user)[0].FullName
-                }}</span>
+                  }}
+                </span>
               </span>
-              <span class="col-md-6" v-else
-                >update from : <span class="text-success">no avalible data</span></span
-              >
-              <span class="col-md-6 text-info text-right"
-                ><a
-                  class="open-pop"
-                  style="text-decoration: underline; cursor: pointer"
+              <span class="col-lg-12" v-else>
+                Assigned by : <span class="text-dark">no avalible data</span>
+              </span>
+              <span class="col-lg-12 text-right">
+                <a
+                  class="open-pop btn btn-primary text-white shadow patient-view-btn"
                   data-pop-name="patient-popup"
-                  v-on:click.prevent="popUp(nurse, 'patientPop')"
-                >
-                  View patients list
-                </a></span
-              >
+                  v-on:click.prevent="popUp(nurse, 'patientPop')">
+                  View patients
+                </a>
+              </span>
             </div>
           </div>
         </div>
-      </div>
+      
     </div>
     <!-- start patients list popup-->
     <div v-if="patientDetails">
@@ -303,14 +304,19 @@ export default {
 
 <style scoped>
 .Nurses {
-  min-height: 100vh;
   padding-bottom: 60px;
-  background-color: #f9f9fb;
+  min-height:100vh;
+  background-color:#f6f8fb;
+  background:#fff url('../../assets/layout/img/backgrounds/bg9.svg') center no-repeat;
 }
-.Nurses .card {
-  max-width: 1200px;
+.Nurses .nurses-container {
+  margin-top:60px;
+  padding:30px 15px;
 }
-.Nurses .card .last-update {
-  font-size: 16px;
+.Nurses .nurses-container .nurse-card {
+  padding:30px;
+}
+.Nurses .card .patient-view-btn {
+  font-size:14px;
 }
 </style>
