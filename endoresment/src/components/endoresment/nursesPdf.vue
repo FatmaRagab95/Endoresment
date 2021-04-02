@@ -1,9 +1,130 @@
 <template>
   <div class="nursesPdf text-capitalize pt-5">
     <div class="container-fluid">
+      <!-- calender for select month -->
+
+      <v-row justify="center" class="mt-3 mb-3">
+        <v-date-picker
+          class="bg-primary shadow m-auto"
+          v-model="month"
+          type="month"
+        ></v-date-picker>
+      </v-row>
+
       <div class="container card bg-white p-5" id="statistics">
-        <!-- start units-->
+        <!-- start patients-->
         <div class="row card shadow mb-4">
+          <div class="card-header" id="patients">
+            <h3 class="text-primary">Patients ....</h3>
+          </div>
+
+          <div class="collapse show">
+            <div class="card-body">
+              <table
+                class="table bg-white shadow-sm table-bordered"
+                v-if="
+                  Endorsement_Nurse_patients.filter((x) => x.Nurse_id == path).length > 0
+                "
+                style="font-size: 16px"
+              >
+                <thead>
+                  <tr>
+                    <th scope="col">Patient</th>
+                    <th scope="col">From</th>
+                    <th scope="col">To</th>
+                  </tr>
+                </thead>
+                <tbody class="text-secondary">
+                  <tr
+                    v-for="patient in Endorsement_Nurse_patients.filter(
+                      (x) => x.Nurse_id == path
+                    )"
+                    :key="patient.id"
+                  >
+                    <td>
+                      {{
+                        patients.filter((x) => x.id == patient.Patient_id)[0]
+                          .Patient_FullName
+                      }}
+                    </td>
+                    <td>{{ patient.Date_from.split(" ")[0] }}</td>
+                    <td v-if="patient.Date_to.length > 0">{{ patient.Date_to }}</td>
+                    <td v-else>Tell Now</td>
+                  </tr>
+                </tbody>
+              </table>
+              <div class="text-secondary text-center" v-else>
+                <i
+                  class="fa fa-exclamation-triangle text-warning mr-2"
+                  aria-hidden="true"
+                ></i
+                >no data avaliable
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- end patients-->
+
+        <!-- start shift -->
+
+        <div class="row card shadow mb-4">
+          <div class="card-header" id="shifts">
+            <h3 class="text-primary">Shifts ....</h3>
+          </div>
+
+          <div class="collapse show">
+            <div class="card-body">
+              <div v-if="ShiftsData.filter((x) => x.Nurse_id == path).length > 0">
+                <table
+                  class="table bg-white shadow-sm table-bordered"
+                  style="font-size: 16px"
+                >
+                  <thead>
+                    <tr>
+                      <th scope="col">Unit</th>
+                      <th scope="col">Received From</th>
+                      <th scope="col">Type</th>
+                      <th scope="col">Shift Date</th>
+                      <th scope="col">Confirmed</th>
+                      <th scope="col">Completed</th>
+                    </tr>
+                  </thead>
+                  <tbody class="text-secondary">
+                    <tr
+                      v-for="shift in ShiftsData.filter((x) => x.Nurse_id == path)"
+                      :key="shift.id"
+                    >
+                      <td>
+                        {{ Units.filter((x) => x.U_id == shift.Unit_id)[0].U_name }}
+                      </td>
+                      <td>{{ shift.Receive_name }}</td>
+                      <td>{{ shift.Shift }}</td>
+                      <td>{{ shift.Shift_date }}</td>
+                      <td v-if="shift.Confirm == 0" class="text-danger">Not Confirmed</td>
+                      <td v-else>Confirmed</td>
+                      <td v-if="shift.Completed == 0" class="text-danger">
+                        Not Completed
+                      </td>
+                      <td v-else>Completed</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="text-secondary text-center" v-else>
+                <i
+                  class="fa fa-exclamation-triangle text-warning mr-2"
+                  aria-hidden="true"
+                ></i
+                >no data avaliable
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- end shift -->
+
+        <!-- start units-->
+        <div class="row card shadow">
           <div class="card-header" id="units">
             <h3 class="text-primary">Units ....</h3>
           </div>
@@ -11,7 +132,7 @@
           <div class="collapse show">
             <div class="card-body">
               <table
-                class="table"
+                class="table bg-white shadow-sm table-bordered"
                 style="font-size: 16px"
                 v-if="
                   Endoresment_Nurses_Units.filter((x) => x.Nurse_id == path).length > 0
@@ -60,115 +181,6 @@
           </div>
         </div>
         <!-- end units-->
-
-        <!-- start patients-->
-
-        <div class="row card shadow mb-4">
-          <div class="card-header" id="patients">
-            <h3 class="text-primary">Patients ....</h3>
-          </div>
-
-          <div class="collapse show">
-            <div class="card-body">
-              <table
-                v-if="
-                  Endorsement_Nurse_patients.filter((x) => x.Nurse_id == path).length > 0
-                "
-                class="table"
-                style="font-size: 16px"
-              >
-                <thead>
-                  <tr>
-                    <th scope="col">Patient</th>
-                    <th scope="col">From</th>
-                    <th scope="col">To</th>
-                  </tr>
-                </thead>
-                <tbody class="text-secondary">
-                  <tr
-                    v-for="patient in Endorsement_Nurse_patients.filter(
-                      (x) => x.Nurse_id == path
-                    )"
-                    :key="patient.id"
-                  >
-                    <td>
-                      {{
-                        patients.filter((x) => x.id == patient.Patient_id)[0]
-                          .Patient_FullName
-                      }}
-                    </td>
-                    <td>{{ patient.Date_from.split(" ")[0] }}</td>
-                    <td v-if="patient.Date_to.length > 0">{{ patient.Date_to }}</td>
-                    <td v-else>Tell Now</td>
-                  </tr>
-                </tbody>
-              </table>
-              <div class="text-secondary text-center" v-else>
-                <i
-                  class="fa fa-exclamation-triangle text-warning mr-2"
-                  aria-hidden="true"
-                ></i
-                >no data avaliable
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- end patients-->
-
-        <!-- start shift -->
-
-        <div class="row card shadow">
-          <div class="card-header" id="shifts">
-            <h3 class="text-primary">Shifts ....</h3>
-          </div>
-
-          <div class="collapse show">
-            <div class="card-body">
-              <div v-if="ShiftsData.filter((x) => x.Nurse_id == path).length > 0">
-                <table class="table" style="font-size: 16px">
-                  <thead>
-                    <tr>
-                      <th scope="col">Unit</th>
-                      <th scope="col">Received From</th>
-                      <th scope="col">Type</th>
-                      <th scope="col">Shift Date</th>
-                      <th scope="col">Confirmed</th>
-                      <th scope="col">Completed</th>
-                    </tr>
-                  </thead>
-                  <tbody class="text-secondary">
-                    <tr
-                      v-for="shift in ShiftsData.filter((x) => x.Nurse_id == path)"
-                      :key="shift.id"
-                    >
-                      <td>
-                        {{ Units.filter((x) => x.U_id == shift.Unit_id)[0].U_name }}
-                      </td>
-                      <td>{{ shift.Receive_name }}</td>
-                      <td>{{ shift.Shift }}</td>
-                      <td>{{ shift.Shift_date }}</td>
-                      <td v-if="shift.Confirm == 0" class="text-danger">Not Confirmed</td>
-                      <td v-else>Confirmed</td>
-                      <td v-if="shift.Completed == 0" class="text-danger">
-                        Not Completed
-                      </td>
-                      <td v-else>Completed</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-              <div class="text-secondary text-center" v-else>
-                <i
-                  class="fa fa-exclamation-triangle text-warning mr-2"
-                  aria-hidden="true"
-                ></i
-                >no data avaliable
-              </div>
-            </div>
-          </div>
-        </div>
-        <!-- end shift -->
       </div>
       <div class="d-flex justify-content-center mt-4">
         <button @click.prevent="pdf" class="btn btn-danger" style="width: 100px">
@@ -192,6 +204,8 @@ export default {
       patients: [],
       ShiftsData: [],
 
+      month: new Date().toISOString().slice(0, 10).substring(0, 7),
+
       patientDetails: [],
       path: "",
       apiUrl: this.link,
@@ -201,7 +215,7 @@ export default {
     pdf: function () {
       const statistics = document.getElementById("statistics");
       var opt = {
-        margin: 1,
+        margin: 0.3,
         filename: "pdf-nurse-statistics",
         image: { type: "jpeg", quality: 0.98 },
         html2canvas: { dpi: 192, letterRendering: true },
