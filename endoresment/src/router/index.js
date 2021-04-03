@@ -25,7 +25,7 @@ import editPatients from "@/components/endoresment/editPatients";
 import nursesPdf from "@/components/endoresment/nursesPdf";
 import Nursing_schedule from "@/components/endoresment/Nursing_schedule";
 import display_schdule from "@/components/endoresment/display_schdule";
-import doctorInfo from "@/components/endoresment/doctorInfo";
+import doctorInfo from "@/components/endoresment/doctorInfo"; 
 
 Vue.use(Router);
 
@@ -327,7 +327,8 @@ const router = new Router({
         auth: '17',
         authCheck:false
       },
-    }
+    },
+    
   ],
 });
 

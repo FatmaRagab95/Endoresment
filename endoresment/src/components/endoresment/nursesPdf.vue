@@ -2,12 +2,7 @@
   <div class="nursesPdf pt-5">
     <div class="container">
       <!-- calender for select month -->
-      <v-dialog
-        ref="dialog"
-        v-model="modal"
-        :return-value.sync="month"
-        width="290px"
-      >
+      <v-dialog ref="dialog" v-model="modal" :return-value.sync="month" width="290px">
         <template v-slot:activator="{ on, attrs }">
           <v-text-field
             v-model="month"
@@ -15,34 +10,18 @@
             readonly
             v-bind="attrs"
             v-on="on"
-            class='card p-5 mb-3'
+            class="card p-5 mb-3"
           ></v-text-field>
         </template>
-        <v-date-picker
-          v-model="month"
-          type="month"
-          scrollable
-          color="green lighten-1"
-          :max="month"
-        >
+        <v-date-picker v-model="month" type="month" scrollable color="green lighten-1">
           <v-spacer></v-spacer>
-          <v-btn
-            text
-            color="primary"
-            @click="modal = false"
-          >
-            Cancel
-          </v-btn>
-          <v-btn
-            text
-            color="primary"
-            @click="$refs.dialog.save(month)"
-          >
-            OK
-          </v-btn>
+          <v-btn text color="primary" @click="modal = false"> Cancel </v-btn>
+          <v-btn text color="primary" @click="$refs.dialog.save(month)"> OK </v-btn>
         </v-date-picker>
       </v-dialog>
+      <!-- end calender -->
 
+      <!-- display nurse pdf -->
       <div class="card bg-white p-5" id="statistics">
         <h2 class="text-danger text-center">
           Endoresment Report
@@ -63,7 +42,18 @@
               <table
                 class="table bg-white shadow-sm table-bordered"
                 v-if="
-                  Endorsement_Nurse_patients.filter((x) => x.Nurse_id == path).length > 0
+                  Endorsement_Nurse_patients.filter(
+                    (x) =>
+                      x.Nurse_id == path &&
+                      new Date(x.Date_from).toISOString().slice(0, 10).split('-')[1] ==
+                        month.split('-')[1] &&
+                      new Date(x.Date_from).toISOString().slice(0, 10).split('-')[0] ==
+                        month.split('-')[0] &&
+                      new Date(x.Date_to).toISOString().slice(0, 10).split('-')[1] ==
+                        month.split('-')[1] &&
+                      new Date(x.Date_to).toISOString().slice(0, 10).split('-')[1] ==
+                        month.split('-')[1]
+                  ).length > 0
                 "
                 style="font-size: 16px"
               >
@@ -77,7 +67,63 @@
                 <tbody class="text-secondary">
                   <tr
                     v-for="patient in Endorsement_Nurse_patients.filter(
-                      (x) => x.Nurse_id == path
+                      (x) =>
+                        x.Nurse_id == path &&
+                        new Date(x.Date_from).toISOString().slice(0, 10).split('-')[1] ==
+                          month.split('-')[1] &&
+                        new Date(x.Date_from).toISOString().slice(0, 10).split('-')[0] ==
+                          month.split('-')[0] &&
+                        new Date(x.Date_to).toISOString().slice(0, 10).split('-')[1] ==
+                          month.split('-')[1] &&
+                        new Date(x.Date_to).toISOString().slice(0, 10).split('-')[1] ==
+                          month.split('-')[1]
+                    )"
+                    :key="patient.id"
+                  >
+                    <td>
+                      {{
+                        patients.filter((x) => x.id == patient.Patient_id)[0]
+                          .Patient_FullName
+                      }}
+                    </td>
+                    <td>{{ patient.Date_from.split(" ")[0] }}</td>
+                    <td v-if="patient.Date_to.length > 0">{{ patient.Date_to }}</td>
+                    <td v-else>Tell Now</td>
+                  </tr>
+                </tbody>
+              </table>
+              <table
+                class="table bg-white shadow-sm table-bordered"
+                v-else-if="
+                  Endorsement_Nurse_patients.filter(
+                    (x) =>
+                      x.Nurse_id == path &&
+                      new Date(x.Date_from).toISOString().slice(0, 10).split('-')[1] ==
+                        month.split('-')[1] &&
+                      new Date(x.Date_from).toISOString().slice(0, 10).split('-')[0] ==
+                        month.split('-')[0] &&
+                      x.Date_to == ''
+                  ).length > 0
+                "
+                style="font-size: 16px"
+              >
+                <thead>
+                  <tr>
+                    <th scope="col">Patient</th>
+                    <th scope="col">From</th>
+                    <th scope="col">To</th>
+                  </tr>
+                </thead>
+                <tbody class="text-secondary">
+                  <tr
+                    v-for="patient in Endorsement_Nurse_patients.filter(
+                      (x) =>
+                        x.Nurse_id == path &&
+                        new Date(x.Date_from).toISOString().slice(0, 10).split('-')[1] ==
+                          month.split('-')[1] &&
+                        new Date(x.Date_from).toISOString().slice(0, 10).split('-')[0] ==
+                          month.split('-')[0] &&
+                        x.Date_to == ''
                     )"
                     :key="patient.id"
                   >
@@ -115,7 +161,18 @@
 
           <div class="collapse show">
             <div class="card-body">
-              <div v-if="ShiftsData.filter((x) => x.Nurse_id == path).length > 0">
+              <div
+                v-if="
+                  ShiftsData.filter(
+                    (x) =>
+                      x.Nurse_id == path &&
+                      new Date(x.Shift_date).toISOString().slice(0, 10).split('-')[1] ==
+                        month.split('-')[1] &&
+                      new Date(x.Shift_date).toISOString().slice(0, 10).split('-')[0] ==
+                        month.split('-')[0]
+                  ).length > 0
+                "
+              >
                 <table
                   class="table bg-white shadow-sm table-bordered"
                   style="font-size: 16px"
@@ -132,7 +189,18 @@
                   </thead>
                   <tbody class="text-secondary">
                     <tr
-                      v-for="shift in ShiftsData.filter((x) => x.Nurse_id == path)"
+                      v-for="shift in ShiftsData.filter(
+                        (x) =>
+                          x.Nurse_id == path &&
+                          new Date(x.Shift_date)
+                            .toISOString()
+                            .slice(0, 10)
+                            .split('-')[1] == month.split('-')[1] &&
+                          new Date(x.Shift_date)
+                            .toISOString()
+                            .slice(0, 10)
+                            .split('-')[0] == month.split('-')[0]
+                      )"
                       :key="shift.id"
                     >
                       <td>
@@ -161,6 +229,7 @@
             </div>
           </div>
         </div>
+
         <!-- end shift -->
 
         <!-- start units-->
@@ -175,7 +244,14 @@
                 class="table bg-white shadow-sm table-bordered"
                 style="font-size: 16px"
                 v-if="
-                  Endoresment_Nurses_Units.filter((x) => x.Nurse_id == path).length > 0
+                  Endoresment_Nurses_Units.filter(
+                    (x) =>
+                      x.Nurse_id == path &&
+                      new Date(x.Entry_date).toISOString().slice(0, 10).split('-')[1] ==
+                        month.split('-')[1] &&
+                      new Date(x.Entry_date).toISOString().slice(0, 10).split('-')[0] ==
+                        month.split('-')[0]
+                  ).length > 0
                 "
               >
                 <thead>
@@ -189,7 +265,12 @@
                 <tbody class="text-secondary">
                   <tr
                     v-for="unit in Endoresment_Nurses_Units.filter(
-                      (x) => x.Nurse_id == path
+                      (x) =>
+                        x.Nurse_id == path &&
+                        new Date(x.Entry_date).toISOString().slice(0, 10).split('-')[1] ==
+                          month.split('-')[1] &&
+                        new Date(x.Entry_date).toISOString().slice(0, 10).split('-')[0] ==
+                          month.split('-')[0]
                     )"
                     :key="unit.Id"
                   >

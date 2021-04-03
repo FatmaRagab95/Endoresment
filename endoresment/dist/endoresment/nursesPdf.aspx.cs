@@ -136,6 +136,10 @@ public partial class nursesPdf : System.Web.UI.Page
                     Last_Update =
                         idr["Last_Update"] != DBNull.Value
                             ? Convert.ToString(idr["Last_Update"])
+                            : String.Empty,
+                    Entry_date =
+                        idr["Entry_date"] != DBNull.Value
+                            ? Convert.ToString(idr["Entry_date"])
                             : String.Empty
                 });
         }
@@ -156,6 +160,8 @@ public partial class nursesPdf : System.Web.UI.Page
         public int? Active { get; set; }
 
         public string Last_Update { get; set; }
+
+        public string Entry_date { get; set; }
     }
 
     // get admin users data
