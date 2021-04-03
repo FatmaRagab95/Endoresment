@@ -137,10 +137,7 @@ public partial class nursesPdf : System.Web.UI.Page
                         idr["Last_Update"] != DBNull.Value
                             ? Convert.ToString(idr["Last_Update"])
                             : String.Empty,
-                    Entry_date =
-                        idr["Entry_date"] != DBNull.Value
-                            ? Convert.ToString(idr["Entry_date"])
-                            : String.Empty
+                    Entry_date = Convert.ToDateTime(idr["Entry_date"])
                 });
         }
 
@@ -161,7 +158,7 @@ public partial class nursesPdf : System.Web.UI.Page
 
         public string Last_Update { get; set; }
 
-        public string Entry_date { get; set; }
+        public DateTime Entry_date { get; set; }
     }
 
     // get admin users data
@@ -294,10 +291,7 @@ public partial class nursesPdf : System.Web.UI.Page
                         idr["Entry_user"] != DBNull.Value
                             ? Convert.ToInt32(idr["Entry_user"])
                             : 0,
-                    Date_from =
-                        idr["Date_from"] != DBNull.Value
-                            ? Convert.ToString(idr["Date_from"])
-                            : String.Empty,
+                    Date_from = Convert.ToDateTime(idr["Date_from"]),
                     Date_to =
                         idr["Date_to"] != DBNull.Value
                             ? Convert.ToString(idr["Date_to"])
@@ -322,7 +316,7 @@ public partial class nursesPdf : System.Web.UI.Page
 
         public int? Entry_user { get; set; }
 
-        public string Date_from { get; set; }
+        public DateTime Date_from { get; set; }
 
         public string Date_to { get; set; }
     }
@@ -370,7 +364,7 @@ public partial class nursesPdf : System.Web.UI.Page
                     Shift = Convert.ToString(idr["Shift"]),
                     Nurse_id = Convert.ToInt32(idr["Nurse_id"]),
                     Nurse_name = Convert.ToString(idr["Nurse_name"]),
-                    Shift_date = Convert.ToString(idr["Shift_date"]),
+                    Shift_date = Convert.ToDateTime(idr["Shift_date"]),
                     Receive_name = Convert.ToString(idr["Receive_name"]),
                     Unit_id =
                         idr["Unit_id"] != DBNull.Value
@@ -406,7 +400,7 @@ public partial class nursesPdf : System.Web.UI.Page
 
         public string Shift { get; set; }
 
-        public string Shift_date { get; set; }
+        public DateTime Shift_date { get; set; }
 
         public int? Confirm { get; set; }
 
