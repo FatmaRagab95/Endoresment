@@ -8,40 +8,113 @@
       <form class="mb-0">
         <div class="custom-form pt-3">
           <div class="cu-container">
-            <div class="cu-form-group special" style="max-width: 900px">
+            <div class="cu-form-group special shadow" style="max-width: 900px">
               <div class="title">
                 <span> <i class="fa fa-hospital-o mainColor mr-1"></i>Doctors Info</span>
               </div>
 
-              <div class="cu-field">
-                <v-select
-                  :items="Specialities"
-                  item-text="Spcy_name_En"
-                  :item-value="'Spcy_id'"
-                  label="Select Specialities :"
-                  name="Special"
-                  v-model="Special"
-                ></v-select>
+              <div class="row">
+                <div class="col-md-8 mt-5">
+                  <!-- select branch -->
+                  <div class="cu-field">
+                    <h3 class="cu-label">
+                      <label>Select Branch :</label>
+                    </h3>
+                    <div class="f-select bg-white">
+                      <select class="form-control form-control-sm" v-model="Branch">
+                        <option
+                          v-for="branch in Branches"
+                          :value="branch.id"
+                          :key="branch.id"
+                        >
+                          {{ branch.Branch_EName }}
+                        </option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <!-- select speciality -->
+                  <div class="cu-field">
+                    <h3 class="cu-label">
+                      <label>Select speciality :</label>
+                    </h3>
+                    <div class="f-select bg-white">
+                      <select class="form-control form-control-sm" v-model="Special">
+                        <option
+                          v-for="special in Specialities"
+                          :value="special.Spcy_id"
+                          :key="special.Spcy_id"
+                        >
+                          {{ special.Spcy_name_En }}
+                        </option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <!-- select doctor type -->
+                  <div class="cu-field radio-group">
+                    <div class="row align-items-end">
+                      <div class="col-md-6">
+                        <div class="cu-field">
+                          <h3 class="cu-label">
+                            <label>Doctor Type</label>
+                          </h3>
+                        </div>
+                        <div class="cu-field">
+                          <input
+                            id="Resident"
+                            type="radio"
+                            name="doctor"
+                            value="Resident"
+                            required
+                            v-model="doctorType"
+                          />
+                          <label for="Resident">
+                            <div class="cu-input cu-radio normal">
+                              <div class="contain">
+                                <span class="fa fa-check"></span>
+                                <div>Resident</div>
+                              </div>
+                            </div>
+                          </label>
+                        </div>
+                      </div>
+                      <div class="col-md-6">
+                        <div class="cu-field">
+                          <input
+                            id="Consultant"
+                            type="radio"
+                            name="doctor"
+                            value="Consultant"
+                            required
+                            v-model="doctorType"
+                          />
+                          <label for="Consultant">
+                            <div class="cu-input cu-radio normal">
+                              <div class="contain">
+                                <span class="fa fa-check"></span>
+                                <div>Consultant</div>
+                              </div>
+                            </div>
+                          </label>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <!-- calender for select month -->
+                <div class="col-md-4">
+                  <div>
+                    <v-row justify="center" class="mt-3 mb-3">
+                      <v-date-picker
+                        class="bg-primary shadow m-auto"
+                        v-model="month"
+                        type="month"
+                      ></v-date-picker>
+                    </v-row>
+                  </div>
+                </div>
               </div>
-
-              <v-row justify="center" class="mt-3 mb-3">
-                <v-date-picker
-                  class="bg-primary shadow m-auto"
-                  v-model="month"
-                  type="month"
-                ></v-date-picker>
-              </v-row>
-
-              <!--  <div>
-                {{
-                  Doctors_Shifts.filter(
-                    (x) =>
-                      new Date(x.Shift_date).toISOString().slice(0, 10).split("-")[1] ==
-                        month.split("-")[1] &&
-                      x.Shift_date.split(" ")[0].split("/")[2] == month.split("-")[0]
-                  )
-                }}
-              </div>-->
             </div>
           </div>
         </div>
@@ -54,6 +127,7 @@
           <div class="cu-container mt-0">
             <div class="cu-form-group special mt-0" style="max-width: 1000px">
               <div class="row">
+                <!-- search for doctor -->
                 <div class="col-md-9">
                   <div class="cu-field">
                     <h3 class="cu-label">
@@ -70,6 +144,7 @@
                     </div>
                   </div>
                 </div>
+                <!-- pdf button -->
                 <div class="col-md-3">
                   <div class="w-100 h-100 d-flex justify-content-center">
                     <a
@@ -82,37 +157,51 @@
                   </div>
                 </div>
               </div>
+
               <hr />
               <div id="statistics">
+                <!-- Pdf title -->
+                <h1 class="text-danger text-center">
+                  Endoresment Report
+                  <span class="text-dark"> {{ month }}</span>
+                </h1>
+                <hr />
                 <div
-                  class="p-4 bg-light mb-3 shadow card"
+                  class="p-4 bg-light mb-3 shadow-sm card"
                   v-for="doctor in filterNames(
-                    Doctors_Data.filter((x) => x.Spcy_id == Special),
+                    Doctors_Data.filter(
+                      (x) =>
+                        x.Spcy_id == Special && x.Type == doctorType && x.Branch == Branch
+                    ),
                     selectedName.toLowerCase()
                   )"
                   :key="doctor.Dr_Code"
                 >
+                  <!-- doctor name and speciality -->
                   <div class="row">
-                    <span class="text-dark col-md-6"
-                      >Doctor Name :<span
+                    <span class="text-dark col-md-8" style="font-size: 20px"
+                      >Dr.
+                      <span
                         class="ml-2 text-secondary font-weight-bold text-capitalize"
                         >{{ doctor.DR_Name }}</span
                       >
                     </span>
-                    <span class="text-dark col-md-6"
-                      >Type :<span class="text-success ml-2">{{ doctor.Type }}</span>
+                    <span class="text-dark col-md-4 text-right"
+                      >Speciality :<span
+                        class="ml-2 text-success font-weight-bold text-capitalize"
+                        >{{
+                          Specialities.filter((x) => x.Spcy_id == Special)[0].Spcy_name_En
+                        }}</span
+                      >
                     </span>
                   </div>
-                  <hr />
+
                   <div class="row">
                     <div class="col-md-12">
-                      <div class="card bg-white p-3">
-                        <h5 style="text-decoration: underline" class="text-info">
-                          Consultation Patients List
-                        </h5>
+                      <div>
+                        <!-- display Primary patients (patient data table)------------------------------------------>
 
-                        <table
-                          class="table mt-4 shadow"
+                        <div
                           v-if="
                             PatientsData.filter(
                               (x) =>
@@ -122,46 +211,45 @@
                             ).length > 0
                           "
                         >
-                          <thead>
-                            <tr>
-                              <th scope="col">No</th>
-                              <th scope="col">Name</th>
-                              <th scope="col">Medicl No</th>
-                              <th scope="col">Gender</th>
-                              <th scope="col">Room</th>
-                              <th scope="col">Unit</th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            <tr
-                              v-for="(pat, i) in PatientsData.filter(
-                                (x) =>
-                                  x.Consultant_id == doctor.Dr_Code &&
-                                  x.Addmission_date.split('-')[0] ==
-                                    month.split('-')[0] &&
-                                  x.Addmission_date.split('-')[1] == month.split('-')[1]
-                              )"
-                              :key="pat.id"
-                            >
-                              <th>{{ i + 1 }}</th>
-                              <td>{{ pat.Patient_FullName }}</td>
-                              <td class="text-success">{{ pat.Medical_Number }}</td>
-                              <td>{{ pat.Gender }}</td>
-                              <td>{{ pat.Room }}</td>
-                              <td>{{ pat.Unit }}</td>
-                            </tr>
-                          </tbody>
-                        </table>
-                        <div v-else class="p-4 bg-light text-center text-secondary mt-4">
-                          No Avaliable Data For Consulting Patients
-                        </div>
+                          <hr />
+                          <h5 style="text-decoration: underline" class="text-success">
+                            Primary Patients List
+                          </h5>
 
-                        <!-- Primary patients ------------------------------------------>
-                        <h5 style="text-decoration: underline" class="text-info">
-                          Primary Patients List
-                        </h5>
-                        <table
-                          class="table mt-4 shadow"
+                          <table class="table bg-white shadow-sm table-bordered">
+                            <thead>
+                              <tr>
+                                <th scope="col">No</th>
+                                <th scope="col">Name</th>
+                                <th scope="col">Medicl No</th>
+                                <th scope="col">Gender</th>
+                                <th scope="col">Age</th>
+                                <th scope="col">Room</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <tr
+                                v-for="(pat, i) in PatientsData.filter(
+                                  (x) =>
+                                    x.Consultant_id == doctor.Dr_Code &&
+                                    x.Addmission_date.split('-')[0] ==
+                                      month.split('-')[0] &&
+                                    x.Addmission_date.split('-')[1] == month.split('-')[1]
+                                )"
+                                :key="pat.id"
+                              >
+                                <th>{{ i + 1 }}</th>
+                                <td>{{ pat.Patient_FullName }}</td>
+                                <td>{{ pat.Medical_Number }}</td>
+                                <td>{{ pat.Gender }}</td>
+                                <td>{{ pat.Age }}</td>
+                                <td>{{ pat.Room }}</td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </div>
+                        <!-- consultation patients (from follow up table)------------------------------------------>
+                        <div
                           v-if="
                             PatientFollow.filter(
                               (x) =>
@@ -175,146 +263,157 @@
                             ).length > 0
                           "
                         >
-                          <thead>
-                            <tr>
-                              <th scope="col">No</th>
-                              <th scope="col">Name</th>
-                              <th scope="col">Medicl No</th>
-                              <th scope="col">Gender</th>
-                              <th scope="col">Room</th>
-                              <th scope="col">Unit</th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            <tr
-                              v-for="(pat, i) in PatientFollow.filter(
-                                (x) =>
-                                  new Date(x.Entry_date)
-                                    .toISOString()
-                                    .slice(0, 10)
-                                    .split('-')[1] == month.split('-')[1] &&
-                                  x.Entry_date.split(' ')[0].split('/')[2] ==
-                                    month.split('-')[0] &&
-                                  x.Consultaion == doctor.Dr_Code
-                              )"
-                              :key="pat.id"
-                            >
-                              <th>{{ i + 1 }}</th>
-                              <td
-                                v-if="
-                                  PatientsData.filter((x) => x.id == pat.Patient_id)
-                                    .length > 0
-                                "
+                          <hr />
+                          <h5 style="text-decoration: underline" class="text-success">
+                            Consultation Patients List
+                          </h5>
+                          <table class="table bg-white shadow-sm table-bordered">
+                            <thead>
+                              <tr>
+                                <th scope="col">No</th>
+                                <th scope="col">Name</th>
+                                <th scope="col">Medicl No</th>
+                                <th scope="col">Gender</th>
+                                <th scope="col">Age</th>
+                                <th scope="col">Room</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <tr
+                                v-for="(pat, i) in PatientFollow.filter(
+                                  (x) =>
+                                    new Date(x.Entry_date)
+                                      .toISOString()
+                                      .slice(0, 10)
+                                      .split('-')[1] == month.split('-')[1] &&
+                                    x.Entry_date.split(' ')[0].split('/')[2] ==
+                                      month.split('-')[0] &&
+                                    x.Consultaion == doctor.Dr_Code
+                                )"
+                                :key="pat.id"
                               >
-                                {{
-                                  PatientsData.filter((x) => x.id == pat.Patient_id)[0]
-                                    .Patient_FullName
-                                }}
-                              </td>
-                              <td class="text-secondary" v-else>no data registered</td>
-                              <td
-                                v-if="
-                                  PatientsData.filter((x) => x.id == pat.Patient_id)
-                                    .length > 0
-                                "
-                                class="text-success"
-                              >
-                                {{
-                                  PatientsData.filter((x) => x.id == pat.Patient_id)[0]
-                                    .Medical_Number
-                                }}
-                              </td>
-                              <td class="text-secondary" v-else>no data registered</td>
-                              <td
-                                v-if="
-                                  PatientsData.filter((x) => x.id == pat.Patient_id)
-                                    .length > 0
-                                "
-                              >
-                                {{
-                                  PatientsData.filter((x) => x.id == pat.Patient_id)[0]
-                                    .Gender
-                                }}
-                              </td>
-                              <td class="text-secondary" v-else>no data registered</td>
-                              <td
-                                v-if="
-                                  PatientsData.filter((x) => x.id == pat.Patient_id)
-                                    .length > 0
-                                "
-                              >
-                                {{
-                                  PatientsData.filter((x) => x.id == pat.Patient_id)[0]
-                                    .Room
-                                }}
-                              </td>
-                              <td class="text-secondary" v-else>no data registered</td>
-                              <td
-                                v-if="
-                                  PatientsData.filter((x) => x.id == pat.Patient_id)
-                                    .length > 0
-                                "
-                              >
-                                {{
-                                  PatientsData.filter((x) => x.id == pat.Patient_id)[0]
-                                    .Unit
-                                }}
-                              </td>
-                              <td class="text-secondary" v-else>no data registered</td>
-                            </tr>
-                          </tbody>
-                        </table>
-                        <div v-else class="p-4 bg-light text-center text-secondary mt-4">
-                          No Avaliable Data For Primary Patients
+                                <th>{{ i + 1 }}</th>
+                                <td
+                                  v-if="
+                                    PatientsData.filter((x) => x.id == pat.Patient_id)
+                                      .length > 0
+                                  "
+                                >
+                                  {{
+                                    PatientsData.filter((x) => x.id == pat.Patient_id)[0]
+                                      .Patient_FullName
+                                  }}
+                                </td>
+                                <td class="text-secondary" v-else>no data registered</td>
+                                <td
+                                  v-if="
+                                    PatientsData.filter((x) => x.id == pat.Patient_id)
+                                      .length > 0
+                                  "
+                                >
+                                  {{
+                                    PatientsData.filter((x) => x.id == pat.Patient_id)[0]
+                                      .Medical_Number
+                                  }}
+                                </td>
+                                <td class="text-secondary" v-else>no data registered</td>
+                                <td
+                                  v-if="
+                                    PatientsData.filter((x) => x.id == pat.Patient_id)
+                                      .length > 0
+                                  "
+                                >
+                                  {{
+                                    PatientsData.filter((x) => x.id == pat.Patient_id)[0]
+                                      .Gender
+                                  }}
+                                </td>
+                                <td class="text-secondary" v-else>no data registered</td>
+                                <td
+                                  v-if="
+                                    PatientsData.filter((x) => x.id == pat.Patient_id)
+                                      .length > 0
+                                  "
+                                >
+                                  {{
+                                    PatientsData.filter((x) => x.id == pat.Patient_id)[0]
+                                      .Age
+                                  }}
+                                </td>
+                                <td class="text-secondary" v-else>no data registered</td>
+                                <td
+                                  v-if="
+                                    PatientsData.filter((x) => x.id == pat.Patient_id)
+                                      .length > 0
+                                  "
+                                >
+                                  {{
+                                    PatientsData.filter((x) => x.id == pat.Patient_id)[0]
+                                      .Room
+                                  }}
+                                </td>
+                                <td class="text-secondary" v-else>no data registered</td>
+                              </tr>
+                            </tbody>
+                          </table>
                         </div>
 
                         <!-- Shifts patients in Resident doctors-->
-                        <div v-if="doctor.Type == 'Resident'">
-                          <h5 style="text-decoration: underline" class="text-info">
-                            Primary Patients List
-                          </h5>
-                          <div
-                            v-if="
-                              Doctors_Shifts.filter((x) => x.Doctor_id == doctor.Dr_Code)
-                                .length > 0
-                            "
-                          >
+                        <div
+                          v-if="
+                            Doctors_Shifts.filter((x) => x.Doctor_id == doctor.Dr_Code)
+                              .length > 0
+                          "
+                        >
+                          <hr />
+                          <div>
                             <div class="row">
                               <div
-                                class="col-md-6"
+                                class="col-md-12"
                                 v-for="(shift, i) in Doctors_Shifts.filter(
                                   (x) => x.Doctor_id == doctor.Dr_Code
                                 )"
                                 :key="i + 'r'"
                               >
-                                <h6 class="ml-2 text-success">
+                                <h5
+                                  style="text-decoration: underline"
+                                  class="text-success"
+                                >
                                   Shift date {{ shift.Shift_date.split(" ")[0] }}
-                                </h6>
+                                </h5>
 
-                                <ul>
-                                  <li
-                                    class="ml-5"
-                                    style="list-style-type: none"
-                                    v-for="(patient, i) in PatientsData"
-                                    :key="patient.id"
-                                    v-if="
-                                      new Date(shift.Shift_date.trim()) <
-                                        new Date(patient.Discharged_date.trim()) ||
-                                      patient.Discharged_date == false
-                                    "
-                                  >
-                                    <span>{{ i + 1 }} - </span
-                                    >{{ patient.Patient_FullName }}
-                                  </li>
-                                </ul>
+                                <table class="table bg-white shadow-sm table-bordered">
+                                  <thead>
+                                    <tr>
+                                      <th scope="col">No</th>
+                                      <th scope="col">Name</th>
+                                      <th scope="col">Medicl No</th>
+                                      <th scope="col">Gender</th>
+                                      <th scope="col">Age</th>
+                                      <th scope="col">Room</th>
+                                    </tr>
+                                  </thead>
+                                  <tbody>
+                                    <tr
+                                      v-for="(patient, i) in PatientsData"
+                                      :key="patient.id"
+                                      v-if="
+                                        new Date(shift.Shift_date.trim()) <
+                                          new Date(patient.Discharged_date.trim()) ||
+                                        patient.Discharged_date == false
+                                      "
+                                    >
+                                      <th>{{ i + 1 }}</th>
+                                      <td>{{ patient.Patient_FullName }}</td>
+                                      <td>{{ patient.Medical_Number }}</td>
+                                      <td>{{ patient.Gender }}</td>
+                                      <td>{{ patient.Age }}</td>
+                                      <td>{{ patient.Room }}</td>
+                                    </tr>
+                                  </tbody>
+                                </table>
                               </div>
                             </div>
-                          </div>
-                          <div
-                            v-else
-                            class="p-4 bg-light text-center text-secondary mt-4"
-                          >
-                            No Avaliable Data For Shifts Patients
                           </div>
                         </div>
                       </div>
@@ -341,15 +440,18 @@ export default {
     return {
       apiUrl: this.link,
       Units: [],
+      Branches: [],
       Specialities: [],
       Doctors_Data: [],
       Doctors_Shifts: [],
       PatientsData: [],
       PatientFollow: [],
 
-      month: "2021-03",
-
+      month: new Date().toISOString().slice(0, 10).substring(0, 7),
       Special: 40,
+      doctorType: "Resident",
+      Branch: 1,
+
       filterData: [],
 
       selectedName: "",
@@ -396,7 +498,7 @@ export default {
     pdf: function () {
       const statistics = document.getElementById("statistics");
       var opt = {
-        margin: 1,
+        margin: 0.5,
         filename: "pdf-nurse-statistics",
         image: { type: "jpeg", quality: 0.98 },
         html2canvas: { dpi: 192, letterRendering: true },
@@ -409,6 +511,17 @@ export default {
   created() {
     let that = this;
     that.today = moment(new Date()).format("YYYY-MM-DD");
+
+    //get Branches
+    $.ajax({
+      type: "POST",
+      url: that.apiUrl + "endoresment/doctorInfo.aspx/getBranchesData",
+      contentType: "application/json; charset=utf-8",
+      dataType: "json",
+      success: function (data) {
+        that.Branches = JSON.parse(data.d);
+      },
+    });
 
     //get Units
     $.ajax({

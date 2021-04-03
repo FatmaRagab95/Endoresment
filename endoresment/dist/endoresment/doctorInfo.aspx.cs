@@ -70,6 +70,60 @@ public partial class doctorInfo : System.Web.UI.Page
         public string U_name { get; set; }
     }
 
+    // get branches
+    [WebMethod]
+    public static string getBranchesData()
+    {
+        string config =
+            Convert.ToString(ConfigurationManager.ConnectionStrings["dbcon"]);
+        List<Branches> Branches = new List<Branches>();
+
+        SqlConnection con = new SqlConnection(config);
+
+        con.Open();
+
+        using (SqlCommand cmd = new SqlCommand("select * from Branches", con))
+        {
+            SqlDataReader idr = cmd.ExecuteReader();
+
+            if (idr.HasRows)
+            {
+                Branches = populateBranchesLisst(idr, con);
+            }
+        }
+
+        con.Close();
+
+        return JsonConvert.SerializeObject(Branches);
+    }
+
+    public static List<Branches>
+    populateBranchesLisst(SqlDataReader idr, SqlConnection con)
+    {
+        List<Branches> BranchesI = new List<Branches>();
+
+        while (idr.Read())
+        {
+            BranchesI
+                .Add(new Branches {
+                    id =
+                        idr["id"] != DBNull.Value
+                            ? Convert.ToInt32(idr["id"])
+                            : 0,
+                    Branch_EName = Convert.ToString(idr["Branch_EName"])
+                });
+        }
+
+        return BranchesI;
+    }
+
+    public class Branches
+    {
+        public int? id { get; set; }
+
+        public string Branch_EName { get; set; }
+    }
+
     // get Specialities
     [WebMethod]
     public static string getSpecialitiesData()
@@ -168,6 +222,10 @@ public partial class doctorInfo : System.Web.UI.Page
                         idr["id"] != DBNull.Value
                             ? Convert.ToInt32(idr["id"])
                             : 0,
+                    Branch =
+                        idr["Branch"] != DBNull.Value
+                            ? Convert.ToInt32(idr["Branch"])
+                            : 0,
                     Dr_Code =
                         idr["Dr_Code"] != DBNull.Value
                             ? Convert.ToString(idr["Dr_Code"])
@@ -193,6 +251,8 @@ public partial class doctorInfo : System.Web.UI.Page
     public class doctors
     {
         public int? id { get; set; }
+
+        public int? Branch { get; set; }
 
         public string Dr_Code { get; set; }
 
@@ -339,6 +399,10 @@ public partial class doctorInfo : System.Web.UI.Page
                         idr["Consultant_id"] != DBNull.Value
                             ? Convert.ToInt32(idr["Consultant_id"])
                             : 0,
+                    Age =
+                        idr["Age"] != DBNull.Value
+                            ? Convert.ToString(idr["Age"])
+                            : String.Empty,
                     Patient_FullName =
                         Convert.ToString(idr["Patient_FullName"]),
                     Gender = Convert.ToString(idr["Gender"]),
@@ -360,6 +424,8 @@ public partial class doctorInfo : System.Web.UI.Page
         public int? id { get; set; }
 
         public int? Consultant_id { get; set; }
+
+        public string Age { get; set; }
 
         public string Patient_FullName { get; set; }
 

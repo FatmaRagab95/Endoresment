@@ -264,11 +264,11 @@ export default {
 .bg-primary,
 .v-btn--active {
   background-color: #29b770 !important;
-  border-color: #29b770;
+  border-color: #29b770 !important;
 }
 .btn-primary:hover {
   background-color: #009245 !important;
-  border-color: #009245;
+  border-color: #009245 !important;
 }
 .text-primary {
   color: #29b770 !important;
@@ -276,7 +276,7 @@ export default {
 .badge-success,
 .btn-success,
 .bg-success {
-  background-color: #29b770;
+  background-color: #29b770 !important;
 }
 .bg-grey {
   background-color: #d6ddda !important;
