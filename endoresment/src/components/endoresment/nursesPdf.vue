@@ -2,7 +2,7 @@
   <div class="nursesPdf pt-5">
     <div class="container">
       <!-- calender for select month -->
-      <v-dialog ref="dialog" v-model="modal" :return-value.sync="month" width="290px">
+      <v-dialog ref="dialog" v-model="modal" width="290px">
         <template v-slot:activator="{ on, attrs }">
           <v-text-field
             v-model="month"
@@ -14,9 +14,6 @@
           ></v-text-field>
         </template>
         <v-date-picker v-model="month" type="month" scrollable color="green lighten-1">
-          <v-spacer></v-spacer>
-          <v-btn text color="primary" @click="modal = false"> Cancel </v-btn>
-          <v-btn text color="primary" @click="$refs.dialog.save(month)"> OK </v-btn>
         </v-date-picker>
       </v-dialog>
       <!-- end calender -->
