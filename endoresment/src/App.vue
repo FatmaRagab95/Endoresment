@@ -67,7 +67,7 @@ export default {
   data() {
     return {
       user: JSON.parse(localStorage.getItem("user")),
-      link: `http://localhost:${49638}/endoresment/dist/`,
+      link: `http://localhost:${51026}/endoresment/dist/`,
       Units: [],
       NursesPatients: [], // if the user is a nurse
       DoctorPatients: [], // if the user is a doctor
@@ -370,8 +370,9 @@ export default {
 .theme--light.v-select .v-select__selections {
   color: inherit;
 }
-.v-application ol, .v-application ul {
-    padding-left: 0 !important;
+.v-application ol,
+.v-application ul {
+  padding-left: 0 !important;
 }
 button,
 input,

@@ -42,8 +42,9 @@
                   Endorsement_Nurse_patients.filter(
                     (x) =>
                       x.Nurse_id == path &&
-                      new Date(x.Date_from).toISOString().slice(0,7) ==
-                        month 
+                      new Date(x.Date_from) <= new Date(month + '-30') &&
+                      (new Date(month + '-01') <= new Date(x.Date_to) ||
+                        new Date(x.Date_to) > new Date())
                   ).length > 0
                 "
                 style="font-size: 16px"
@@ -60,12 +61,9 @@
                     v-for="patient in Endorsement_Nurse_patients.filter(
                       (x) =>
                         x.Nurse_id == path &&
-                        new Date(x.Date_from).toISOString().slice(0, 7) ==
-                          month && 
-                        new Date(x.Date_to).toISOString().slice(0, 10).split('-')[1] ==
-                          month.split('-')[1] &&
-                        new Date(x.Date_to).toISOString().slice(0, 10).split('-')[1] ==
-                          month.split('-')[1]
+                        new Date(x.Date_from) <= new Date(month + '-30') &&
+                        (new Date(month + '-01') <= new Date(x.Date_to.substr(0, 10)) ||
+                          new Date(x.Date_to) > new Date())
                     )"
                     :key="patient.id"
                   >
@@ -87,9 +85,9 @@
                   Endorsement_Nurse_patients.filter(
                     (x) =>
                       x.Nurse_id == path &&
-                      new Date(x.Date_from).toISOString().slice(0, 7) ==
-                        month &&
-                      x.Date_to == ''
+                      new Date(x.Date_from).toISOString().slice(0, 7) == month &&
+                      x.Date_to.trim().substr(0, 10) ==
+                        new Date().toISOString().substr(0, 10)
                   ).length > 0
                 "
                 style="font-size: 16px"
@@ -106,9 +104,9 @@
                     v-for="patient in Endorsement_Nurse_patients.filter(
                       (x) =>
                         x.Nurse_id == path &&
-                        new Date(x.Date_from).toISOString().slice(0, 7) ==
-                          month &&
-                        x.Date_to == ''
+                        new Date(x.Date_from).toISOString().slice(0, 7) == month &&
+                        x.Date_to.trim().substr(0, 10) ==
+                          new Date().toISOString().substr(0, 10)
                     )"
                     :key="patient.id"
                   >
@@ -151,8 +149,7 @@
                   ShiftsData.filter(
                     (x) =>
                       x.Nurse_id == path &&
-                      new Date(x.Shift_date).toISOString().slice(0, 7) ==
-                        month
+                      new Date(x.Shift_date).toISOString().slice(0, 7) == month
                   ).length > 0
                 "
               >
@@ -175,8 +172,7 @@
                       v-for="shift in ShiftsData.filter(
                         (x) =>
                           x.Nurse_id == path &&
-                          new Date(x.Shift_date).toISOString().slice(0, 7) ==
-                          month
+                          new Date(x.Shift_date).toISOString().slice(0, 7) == month
                       )"
                       :key="shift.id"
                     >
@@ -185,7 +181,7 @@
                       </td>
                       <td>{{ shift.Receive_name }}</td>
                       <td>{{ shift.Shift }}</td>
-                      <td>{{ shift.Shift_date }}</td>
+                      <td>{{ shift.Shift_date.substr(0, 10) }}</td>
                       <td v-if="shift.Confirm == 0" class="text-danger">Not Confirmed</td>
                       <td v-else>Confirmed</td>
                       <td v-if="shift.Completed == 0" class="text-danger">
@@ -224,8 +220,7 @@
                   Endoresment_Nurses_Units.filter(
                     (x) =>
                       x.Nurse_id == path &&
-                      new Date(x.Entry_date).toISOString().slice(0, 7) ==
-                        month
+                      new Date(x.Entry_date).toISOString().slice(0, 7) == month
                   ).length > 0
                 "
               >
@@ -242,8 +237,7 @@
                     v-for="unit in Endoresment_Nurses_Units.filter(
                       (x) =>
                         x.Nurse_id == path &&
-                        new Date(x.Entry_date).toISOString().slice(0, 7) ==
-                          month
+                        new Date(x.Entry_date).toISOString().slice(0, 7) == month
                     )"
                     :key="unit.Id"
                   >

@@ -292,7 +292,10 @@ public partial class nursesPdf : System.Web.UI.Page
                             ? Convert.ToInt32(idr["Entry_user"])
                             : 0,
                     Date_from = Convert.ToDateTime(idr["Date_from"]),
-                    Date_to =  idr["Nurse_name"] is  DBNull ? Convert.ToDateTime(idr["Date_to"]) : DateTime.UtcNow
+                    Date_to =
+                        idr["Date_to"] != DBNull.Value
+                            ? Convert.ToDateTime(idr["Date_to"])
+                            : DateTime.Today.AddDays(1)
                 });
         }
 
