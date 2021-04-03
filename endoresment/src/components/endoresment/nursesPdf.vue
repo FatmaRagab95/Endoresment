@@ -3,7 +3,7 @@
     <div class="container-fluid">
       <!-- calender for select month -->
 
-      <v-row justify="center" class="mt-3 mb-3">
+      <v-row justify="center" class="mb-5">
         <v-date-picker
           class="bg-primary shadow m-auto"
           v-model="month"
@@ -12,8 +12,16 @@
       </v-row>
 
       <div class="container card bg-white p-5" id="statistics">
+        <h2 class="text-danger text-center">
+          Endoresment Report
+          <span class="text-dark"> {{ month }}</span>
+        </h2>
+        <h3 class="text-center text-dark">
+          {{ users.filter((x) => x.Emp_id == path)[0].FullName }}
+        </h3>
+        <hr />
         <!-- start patients-->
-        <div class="row card shadow mb-4">
+        <div class="row card shadow mb-4 mt-2">
           <div class="card-header" id="patients">
             <h3 class="text-primary">Patients ....</h3>
           </div>
