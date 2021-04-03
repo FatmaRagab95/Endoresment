@@ -43,11 +43,7 @@
                     (x) =>
                       x.Nurse_id == path &&
                       new Date(x.Date_from).toISOString().slice(0,7) ==
-                        month &&
-                      new Date(x.Date_to).toISOString().slice(0, 10).split('-')[1] ==
-                        month.split('-')[1] &&
-                      new Date(x.Date_to).toISOString().slice(0, 10).split('-')[1] ==
-                        month.split('-')[1]
+                        month 
                   ).length > 0
                 "
                 style="font-size: 16px"
@@ -65,7 +61,7 @@
                       (x) =>
                         x.Nurse_id == path &&
                         new Date(x.Date_from).toISOString().slice(0, 7) ==
-                          month &&
+                          month && 
                         new Date(x.Date_to).toISOString().slice(0, 10).split('-')[1] ==
                           month.split('-')[1] &&
                         new Date(x.Date_to).toISOString().slice(0, 10).split('-')[1] ==
