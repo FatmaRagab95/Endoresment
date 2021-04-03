@@ -85,7 +85,7 @@ public partial class _Nurses : System.Web.UI.Page
 
         using (
             SqlCommand cmd =
-                new SqlCommand("select * from Endoresment_Nurses_Units where Active = 1 and Unit_id = @Unit_id and Nurse_id in (select Nurse_id from Endorsement_Nursing_schedule where Unit_id = @Unit_id and  (Shift_date >= DATEADD(day,-2, GETDATE()) ) )",
+                new SqlCommand("select * from Endoresment_Nurses_Units where Active = 1 and Unit_id = @Unit_id",
                     con)
         )
         {
