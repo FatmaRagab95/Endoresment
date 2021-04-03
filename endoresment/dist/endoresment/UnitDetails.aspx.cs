@@ -109,7 +109,7 @@ public partial class _UnitDetials : System.Web.UI.Page
                     id = idr["id"] != DBNull.Value ? Convert.ToInt32(idr["id"]) : 0,
                     Unit_name = Convert.ToString(idr["Unit_name"]),
                     Shift = Convert.ToString(idr["Shift"]),
-                    Shift_date = Convert.ToString(idr["Shift_date"]),
+                    Shift_date = Convert.ToDateTime(idr["Shift_date"]),
                     Total_Census = idr["Total_Census"] != DBNull.Value ? Convert.ToInt32(idr["Total_Census"]) : 0,
                     Received = idr["Received"] != DBNull.Value ? Convert.ToInt32(idr["Received"]) : 0,
                     Admission = idr["Admission"] != DBNull.Value ? Convert.ToInt32(idr["Admission"]) : 0,
@@ -128,7 +128,7 @@ public partial class _UnitDetials : System.Web.UI.Page
         public int? Unit_id { get; set; }
         public string Unit_name { get; set; }
         public string Shift { get; set; }
-        public string Shift_date { get; set; }
+        public DateTime Shift_date { get; set; }
         public int? Total_Census { get; set; }
         public int? Received { get; set; }
         public int? Admission { get; set; }
