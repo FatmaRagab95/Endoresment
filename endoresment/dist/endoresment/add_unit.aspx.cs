@@ -191,6 +191,7 @@ public partial class _addUnit : System.Web.UI.Page
         public string Shift { get; set; }
 
         public int? Unit_id { get; set; }
+        public int? Role_id { get; set; }
 
         public string Unit_name { get; set; }
 
@@ -203,53 +204,54 @@ public partial class _addUnit : System.Web.UI.Page
 
         // get Charge Nurses
     [WebMethod]
-    public static string getChargeNursesData(Endorsement_Nursing_schedule data)
+    public static string getNursesData(Endorsement_Nursing_schedule data)
     {
         string config =
             Convert.ToString(ConfigurationManager.ConnectionStrings["dbcon"]);
         List<Endorsement_Nursing_schedule> user = new List<Endorsement_Nursing_schedule>();
-        List<ChargeNurses> ChargeNurses = new List<ChargeNurses>();
+        List<Nurses> Nurses = new List<Nurses>();
 
         SqlConnection con = new SqlConnection(config);
 
         con.Open();
 
-        using (SqlCommand cmd = new SqlCommand("select * from adminusers where Role_id = 17 and Emp_ID in (select Nurse_id from Endorsement_Nursing_schedule where Unit_id = @Unit_id and Shift_date = @Date and (Shift = @Shift))", con))
+        using (SqlCommand cmd = new SqlCommand("select * from adminusers where Role_id = @Role_id and Emp_ID in (select Nurse_id from Endorsement_Nursing_schedule where Unit_id = @Unit_id and Shift_date = @Date and (Shift = @Shift))", con))
         {
             cmd.Parameters.Add("@Unit_id", SqlDbType.Int).Value = data.Unit_id;
+            cmd.Parameters.Add("@Role_id", SqlDbType.Int).Value = data.Role_id;
             cmd.Parameters.Add("@Shift", SqlDbType.VarChar).Value = data.Shift;
             cmd.Parameters.Add("@Date", SqlDbType.VarChar).Value = data.Date;
             SqlDataReader idr = cmd.ExecuteReader();
 
             if (idr.HasRows)
             {
-                ChargeNurses = populateChargeNursesLisst(idr, con);
+                Nurses = populateNursesLisst(idr, con);
             }
         }
 
         con.Close();
 
-        return JsonConvert.SerializeObject(ChargeNurses);
+        return JsonConvert.SerializeObject(Nurses);
     }
 
-    public static List<ChargeNurses>
-    populateChargeNursesLisst(SqlDataReader idr, SqlConnection con)
+    public static List<Nurses>
+    populateNursesLisst(SqlDataReader idr, SqlConnection con)
     {
-        List<ChargeNurses> ChargeNursesI = new List<ChargeNurses>();
+        List<Nurses> NursesI = new List<Nurses>();
 
         while (idr.Read())
         {
-            ChargeNursesI
-                .Add(new ChargeNurses {
+            NursesI
+                .Add(new Nurses {
                     Emp_ID = idr["Emp_ID"] != DBNull.Value ? Convert.ToInt32(idr["Emp_ID"]) : 0,
                     FullName = Convert.ToString(idr["FullName"]),
                 });
         }
 
-        return ChargeNursesI;
+        return NursesI;
     }
 
-    public class ChargeNurses
+    public class Nurses
     {
         public int? Emp_ID { get; set; }
         public string FullName { get; set; }
@@ -257,6 +259,7 @@ public partial class _addUnit : System.Web.UI.Page
 
 
     // get Nurses
+    /*
     [WebMethod]
     public static string getNursesData(branches branch)
     {
@@ -306,7 +309,7 @@ public partial class _addUnit : System.Web.UI.Page
     {
         public int? Emp_ID { get; set; }
         public string FullName { get; set; }
-    }
+    }*/
 
 
     // get units

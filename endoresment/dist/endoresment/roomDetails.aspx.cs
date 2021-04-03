@@ -18,7 +18,7 @@ public partial class _roomDetails : System.Web.UI.Page
 
     // get units
     [WebMethod]
-    public static string getUnitsData()
+    public static string getUnitsData(branches branch)
     {
         string config =
             Convert.ToString(ConfigurationManager.ConnectionStrings["dbcon"]);
@@ -28,8 +28,9 @@ public partial class _roomDetails : System.Web.UI.Page
 
         con.Open();
 
-        using (SqlCommand cmd = new SqlCommand("select * from Units", con))
+        using (SqlCommand cmd = new SqlCommand("select * from Units where Branch_id = @Branch_id and Show = 1", con))
         {
+            cmd.Parameters.Add("@Branch_id", SqlDbType.Int).Value = branch.id;
             SqlDataReader idr = cmd.ExecuteReader();
 
             if (idr.HasRows)
@@ -72,7 +73,7 @@ public partial class _roomDetails : System.Web.UI.Page
 
     // get rooms
     [WebMethod]
-    public static string getRoomsData()
+    public static string getRoomsData(Rooms Room)
     {
         string config =
             Convert.ToString(ConfigurationManager.ConnectionStrings["dbcon"]);
@@ -84,9 +85,11 @@ public partial class _roomDetails : System.Web.UI.Page
 
         using (
             SqlCommand cmd =
-                new SqlCommand("select * from Endorsement_Rooms", con)
+                new SqlCommand("select * from Endorsement_Rooms where unit_id = @unit_id", con)
         )
         {
+            cmd.Parameters.Add("@unit_id", SqlDbType.VarChar).Value =
+                Room.unit_id;
             SqlDataReader idr = cmd.ExecuteReader();
 
             if (idr.HasRows)
@@ -147,11 +150,12 @@ public partial class _roomDetails : System.Web.UI.Page
 
     // get rooms dashboard
     [WebMethod]
-    public static string getRoomsDashboardData()
+    public static string getRoomsDashboardData(Rooms Room)
     {
         string config =
             Convert.ToString(ConfigurationManager.ConnectionStrings["dbcon"]);
         List<RoomsDashboard> RoomsDashboard = new List<RoomsDashboard>();
+        List<Rooms> Rooms = new List<Rooms>();
 
         SqlConnection con = new SqlConnection(config);
 
@@ -159,9 +163,11 @@ public partial class _roomDetails : System.Web.UI.Page
 
         using (
             SqlCommand cmd =
-                new SqlCommand("select * from Endorsement_RoomsDashboard", con)
+                new SqlCommand("select * from Endorsement_RoomsDashboard where Room_id in (select id from Endorsement_Rooms where unit_id = @unit_id)", con)
         )
         {
+            cmd.Parameters.Add("@unit_id", SqlDbType.VarChar).Value =
+                Room.unit_id;
             SqlDataReader idr = cmd.ExecuteReader();
 
             if (idr.HasRows)
@@ -244,9 +250,11 @@ public partial class _roomDetails : System.Web.UI.Page
 
         using (
             SqlCommand cmd =
-                new SqlCommand("select * from Endorsement_PatientData WHERE Patient_Status = 1 and Branch_id = @Branch_id",con)
+                new SqlCommand("select * from Endorsement_PatientData WHERE Patient_Status = 1 and Branch_id = @Branch_id and Unit = @Unit",con)
         )
         {
+            cmd.Parameters.Add("@Unit", SqlDbType.VarChar).Value =
+                info.Unit;
             cmd.Parameters.Add("@Branch_id", SqlDbType.VarChar).Value =
                 info.Branch_id;
             SqlDataReader idr = cmd.ExecuteReader();
@@ -313,6 +321,7 @@ public partial class _roomDetails : System.Web.UI.Page
 
         public int? Bed_id { get; set; }
         public int? Branch_id { get; set; }
+        public string Unit { get; set; }
 
         public string Room { get; set; }
 

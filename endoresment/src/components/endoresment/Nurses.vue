@@ -22,7 +22,7 @@
         <div class="nurses-container border bg-white shadow rounded row">
           <div
             class="mb-3 card bg-light col-md-6 nurse-card"
-            v-for="nurse in Endoresment_Nurses_Units.filter((x) => x.Unit_id == path)"
+            v-for="nurse in Endoresment_Nurses_Units"
             :key="nurse.Id"
           >
             <div class="row">
@@ -270,6 +270,7 @@ export default {
     $.ajax({
       type: "POST",
       url: that.apiUrl + "endoresment/Nurses.aspx/getEndoresment_Nurses_UnitsData",
+      data:JSON.stringify({"nurse": {"Unit_id": that.path}}),
       contentType: "application/json; charset=utf-8",
       dataType: "json",
       success: function (data) {

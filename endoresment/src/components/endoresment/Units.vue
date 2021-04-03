@@ -194,13 +194,22 @@ export default {
                 that.UnitsDash = JSON.parse(data.d);
                 if (new Date().getHours() < 20 && new Date().getHours() >= 8) {
                     that.Shift = 'Day';
-                    that.UnitsDash = that.UnitsDash.filter(x => x.Shift_date.trim() == moment(new Date()).format('YYYY-MM-DD') && x.Shift.trim() == 'Day');
+                    that.UnitsDash = that.UnitsDash.filter(x => {
+                        let d = x.Shift_date.substr(3, 3) +
+                        x.Shift_date.substr(0, 3) +
+                        x.Shift_date.substr(6, 4);
+
+                        return moment(d).format('YYYY-MM-DD') == moment(new Date()).format('YYYY-MM-DD') && x.Shift.trim() == 'Day'
+                    });
                 } else {
                     that.Shift = 'Night';
                     that.UnitsDash = that.UnitsDash.filter(x => {
                     let checkDate = moment(moment(new Date()).format('YYYY-MM-DD') + ' 20:00');
                     let check = new Date().getHours() < 8;
-                    return x.Shift.trim() == 'Night' && (check ? moment(x.Shift_date.trim() + ' 19:59').add(12,'Hour') < checkDate : moment(x.Shift_date.trim() + ' 20:01').add(12,'Hour') > checkDate)
+                    let d = x.Shift_date.substr(3, 3) +
+                    x.Shift_date.substr(0, 3) +
+                    x.Shift_date.substr(6, 4);
+                    return x.Shift.trim() == 'Night' && (check ? moment(d + ' 19:59').add(12,'Hour') < checkDate : moment(d + ' 20:01').add(12,'Hour') > checkDate)
                     });
                 }
             },

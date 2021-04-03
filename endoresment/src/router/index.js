@@ -17,7 +17,7 @@ import or_patient from "@/components/endoresment/or_patient";
 import or_patient_edit from "@/components/endoresment/or_patient_edit";
 import OR from "@/components/endoresment/OR";
 import OR_details from "@/components/endoresment/OR_details";
-import selectUnit from "@/components/endoresment/selectUnit";
+import selectUnit from "@/components/endoresment/roomDetails";
 import Handover from "@/components/endoresment/Handover";
 import Nurses from "@/components/endoresment/Nurses";
 import editNurses from "@/components/endoresment/editNurses";
@@ -39,7 +39,7 @@ const router = new Router({
       meta: {},
     },
     {
-      path: "/Units",
+      path: "/",
       name: "Units Dashboard",
       component: Units,
       meta: {
@@ -51,7 +51,7 @@ const router = new Router({
       },
     },
     {
-      path: "/",
+      path: "/Endorsement",
       name: "Endorsement",
       component: Handover,
       meta: {
@@ -351,8 +351,10 @@ router.beforeEach((to, from, next) => {
 
 // authorization
 let r = router.options.routes;
-r.map(x=> {
-  x.meta.authCheck =  x.meta.auth == 'all' || x.meta.auth == JSON.parse(localStorage.getItem("user")).Role_id
-});
+if (localStorage.getItem("user")) {
+  r.map(x=> {
+    x.meta.authCheck =  x.meta.auth == 'all' || x.meta.auth == JSON.parse(localStorage.getItem("user")).Role_id
+  });
+}
 
 export default router;

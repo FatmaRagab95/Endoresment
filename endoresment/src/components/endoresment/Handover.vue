@@ -68,7 +68,7 @@
                                 <th><span>Surgery, Procedures</span></th>
                                 <th class='bg-warning'><span>Progress of consultations</span></th>
                             </tr>
-                            <tr v-if='user.Role_id != 17' v-for='(patient) in patients.filter(x => unit.Unit_name.trim() == x.Unit.trim())' :key='patient.id'>
+                            <tr v-if='user.Role_id != 10' v-for='(patient) in patients.filter(x => unit.Unit_name.trim() == x.Unit.trim())' :key='patient.id'>
                                 <td>
                                     <span>{{patient.Room}}</span>
                                 </td>
@@ -180,7 +180,7 @@
                                     <router-link :to='{name:"Patient Data", params:{id:patient.id}}' target='_blank' class='btn btn-info shadow btn-sm'>Details</router-link>
                                 </td>
                             </tr>
-                            <tr v-if='user.Role_id == 17' 
+                            <tr v-if='user.Role_id == 10' 
                             v-for='(patient) in DoctorPatients.filter(x => unit.Unit_name.trim() == x.Unit.trim())' :key='patient.id'>
                                 <td>
                                     <span>{{patient.Room}}</span>

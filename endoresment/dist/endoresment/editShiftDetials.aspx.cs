@@ -61,6 +61,10 @@ public partial class _editShiftDetials : System.Web.UI.Page
                         idr["id"] != DBNull.Value
                             ? Convert.ToInt32(idr["id"])
                             : 0,
+                    Unit_id =
+                        idr["Unit_id"] != DBNull.Value
+                            ? Convert.ToInt32(idr["Unit_id"])
+                            : 0,
                     Unit_name = Convert.ToString(idr["Unit_name"]),
                     Shift = Convert.ToString(idr["Shift"]),
                     Shift_date = Convert.ToString(idr["Shift_date"]),
@@ -236,11 +240,12 @@ public partial class _editShiftDetials : System.Web.UI.Page
 
     // get Nurses
     [WebMethod]
-    public static string getNursesData()
+    public static string getNursesData(UnitsDash unit)
     {
         string config =
             Convert.ToString(ConfigurationManager.ConnectionStrings["dbcon"]);
         List<Nurses> Nurses = new List<Nurses>();
+        List<UnitsDash> UnitsDash = new List<UnitsDash>();
 
         SqlConnection con = new SqlConnection(config);
 
@@ -248,10 +253,12 @@ public partial class _editShiftDetials : System.Web.UI.Page
 
         using (
             SqlCommand cmd =
-                new SqlCommand("select * from adminusers where Role_id = 17",
+                new SqlCommand("select * from adminusers where Role_id = 17 and Area_id = @Unit_id",
                     con)
         )
         {
+            cmd.Parameters.Add("@Unit_id", SqlDbType.Int).Value =
+                unit.Unit_id;
             SqlDataReader idr = cmd.ExecuteReader();
 
             if (idr.HasRows)

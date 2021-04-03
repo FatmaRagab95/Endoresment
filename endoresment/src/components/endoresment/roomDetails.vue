@@ -3,11 +3,23 @@
     <!-- start unit title -->
     <div class="container-fluid mt-2 bg-white pt-3 pb-3 card">
       <div class="container text-center">
-        <h1 class="mt-4 text-secondary" style="text-decoration: underline">
-          {{ getUnitsData.filter((x) => x.U_id == path)[0].U_name }} ......
+        <h1 class="mt-4 text-secondary" style="text-decoration: underline" v-if='selectedUnit'>
+          {{ selectedUnit.U_name }} ......
           <span class="badge bg-primary text-white"
-            >{{ getRoomsData.filter((x) => x.unit_id == path).length }} Rooms</span>
+            >{{ getRoomsData.length }} Rooms</span>
         </h1>
+        
+        <v-combobox
+          v-model="selectedUnit"
+          :items="getUnitsData"
+          item-text="U_name"
+          :item-value="'U_name'"
+          name='unit'
+          label="Unit"
+          outlined
+          dense
+          style='max-width:200px; margin:30px auto 0 auto'
+        ></v-combobox>
       </div>
     </div>
     <!-- end unit title -->
@@ -16,7 +28,7 @@
     <div class="container-fluid mt-2 bg-white pt-3 pb-3 card viewPatients">
       <div
         class="container"
-        v-if="getRoomsData.filter((x) => x.unit_id == path).length > 0">
+        v-if="getRoomsData.length > 0">
         <!--- start double rooms --->
         <ul class='list-unstyled'>
           <li class='cube-container'>
@@ -25,20 +37,20 @@
           <li class='cube-container'><span class='cube bg-danger rounded'>{{RoomsDashboard.filter((x) => x.Status_id == 2).length}}</span> Occupied Beds</li>
         </ul>
         <h4
-          v-if="filterUnits.filter((x) => x.Room_type_id == 1).length > 0"
+          v-if="getRoomsData.filter((x) => x.Room_type_id == 1).length > 0"
           class="text-secondary text-left border-top pt-5"
           style="text-decoration: underline">
           double rooms ----
           <span class="badge badge-secondary">{{
-            filterUnits.filter((x) => x.Room_type_id == 1).length
+            getRoomsData.filter((x) => x.Room_type_id == 1).length
           }}</span>
         </h4>
         <div
           class="row text-center"
-          v-if="filterUnits.filter((x) => x.Room_type_id == 1).length > 0">
+          v-if="getRoomsData.filter((x) => x.Room_type_id == 1).length > 0">
           <div
             class="col-md-4 p-2"
-            v-for="room in filterUnits.filter((x) => x.Room_type_id == 1)"
+            v-for="room in getRoomsData.filter((x) => x.Room_type_id == 1)"
             :key="room.R_id">
             <div class="bg-light shadow p-2 container card">
               <h4
@@ -129,20 +141,20 @@
 
         <!--- start single rooms --->
         <h4
-          v-if="filterUnits.filter((x) => x.Room_type_id == 2).length > 0"
+          v-if="getRoomsData.filter((x) => x.Room_type_id == 2).length > 0"
           class="text-secondary text-left mt-5 border-top pt-5"
           style="text-decoration: underline">
           single rooms ----
           <span class="badge badge-secondary">{{
-            filterUnits.filter((x) => x.Room_type_id == 2).length
+            getRoomsData.filter((x) => x.Room_type_id == 2).length
           }}</span>
         </h4>
         <div
           class="row text-center"
-          v-if="filterUnits.filter((x) => x.Room_type_id == 2).length > 0">
+          v-if="getRoomsData.filter((x) => x.Room_type_id == 2).length > 0">
           <div
             class="col-md-4 p-2"
-            v-for="room in filterUnits.filter((x) => x.Room_type_id == 2)"
+            v-for="room in getRoomsData.filter((x) => x.Room_type_id == 2)"
             :key="room.R_id">
             <div class="bg-light shadow p-2 container card">
               <h4
@@ -242,22 +254,22 @@
 
         <!--- start suits --->
         <h4
-          v-if="filterUnits.filter((x) => x.Room_type_id == 3).length > 0"
+          v-if="getRoomsData.filter((x) => x.Room_type_id == 3).length > 0"
           class="text-secondary text-left mt-5 border-top pt-5"
           style="text-decoration: underline"
         >
           suits ----
           <span class="badge badge-secondary">{{
-            filterUnits.filter((x) => x.Room_type_id == 3).length
+            getRoomsData.filter((x) => x.Room_type_id == 3).length
           }}</span>
         </h4>
         <div
           class="row text-center"
-          v-if="filterUnits.filter((x) => x.Room_type_id == 3).length > 0"
+          v-if="getRoomsData.filter((x) => x.Room_type_id == 3).length > 0"
         >
           <div
             class="col-md-4 p-2"
-            v-for="room in filterUnits.filter((x) => x.Room_type_id == 3)"
+            v-for="room in getRoomsData.filter((x) => x.Room_type_id == 3)"
             :key="room.R_id"
           >
             <div class="bg-light shadow p-2 container card">
@@ -361,22 +373,22 @@
 
         <!--- start daycase rooms --->
         <h4
-          v-if="filterUnits.filter((x) => x.Room_type_id == 4).length > 0"
+          v-if="getRoomsData.filter((x) => x.Room_type_id == 4).length > 0"
           class="text-secondary text-left mt-5 border-top pt-5"
           style="text-decoration: underline"
         >
           daycase rooms ----
           <span class="badge badge-secondary">{{
-            filterUnits.filter((x) => x.Room_type_id == 4).length
+            getRoomsData.filter((x) => x.Room_type_id == 4).length
           }}</span>
         </h4>
         <div
           class="row text-center"
-          v-if="filterUnits.filter((x) => x.Room_type_id == 4).length > 0"
+          v-if="getRoomsData.filter((x) => x.Room_type_id == 4).length > 0"
         >
           <div
             class="col-md-4 p-2"
-            v-for="room in filterUnits.filter((x) => x.Room_type_id == 4)"
+            v-for="room in getRoomsData.filter((x) => x.Room_type_id == 4)"
             :key="room.R_id"
           >
             <div class="bg-light shadow p-2 container card">
@@ -480,22 +492,22 @@
         
         <!--- start ccu rooms --->
         <h4
-          v-if="filterUnits.filter((x) => x.Room_type_id == 5).length > 0"
+          v-if="getRoomsData.filter((x) => x.Room_type_id == 5).length > 0"
           class="text-secondary text-left mt-5 border-top pt-5"
           style="text-decoration: underline"
         >
           ccu rooms ----
           <span class="badge badge-secondary">{{
-            filterUnits.filter((x) => x.Room_type_id == 5).length
+            getRoomsData.filter((x) => x.Room_type_id == 5).length
           }}</span>
         </h4>
         <div
           class="row text-center"
-          v-if="filterUnits.filter((x) => x.Room_type_id == 5).length > 0"
+          v-if="getRoomsData.filter((x) => x.Room_type_id == 5).length > 0"
         >
           <div
             class="col-md-4 p-2"
-            v-for="room in filterUnits.filter((x) => x.Room_type_id == 5)"
+            v-for="room in getRoomsData.filter((x) => x.Room_type_id == 5)"
             :key="room.R_id"
           >
             <div class="bg-light shadow p-2 container card">
@@ -766,9 +778,10 @@ export default {
       Consultants: [],
       PatientsData: [],
       Branches: [],
-      filterUnits: [],
+      getRoomsData: [],
       patientDetails: [],
       selectedUnit: null,
+      Beds:[],
 
       currentDate: moment(new Date()).format("YYYY-MM-DD"),
 
@@ -856,8 +869,50 @@ export default {
         });
       }
     },
+    //get rooms and beds 
+    RoomsInfo() {
+      let that = this;
+      //get rooms
+      $.ajax({
+        type: "POST",
+        url: that.apiUrl + "endoresment/roomDetails.aspx/getRoomsData",
+        data:JSON.stringify({"Room": {'unit_id': that.selectedUnit.U_id}}),
+        contentType: "application/json; charset=utf-8",
+        dataType: "json",
+        success: function (data) {
+          that.getRoomsData = JSON.parse(data.d);
+        },
+      });
+
+      //get rooms dashboards
+      $.ajax({
+        type: "POST",
+        url: that.apiUrl + "endoresment/roomDetails.aspx/getRoomsDashboardData",
+        data:JSON.stringify({"Room": {'unit_id': that.selectedUnit.U_id}}),
+        contentType: "application/json; charset=utf-8",
+        dataType: "json",
+        success: function (data) {
+          that.RoomsDashboard = JSON.parse(data.d);
+        },
+      });
+
+      // get patients data
+      $.ajax({
+        type: "POST",
+        url: that.apiUrl + "endoresment/roomDetails.aspx/getPatientsData",
+        data:JSON.stringify({"info": {'Branch_id': that.user.Branch_ID, 'Unit': that.selectedUnit.U_name}}),
+        contentType: "application/json; charset=utf-8",
+        dataType: "json",
+        success: function (data) {
+          that.PatientsData = JSON.parse(data.d);
+        },
+      });
+    }
   },    
   watch: {
+    selectedUnit: function () {
+      this.RoomsInfo();
+    },
     'newPatient.Specialty': function () {
         let Specialty = this.Specialities.filter(x => x.Spcy_name_En == this.newPatient.Specialty)[0].Spcy_id,
         that = this;
@@ -884,56 +939,13 @@ export default {
     $.ajax({
       type: "POST",
       url: that.apiUrl + "endoresment/roomDetails.aspx/getUnitsData",
+      data:JSON.stringify({"branch": {"id": that.user.Branch_ID}}),
       contentType: "application/json; charset=utf-8",
       dataType: "json",
       success: function (data) {
         that.getUnitsData = JSON.parse(data.d);
-      },
-    });
-
-    //get rooms
-    $.ajax({
-      type: "POST",
-      url: that.apiUrl + "endoresment/roomDetails.aspx/getRoomsData",
-      contentType: "application/json; charset=utf-8",
-      dataType: "json",
-      success: function (data) {
-        that.getRoomsData = JSON.parse(data.d);
-        that.filterUnits = that.getRoomsData.filter((x) => x.unit_id == that.path);
-      },
-    });
-
-    //get rooms dashboards
-    $.ajax({
-      type: "POST",
-      url: that.apiUrl + "endoresment/roomDetails.aspx/getRoomsDashboardData",
-      contentType: "application/json; charset=utf-8",
-      dataType: "json",
-      success: function (data) {
-        that.RoomsDashboard = JSON.parse(data.d);
-      },
-    });
-
-    // get patients data
-    $.ajax({
-      type: "POST",
-      url: that.apiUrl + "endoresment/roomDetails.aspx/getPatientsData",
-      data:JSON.stringify({"info": {'Branch_id': that.user.Branch_ID}}),
-      contentType: "application/json; charset=utf-8",
-      dataType: "json",
-      success: function (data) {
-        that.PatientsData = JSON.parse(data.d);
-      },
-    });
-
-    //get branches
-    $.ajax({
-      type: "POST",
-      url: that.apiUrl + "endoresment/roomDetails.aspx/getBranchesData",
-      contentType: "application/json; charset=utf-8",
-      dataType: "json",
-      success: function (data) {
-        that.Branches = JSON.parse(data.d);
+        that.selectedUnit = JSON.parse(data.d).length > 0 ? that.getUnitsData[0] : null;
+        that.RoomsInfo();
       },
     });
 

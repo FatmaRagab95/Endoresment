@@ -1,46 +1,48 @@
 <template>
     <div class="viewPatients">
 
-        <div class='endoresment-options pt-3 text-center border rounded'>
-            <div class="row align-items-center border-bottom border-white pt-3 pb-3" v-for='unit in Units' :key='unit.U_id'>
+        <div v-if='(user.Role_id == 12) && scheduleShifts.length > 0' 
+            class='endoresment-options mt-5 pt-3 text-center shadow rounded overflow-hidden'>
+            <div class="row align-items-center border-bottom pt-3 pb-3" v-for='shift in scheduleShifts' :key='shift.Unit_id'>
                 <div class="col-md-6">
-                    <h3 class='text-primary'> {{unit.U_name}} </h3>
+                    <h3 class='text-dark font-weight-bold'> {{shift.Unit_name}} </h3>
                 </div>
-                <div class="col-md-6">
-                    <div class="receive-shift" v-if='Shifts.filter(x => x.Unit_id == unit.U_id).length == 0'>
+                <div class="col-md-6" v-if='Shifts'>
+                    <div class="receive-shift" v-if='Shifts.filter(x => x.Unit_id == shift.Unit_id).length == 0'>
 
-                        <button v-if='unConfirmedShifts.filter(x => x.Unit_id == unit.U_id).length == 0'
+                        <button
                         type="button" class="btn btn-primary btn-block shadow" data-toggle="modal" data-target="#exampleModal2"
-                        @click.prevent='clickedUnit.Unit_id = unit.U_id; clickedUnit.Unit_name = unit.U_name'>
+                       @click.prevent='currentShift = shift'>
                             Receive Shift
-                        </button>
-
-                        <button v-else
-                        type="button" class="btn btn-success btn-block shadow" data-toggle="modal" data-target="#exampleModal3"
-                        @click.prevent='clickedUnit.Unit_id = unit.U_id; ; clickedUnit.Unit_name = unit.U_name; confirmShift = unConfirmedShifts.filter(x => x.Unit_id == unit.U_id)[0]'>
-                            Confirm receiving shift
                         </button>
                     </div>
 
-                    <p class='text-success' v-else-if='Shifts.filter(x => x.Unit_id == unit.U_id)[0].Completed'>
+                    <button v-else-if='Shifts.filter(x => x.Unit_id == shift.Unit_id && x.Confirm == 1).length == 0'
+                    type="button" class="btn btn-success btn-block shadow" data-toggle="modal" data-target="#exampleModal3"
+                    @click.prevent='currentShift = shift; confirmShift = unConfirmedShifts.filter(x => x.Unit_id == shift.Unit_id)[0]'>
+                        Confirm receiving shift
+                    </button>
+
+                    <p class='text-success' v-else-if='Shifts.filter(x => x.Unit_id == shift.Unit_id)[0].Completed'>
                         <i class='fa fa-check-circle pr-1'></i> You handoverd current shift!
                     </p>
                     
                     <button v-else
                         type="button" class="btn btn-danger btn-block shadow" data-toggle="modal" data-target="#exampleModal"
-                    @click.prevent='clickedUnit.Unit_id = unit.U_id; clickedUnit.Unit_name = unit.U_name'>
+                    @click.prevent='currentShift = shift'>
                         Handover Shift
                     </button>
                 </div>
             </div>
         </div>
+        
         <div class="container">
 
             <h1 class='pt-5 pb-3  border-bottom mainColor'>
                 <i class='ml-3 mr-3 fa fa-hospital-o'></i>
                 Your Patients list</h1>
 
-            <div class='row' v-if='patients.length > 0'>
+            <div class='row' v-if='patients.length > 0 && Shifts.length'>
                 <div class="col-md-4" v-for='(patient) in patients' :key='patient.id'>
                     <div class='details'>
                         <div class="inner shadow">
@@ -85,217 +87,134 @@
             </v-alert>
 
             <!-- popup endorsing-nurse-->
-            <div class="endorsing-nurse">
+        <div class="endorsing-nurse" v-if='currentShift '>
 
-                <!-- receive shift -->
-                <div class="modal fade" id="exampleModal2" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel2" aria-hidden="true">
-                    <div class="modal-dialog" role="document">
-                        <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="exampleModalLabel2">Receive Shift 
-                                <span class='text-primary'>{{clickedUnit.Unit_name}}</span>
-                            </h5>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                        </div>
-                        <div class="modal-body">
-                            <form @submit.prevent='newShift'>
-                                <div class="custom-form">
-                                    <div class="cu-field">
-                                        <h3 class="cu-label">
-                                            <label>Receive From :</label>
-                                        </h3>
-                                        <div class="f-select">
-                                            <select class="form-control form-control-sm" required v-model='newShift.Receive_from'>
-                                                <option value=''>...</option>
-                                                <option v-for='nurse in Nurses.filter(x => NursesUnits.filter(z => z.Unit_id == clickedUnit.Unit_id && z.Nurse_id == x.Emp_ID).length > 0 ? x : false)' 
-                                                :value='nurse.Emp_ID' 
-                                                :key='nurse.Emp_ID'>{{nurse.FullName}}</option>
-                                            </select>
-                                        </div>
-                                    </div>
-
-                                    <div class="cu-field">
-                                        <h3 class="cu-label">
-                                            <label>Shift Date :</label>
-                                        </h3>
-                                        <div class="cu-input text-box">
-                                            <span class="fa fa-calendar-o"></span>
-                                            <input :max='today' type="date"  required 
-                                            v-model='newShift.Shift_date'>
-                                        </div>
-                                    </div>
-                                    <div class="cu-field radio-group">
-                                        <div class="row align-items-end">
-                                            <div class="col-md-6">
-                                                <div class="cu-field">
-                                                    
-                                                    <h3 class="cu-label">
-                                                        <label>Current Shift:</label>
-                                                    </h3>
-                                                    <input id="select3" type="radio" name="shift" value="Day"
-                                                    v-model='newShift.Shift' required>
-                                                    <label for="select3">
-                                                        <div class="cu-input cu-radio normal">
-                                                            <div class="contain">
-                                                                <span class="fa fa-check"></span> 
-                                                                <div>Day</div>
-                                                            </div>
-                                                        </div>
-                                                    </label>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <div class="cu-field">
-                                                    <input id="select4" type="radio" name="shift" value="Night"
-                                                    v-model='newShift.Shift' required>
-                                                    <label for="select4">
-                                                        <div class="cu-input cu-radio normal">
-                                                            <div class="contain">
-                                                                <span class="fa fa-check"></span>
-                                                                <div>Night</div>
-                                                            </div>
-                                                        </div>
-                                                    </label>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </form>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary shadow" data-dismiss="modal">Close</button>
-                            <button type="button" class="btn btn-primary shadow" @click='insertShift()'>Submit</button>
-                        </div>
-                        </div>
+            <!-- receive shift -->
+            <div class="modal fade" id="exampleModal2" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel2" aria-hidden="true">
+                <div class="modal-dialog modal-lg" role="document">
+                    <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel2">Receive Shift 
+                            <span class='text-primary'>{{currentShift.Unit_name}}</span>
+                        </h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
                     </div>
-                </div>
-
-                <!-- handover shift -->
-                <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                    <div class="modal-dialog" role="document">
-                        <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="exampleModalLabel">Handover Shift
-                                <span class='text-primary'>{{clickedUnit.Unit_name}}</span>
-                            </h5>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                        </div>
-                        <div class="modal-body">
-                            <form>
-                                <div class="custom-form">
-                                    <div class="cu-field">
-                                        <h3 class="cu-label">
-                                            <label>Handover To :</label>
-                                        </h3>
-                                        <div class="f-select">
-                                            <select class="form-control form-control-sm" required v-model='newShift.Nurse_id'>
-                                                <option value=''>...</option>
-                                                <option v-for='nurse in Nurses.filter(x => NursesUnits.filter(z => z.Unit_id == clickedUnit.Unit_id && z.Nurse_id == x.Emp_ID).length > 0 ? x : false)' :value='nurse.Emp_ID' 
-                                                :key='nurse.Emp_ID'>{{nurse.FullName}}</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div class="cu-field">
-                                        <h3 class="cu-label">
-                                            <label>Shift Date :</label>
-                                        </h3>
-                                        <div class="cu-input text-box">
-                                            <span class="fa fa-calendar-o"></span>
-                                            <input :max='today' type="date"  required 
-                                            v-model='newShift.Shift_date'>
-                                        </div>
-                                    </div>
-                                    <div class="cu-field radio-group">
-                                        <div class="row align-items-end">
-                                            <div class="col-md-6">
-                                                <div class="cu-field">
-                                                    
-                                                <h3 class="cu-label">
-                                                    <label>Current Shift:</label>
-                                                </h3>
-                                                    <input id="select1" type="radio" name="handShift" value="Day"
-                                                    v-model='newShift.Shift' required>
-                                                    <label for="select1">
-                                                        <div class="cu-input cu-radio normal">
-                                                            <div class="contain">
-                                                                <span class="fa fa-check"></span> 
-                                                                <div>Day</div>
-                                                            </div>
-                                                        </div>
-                                                    </label>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <div class="cu-field">
-                                                    <input id="select2" type="radio" name="handShift" value="Night"
-                                                    v-model='newShift.Shift' required>
-                                                    <label for="select2">
-                                                        <div class="cu-input cu-radio normal">
-                                                            <div class="contain">
-                                                                <span class="fa fa-check"></span>
-                                                                <div>Night</div>
-                                                            </div>
-                                                        </div>
-                                                    </label>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </form>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary shadow" data-dismiss="modal">Close</button>
-                            <button type="button" class="btn btn-primary shadow" @click='insertShift()'>Submit</button>
-                        </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- confirm receiving shift -->
-                <div v-if='confirmShift' class="modal fade" id="exampleModal3" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel3" aria-hidden="true">
-                    <div class="modal-dialog" role="document">
-                        <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="exampleModalLabel">Confirm receiving shift
-                                <span class='text-primary'>{{clickedUnit.Unit_name}}</span>
-                            </h5>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                        </div>
-                        <div class="modal-body">
+                    <div class="modal-body">
+                        <form
+                        @submit.prevent='insertShift()'>
                             <ul class='shift-info list-unstyled'>
-                                <li class='border-bottom p-3 cu-flex'>
-                                    <span class='keyWords text-primary'>Receiving From:</span>
-                                    <span class='values'>{{confirmShift.Receive_name}}</span>
-                                </li>
-                                <li class='border-bottom p-3 cu-flex'>
-                                    <span class='keyWords text-primary'>Shift Date:</span>
-                                    <span class='values'>{{confirmShift.Shift_date.substr(0,10)}}</span>
+                                <li class='border-bottom p-3 cu-flex text-dark'>
+                                    <v-select
+                                    :items="currentShift.EndoresingNurse"
+                                    item-text="FullName"
+                                    :item-value="'Emp_ID'"
+                                    label="Receiving From"
+                                    placeholder="Select a nurse"
+                                    name="nurse"
+                                    v-model="newShift.Receive_from" required></v-select>
                                 </li>
                                 <li class='p-3 cu-flex'>
-                                    <span class='keyWords text-primary'>Shift:</span>
-                                    <span class='values'>
-                                        {{confirmShift.Shift}}
-                                        <span class='text-success'><i :class="confirmShift.Shift.trim() == 'Day' ? 'fa fa-sun-o' : 'fa fa-moon-o'"></i></span>
+                                    <span class='keyWords'>Shift Date:</span>
+                                    <span class='values text-secondary'>{{currentShift.Date}}</span>
+                                    <span class='values text-secondary'>
+                                        {{currentShift.Shift}}
+                                        <span class='text-success'><i :class="currentShift.Shift.trim() == 'Day' ? 'fa fa-sun-o' : 'fa fa-moon-o'"></i></span>
                                     </span>
                                 </li>
                             </ul>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary shadow" data-dismiss="modal">Close</button>
-                            <button type="button" class="btn btn-success shadow" @click='confirm()'>Confirm</button>
-                        </div>
-                        </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary shadow" data-dismiss="modal" @click='newShift.Total_Census = 0; newShift.Received = 0'>Close</button>
+                        <button type="button" class="btn btn-primary shadow" @click='insertShift()'>Submit</button>
+                    </div>
                     </div>
                 </div>
             </div>
+
+            <!-- handover shift -->
+            <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-lg" role="document">
+                    <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel2">Handover Shift 
+                            <span class='text-primary'>{{currentShift.Unit_name}}</span>
+                        </h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form
+                        @submit.prevent='insertShift()'>
+                            <ul class='shift-info list-unstyled'>
+                                <li class='border-bottom p-3 cu-flex text-dark'>
+                                    <v-select
+                                    :items="currentShift.handNurse"
+                                    item-text="FullName"
+                                    :item-value="'Emp_ID'"
+                                    label="Handover To"
+                                    placeholder="Select a nurse"
+                                    name="nurse"
+                                    v-model="newShift.Nurse_id" required></v-select>
+                                </li>
+                                <li class='p-3 cu-flex'>
+                                    <span class='keyWords'>Shift Date:</span>
+                                    <span class='values text-secondary'>{{currentShift.handoverDate}}</span>
+                                    <span class='values text-secondary'>
+                                      {{currentShift.Shift.trim() == 'Day' ? 'Night' : 'Day'}}
+                                      <span class='text-success'><i :class="currentShift.Shift.trim() == 'Day' ? 'fa fa-moon-o' : 'fa fa-sun-o'"></i></span>
+                                    </span>
+                                </li>
+                            </ul>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary shadow" data-dismiss="modal" @click='newShift.Total_Census = 0; newShift.Received = 0'>Close</button>
+                        <button type="button" class="btn btn-primary shadow" @click='insertShift()'>Submit</button>
+                    </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- confirm receiving shift -->
+            <div v-if='confirmShift' class="modal fade" id="exampleModal3" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel3" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Confirm receiving shift
+                            <span class='text-primary'>{{currentShift.Unit_name}}</span>
+                        </h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <ul class='shift-info list-unstyled'>
+                            <li class='border-bottom p-3 cu-flex'>
+                                <span class='keyWords'>Receiving From:</span>
+                                <span class='values'>{{confirmShift.Receive_name}}</span>
+                            </li>
+                            <li class='p-3 cu-flex'>
+                                <span class='keyWords'>Shift Date:</span>
+                                <span class='values text-secondary'>{{confirmShift.Shift_date.substr(0,10)}}</span>
+                                <span class='values text-secondary'>
+                                    {{confirmShift.Shift}}
+                                    <span class='text-success'><i :class="confirmShift.Shift.trim() == 'Day' ? 'fa fa-sun-o' : 'fa fa-moon-o'"></i></span>
+                                </span>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary shadow" data-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-success shadow" @click='confirm()'>Confirm</button>
+                    </div>
+                    </div>
+                </div>
+            </div>
+        </div>
         </div>
     </div>
 </template>
@@ -310,7 +229,7 @@ export default {
             Nurses:[],
             NursesUnits:[],
             Units: [],
-            Shifts: [],
+            Shifts: null,
             unConfirmedShifts: [],
             scheduleShifts:[],
             today:'',
@@ -325,10 +244,7 @@ export default {
                 Confirm: 1,
                 Entry_user: 0
             },
-            clickedUnit:{
-                Unit_id:0,
-                Unit_name:''
-            },
+            currentShift:null,
             confirmShift: null,
             apiUrl: this.link,
         }
@@ -338,14 +254,16 @@ export default {
             if ($(".modal.show form").is(":valid")) {
                 let that = this,
                 handover = false;
-                that.newShift.Unit_id = that.clickedUnit.Unit_id;
+                that.newShift.Unit_id = that.currentShift.Unit_id;
                 that.newShift.Entry_user = that.user.Emp_id;
 
                 // if it's receive shift
                 if (!that.newShift.Nurse_id) {
                     that.newShift.Nurse_id = that.user.Emp_id;
                     that.newShift.Nurse_name = that.user.FullName;
-                    that.newShift.Receive_name = that.Nurses.filter(x => x.Emp_ID == that.newShift.Receive_from)[0].FullName;;
+                    that.newShift.Receive_name = that.currentShift.EndoresingNurse.filter(x => x.Emp_ID == that.newShift.Receive_from)[0].FullName;
+                    that.newShift.Shift = that.currentShift.Shift;
+                    that.newShift.Shift_date = that.currentShift.Date;
                     that.newShift.Confirm = 1
                 } 
                 // if it's handover
@@ -353,7 +271,9 @@ export default {
                     handover = true;
                     that.newShift.Receive_from = that.user.Emp_id;
                     that.newShift.Receive_name = that.user.FullName;
-                    that.newShift.Nurse_name = that.Nurses.filter(x => x.Emp_ID == that.newShift.Nurse_id)[0].FullName;
+                    that.newShift.Nurse_name = that.currentShift.handNurse.filter(x => x.Emp_ID == that.newShift.Nurse_id)[0].FullName;
+                    that.newShift.Shift = that.currentShift.Shift.trim() == 'Day' ? 'Night' : 'Day';
+                    that.newShift.Shift_date = that.currentShift.handoverDate;
                     that.newShift.Confirm = 0
                 }
                 let stored = Object.assign({}, that.newShift);
@@ -399,7 +319,7 @@ export default {
                     complete: function () {
                         swal({
                             title: "Done!",
-                            text: `You successfully ${handover ? 'handed' : 'received'} a shift in ${that.clickedUnit.Unit_name}`,
+                            text: `You successfully ${handover ? 'handed' : 'received'} a shift in ${that.currentShift.Unit_name}`,
                             icon: "success",
                         }).then(x => {
                             $('.modal').modal('hide');
@@ -434,7 +354,7 @@ export default {
 
                             swal({
                                 title: "Done!",
-                                text: `You confirmed receiving a shift in ${that.clickedUnit.Unit_name}`,
+                                text: `You confirmed receiving a shift in ${that.currentShift.Unit_name}`,
                                 icon: "success",
                             }).then(x => {
                                 $('.modal').modal('hide');
@@ -465,7 +385,7 @@ export default {
 
                             swal({
                                 title: "Done!",
-                                text: `You confirmed receiving a shift in ${that.clickedUnit.Unit_name}`,
+                                text: `You confirmed receiving a shift in ${that.currentShift.Unit_name}`,
                                 icon: "success",
                             }).then(x => {
                                 $('.modal').modal('hide');
@@ -498,29 +418,86 @@ export default {
             },
         });
 
-        //get nurses
         $.ajax({
             type: "POST",
-            url: that.apiUrl + "endoresment/patientsNurse.aspx/getNursesData",
+            url: that.apiUrl + "endoresment/add_unit.aspx/getScheduleData",
+            data:JSON.stringify({"data": {"Nurse_id":  that.user.Emp_id}}),
             contentType: "application/json; charset=utf-8",
-            data: JSON.stringify({ info: that.user}),
             dataType: "json",
             success: function (data) {
-                that.Nurses = JSON.parse(data.d);
-            },
+                that.scheduleShifts = JSON.parse(data.d);
+                if (new Date().getHours() < 20 && new Date().getHours() >= 8) {
+                    that.scheduleShifts = that.scheduleShifts.filter(x => x.Date.trim() == moment(new Date()).format('YYYY-MM-DD') && x.Shift.trim() == 'Day');
+                } else {
+                    that.scheduleShifts = that.scheduleShifts.filter(x => {
+                    let checkDate = moment(moment(new Date()).format('YYYY-MM-DD') + ' 20:00');
+                    let check = new Date().getHours() < 8;
+                    return x.Shift.trim() == 'Night' && (check ? moment(x.Date.trim() + ' 19:59').add(12,'Hour') < checkDate : moment(x.Date.trim() + ' 20:01').add(12,'Hour') > checkDate)
+                    });
+                }
+
+
+                // if there is scheduled shift get endorsing and receiving nurses at the same unit
+                for (let i = 0; i < that.scheduleShifts.length; i++) {
+
+                    let shift = that.scheduleShifts[i].Shift.trim() == 'Day' ? 'Night' : 'Day';
+                    let scheduleDate = that.scheduleShifts[i].Shift == 'Night' ? that.scheduleShifts[i].Date : moment(that.scheduleShifts[i].Date.trim()).add(-1, "day").format('YYYY-MM-DD');
+                    
+                    that.scheduleShifts[i].EndoresingNurse = [];
+                    that.scheduleShifts[i].handNurse = [];
+                    getNurse(shift,scheduleDate, i);
+
+                }
+
+                for (let i = 0; i < that.scheduleShifts.length; i++) {
+
+                    let shift = that.scheduleShifts[i].Shift.trim() == 'Day' ? 'Night' : 'Day';
+                    let scheduleDate = that.scheduleShifts[i].Shift == 'Day' ? that.scheduleShifts[i].Date : moment(that.scheduleShifts[i].Date.trim()).add(1, "day").format('YYYY-MM-DD');
+                    getNurse(shift,scheduleDate, i);
+
+                }
+
+            }
         });
 
-        //get nurses
-        $.ajax({
-            type: "POST",
-            url: that.apiUrl + "endoresment/patientsNurse.aspx/getNursesUnitsData",
-            contentType: "application/json; charset=utf-8",
-            data: JSON.stringify({ info: that.user}),
-            dataType: "json",
-            success: function (data) {
-                that.NursesUnits = JSON.parse(data.d);
-            },
-        });
+        function getNurse (shift,scheduleDate, i) {
+            $.ajax({
+                type: "POST",
+                url: that.apiUrl + "endoresment/add_Unit.aspx/getNursesData",
+                data:JSON.stringify({"data":
+                    {"Unit_id":  that.scheduleShifts[i].Unit_id,"Role_id":that.user.Role_id,"Shift": shift, "Date": scheduleDate}
+                }),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (data) {
+                    let endCurrentShift = shift == 'Night' ? ' 7:59' : ' 19:59';
+                    let endOtherShift = shift == 'Night' ? ' 19:59' : ' 7:59';
+
+                    if (moment(that.scheduleShifts[i].Date.trim() + endCurrentShift).add(12,'Hour') < moment(scheduleDate + endOtherShift).add(12,'Hour')) {
+
+                        if (JSON.parse(data.d).length > 0) {
+                          that.scheduleShifts[i].handNurse.push(JSON.parse(data.d));
+                          that.scheduleShifts[i].handNurse = that.scheduleShifts[i].handNurse.flat();
+                        } else {
+                          that.scheduleShifts[i].handNurse.push({FullName:'Unknown', Emp_ID: 0})
+                        }
+
+                    } else {
+
+                        if (JSON.parse(data.d).length > 0) {
+                          that.scheduleShifts[i].EndoresingNurse.push(JSON.parse(data.d));
+                          that.scheduleShifts[i].EndoresingNurse = that.scheduleShifts[i].EndoresingNurse.flat();
+                        } else {
+                          that.scheduleShifts[i].EndoresingNurse = {FullName:'Unknown', Emp_ID: 0};
+                        }
+
+                    }
+
+                    that.scheduleShifts[i].handoverDate = that.scheduleShifts[i].Shift == 'Day' ? that.scheduleShifts[i].Date : moment(that.scheduleShifts[i].Date.trim()).add(1, "day").format('YYYY-MM-DD');
+                    
+                }
+            });
+        }
 
         // getUnitsData
         $.ajax({
@@ -542,36 +519,19 @@ export default {
             data: JSON.stringify({ info: that.user}),
             dataType: "json",
             success: function (data) {
+
                 that.Shifts = JSON.parse(data.d);
                 that.unConfirmedShifts = that.Shifts.filter(x => x.Confirm == 0);
+
                 if (new Date().getHours() < 20 && new Date().getHours() >= 8) {
-                    that.Shifts = that.Shifts.filter(x => x.Shift_date.substr(0,10) == moment(new Date()).format('DD/MM/YYYY') && x.Shift.trim() == 'Day')
+                    that.Shifts = that.Shifts.filter(x => x.Shift_date.substr(0,10) == moment(new Date()).format('DD/MM/YYYY') && x.Shift.trim() == 'Day');
                 } else {
-                    that.Shifts = that.Shifts.filter(x => x.Shift.trim() == 'Night')
+                    that.Shifts = that.Shifts.filter(x => x.Shift.trim() == 'Night' 
+                    && moment(x.Shift_date.trim() + ' 20:00').add(12,'Hour') >= moment(new Date()));
                 }
+
             },
         });
-
-        $.ajax({
-            type: "POST",
-            url: that.apiUrl + "endoresment/add_unit.aspx/getScheduleData",
-            data:JSON.stringify({"data": {"Nurse_id":  that.user.Emp_id}}),
-            contentType: "application/json; charset=utf-8",
-            dataType: "json",
-            success: function (data) {
-                that.scheduleShifts = JSON.parse(data.d);
-                if (new Date().getHours() < 20 && new Date().getHours() >= 8) {
-                    that.scheduleShifts = that.scheduleShifts.filter(x => x.Date.trim() == moment(new Date()).format('YYYY-MM-DD') && x.Shift.trim() == 'Day');
-                } else {
-                    that.scheduleShifts = that.scheduleShifts.filter(x => {
-                    let checkDate = moment(moment(new Date()).format('YYYY-MM-DD') + ' 20:00');
-                    let check = new Date().getHours() < 8;
-                    return x.Shift.trim() == 'Night' && (check ? moment(x.Date.trim() + ' 19:59').add(12,'Hour') < checkDate : moment(x.Date.trim() + ' 20:01').add(12,'Hour') > checkDate)
-                    });
-                }
-            }
-        });
-
         
     }
 }

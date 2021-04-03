@@ -114,7 +114,15 @@ export default {
       contentType: "application/json; charset=utf-8",
       dataType: "json",
       success: function (data) {
-        that.UnitsDash = JSON.parse(data.d);
+        that.UnitsDash = JSON.parse(data.d).filter( x => {
+          let checkDate = x.Shift_date.substr(3, 3) +
+          x.Shift_date.substr(0, 3) +
+          x.Shift_date.substr(6, 4);
+
+          let time = x.Shift.trim() == 'Day' ? moment(checkDate + ' 8:00')  : moment(checkDate + ' 20:00');
+
+          return  time <= moment(new Date());
+        });
         that.UnitsDash.map((x) => {
           let checkDate =
             x.Shift_date.substr(3, 3) +
@@ -148,7 +156,7 @@ export default {
                     that.todayData.Transfer_In,
                     that.todayData.Transfer_Out,
                   ],
-                  backgroundColor: ["#E62531", "#552DEA", "#FCEC34", "#a6cf20"],
+                  backgroundColor: ["#17a2b8", "#ffc107", "#29b770", "#dc3545"],
                 },
               ],
             },

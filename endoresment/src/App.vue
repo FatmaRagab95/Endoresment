@@ -46,8 +46,7 @@
           :NursesPatients="NursesPatients"
           :DoctorPatients="DoctorPatients"
           :DoctorData="DoctorData"
-          :Doctors="Doctors"
-        />
+          :Doctors="Doctors"/>
       </div>
     </div>
   </v-app>
@@ -92,7 +91,14 @@ export default {
             if (new Date().getHours() < 20 && new Date().getHours() >= 8) {
               that.Units = JSON.parse(data.d).filter((x) => x.Shift.trim() == "Day");
             } else {
-              that.Units = JSON.parse(data.d).filter((x) => x.Shift.trim() == "Night");
+
+              that.Units = JSON.parse(data.d).filter( x => {
+                let checkDate = x.Shift_date.substr(3, 3) +
+                x.Shift_date.substr(0, 3) +
+                x.Shift_date.substr(6, 4);
+
+                return  moment(moment(checkDate).add(12) > moment(new Date()));
+              });
             }
             if (that.Units.length > 0) {
               that.edits = true;
@@ -241,15 +247,17 @@ export default {
   },
   watch: {
     $route: function (to, from) {
-      this.user = JSON.parse(localStorage.getItem("user"));
+      if (JSON.stringify(this.user) != localStorage.getItem("user")) {
+        this.user = JSON.parse(localStorage.getItem("user"));
+        this.getUnits();
+        let r = this.$router.options.routes;
+        r.map((x) => {
+          x.meta.authCheck = x.meta.auth == "all" || x.meta.auth == this.user.Role_id;
+        });
+        location.reload();
+      }
+      
     },
-    user: function () {
-      this.getUnits();
-      let r = this.$router.options.routes;
-      r.map((x) => {
-        x.meta.authCheck = x.meta.auth == "all" || x.meta.auth == this.user.Role_id;
-      });
-    }
   },
   created() {
     this.getUnits();
@@ -370,6 +378,12 @@ input,
 select,
 textarea {
   background-color: #fff;
+}
+.v-application--is-ltr .v-text-field .v-label {
+    z-index: 1;
+}
+.v-label--active {
+  font-size:22px;
 }
 /* end reset vuetify theme */
 

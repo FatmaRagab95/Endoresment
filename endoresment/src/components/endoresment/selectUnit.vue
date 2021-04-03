@@ -37,7 +37,7 @@
 <script>
 export default {
   name: "selectUnit",
-  props: ["link"],
+  props: ["link", 'user'],
   data() {
     return {
       getUnitsData: [],
@@ -67,6 +67,7 @@ export default {
     $.ajax({
       type: "POST",
       url: that.apiUrl + "endoresment/selectUnit.aspx/getUnitsData",
+      data:JSON.stringify({"branch": {"id": that.user.Branch_ID}}),
       contentType: "application/json; charset=utf-8",
       dataType: "json",
       success: function (data) {

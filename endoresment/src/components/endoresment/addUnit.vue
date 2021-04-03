@@ -12,7 +12,7 @@
 
       <div v-if='(user.Role_id == 17) && scheduleShifts.length > 0' 
         class='endoresment-options mt-5 pt-3 text-center shadow rounded overflow-hidden'>
-        <div class="row align-items-center border-bottom pt-3 pb-3" v-for='shift in scheduleShifts' :key='shift.Unit_id'>
+        <div class="row align-items-center border-bottom pt-3 pb-3" v-for='shift in scheduleShifts.filter((v,i,a)=>a.findIndex(t=>(t.id === v.id))===i)' :key='shift.Unit_id'>
             <div class="col-md-6">
                 <h3 class='text-dark font-weight-bold'> {{shift.Unit_name}} </h3>
             </div>
@@ -75,11 +75,25 @@
                   <div class="modal-body">
                       <form @submit.prevent='submitUnit()'>
                           <ul class='shift-info list-unstyled'>
-                              <li class='border-bottom p-3 cu-flex'>
-                                  <span class='keyWords'>Receiving From:</span>
-                                  <span class='values text-secondary'>{{currentShift.EndoresingNurse.FullName}}</span>
+                              <li class='pb-3'>
+                                    <v-select
+                                    :items="currentShift.EndoresingNurse"
+                                    item-text="FullName"
+                                    :item-value="'Emp_ID'"
+                                    label="Receiving From"
+                                    placeholder="Select a nurse"
+                                    name="nurse"
+                                    v-model="newUnit.Endorsing_ChargeNurse_id" required></v-select>
                               </li>
-                              <li class='border-bottom p-3 cu-flex'>
+                              <li class='border-bottom'>
+                                <v-text-field
+                                  v-model="newUnit.Received"
+                                  type='number'
+                                  label="Patients received"
+                                  required
+                                ></v-text-field>
+                              </li>
+                              <li class='p-3 cu-flex'>
                                   <span class='keyWords'>Shift Date:</span>
                                   <span class='values text-secondary'>{{currentShift.Date}}</span>
                                   <span class='values text-secondary'>
@@ -88,35 +102,6 @@
                                   </span>
                               </li>
                           </ul>
-                          <div class="custom-form">
-
-                            <div class="cu-field">
-                              <div class="row align-items-end">
-                                <div class="col-md-6">
-                                  <div class="cu-field">
-                                    <h3 class="cu-label">
-                                      <label>Received :</label>
-                                    </h3>
-                                    <div class="cu-input text-box">
-                                      <span class="fa fa-edit"></span>
-                                      <input type="number" v-model="newUnit.Received" required />
-                                    </div>
-                                  </div>
-                                </div>
-                                <!-- <div class="col-md-6">
-                                  <div class="cu-field">
-                                    <h3 class="cu-label">
-                                      <label>Total Census :</label>
-                                    </h3>
-                                    <div class="cu-input text-box">
-                                      <span class="fa fa-edit"></span>
-                                      <input type="number" v-model="newUnit.Total_Census" required />
-                                    </div>
-                                  </div>
-                                </div> -->
-                              </div>
-                            </div>
-                          </div>
                       </form>
                   </div>
                   <div class="modal-footer">
@@ -142,49 +127,33 @@
                   <div class="modal-body">
                       <form @submit.prevent='submitUnit()'>
                           <ul class='shift-info list-unstyled'>
-                              <li class='border-bottom p-3 cu-flex'>
-                                  <span class='keyWords'>Handover To:</span>
-                                  <span class='values text-secondary'>{{currentShift.handNurse.FullName}}</span>
+                              <li class='pb-3'>
+                                    <v-select
+                                    :items="currentShift.handNurse"
+                                    item-text="FullName"
+                                    :item-value="'Emp_ID'"
+                                    label="Handover To"
+                                    placeholder="Select a nurse"
+                                    name="nurse"
+                                    v-model="newUnit.Receive_ChargeNurse_id" required></v-select>
                               </li>
-                              <li class='border-bottom p-3 cu-flex'>
+                              <li class='border-bottom'>
+                                <v-text-field
+                                  v-model="newUnit.Received"
+                                  type='number'
+                                  label="Patients received"
+                                  required
+                                ></v-text-field>
+                              </li>
+                              <li class='p-3 cu-flex'>
                                   <span class='keyWords'>Shift Date:</span>
                                   <span class='values text-secondary'>{{currentShift.handoverDate}}</span>
-                                  <span class='keyWords'>Shift:</span>
                                   <span class='values text-secondary'>
                                       {{currentShift.Shift.trim() == 'Day' ? 'Night' : 'Day'}}
                                       <span class='text-success'><i :class="currentShift.Shift.trim() == 'Day' ? 'fa fa-moon-o' : 'fa fa-sun-o'"></i></span>
                                   </span>
                               </li>
                           </ul>
-                          <div class="custom-form">
-
-                            <div class="cu-field">
-                              <div class="row align-items-end">
-                                <div class="col-md-6">
-                                  <div class="cu-field">
-                                    <h3 class="cu-label">
-                                      <label>Received :</label>
-                                    </h3>
-                                    <div class="cu-input text-box">
-                                      <span class="fa fa-edit"></span>
-                                      <input type="number" v-model="newUnit.Received" required />
-                                    </div>
-                                  </div>
-                                </div>
-                                <!-- <div class="col-md-6">
-                                  <div class="cu-field">
-                                    <h3 class="cu-label">
-                                      <label>Total Census :</label>
-                                    </h3>
-                                    <div class="cu-input text-box">
-                                      <span class="fa fa-edit"></span>
-                                      <input type="number" v-model="newUnit.Total_Census" required />
-                                    </div>
-                                  </div>
-                                </div> -->
-                              </div>
-                            </div>
-                          </div>
                       </form>
                   </div>
                   <div class="modal-footer">
@@ -194,214 +163,8 @@
                   </div>
               </div>
           </div>
-
-          <!-- confirm receiving shift
-          <div v-if='confirmShift' class="modal fade" id="exampleModal3" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel3" aria-hidden="true">
-              <div class="modal-dialog" role="document">
-                  <div class="modal-content">
-                  <div class="modal-header">
-                      <h5 class="modal-title" id="exampleModalLabel">Confirm receiving shift
-                          <span class='text-primary'>{{clickedUnit.Unit_name}}</span>
-                      </h5>
-                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                          <span aria-hidden="true">&times;</span>
-                      </button>
-                  </div>
-                  <div class="modal-body">
-                      <ul class='shift-info list-unstyled'>
-                          <li class='border-bottom p-3 cu-flex'>
-                              <span class='keyWords text-primary'>Receiving From:</span>
-                              <span class='values'>{{confirmShift.Receive_name}}</span>
-                          </li>
-                          <li class='border-bottom p-3 cu-flex'>
-                              <span class='keyWords text-primary'>Shift Date:</span>
-                              <span class='values'>{{confirmShift.Shift_date.substr(0,10)}}</span>
-                          </li>
-                          <li class='p-3 cu-flex'>
-                              <span class='keyWords text-primary'>Shift:</span>
-                              <span class='values'>
-                                  {{confirmShift.Shift}}
-                                  <span class='text-success'><i :class="confirmShift.Shift.trim() == 'Day' ? 'fa fa-sun-o' : 'fa fa-moon-o'"></i></span>
-                              </span>
-                          </li>
-                      </ul>
-                  </div>
-                  <div class="modal-footer">
-                      <button type="button" class="btn btn-secondary shadow" data-dismiss="modal">Close</button>
-                      <button type="button" class="btn btn-success shadow" @click='confirm()'>Confirm</button>
-                  </div>
-                  </div>
-              </div>
-          </div> -->
       </div>
     </v-container>
-
-
-    <!-- <div class="internal-page" id="auth">
-      <form @submit.prevent="submitUnit">
-        <div class="custom-form pt-3">
-          <div class="cu-container">
-            <div class="cu-form-group special" style="max-width: 900px">
-              <div class="title">
-                <span>
-                  <i class="fa fa-hospital-o mainColor mr-1"></i> Add shift details</span
-                >
-              </div>
-
-              <div class="cu-field">
-                <h3 class="cu-label">
-                  <label>Unit:</label>
-                </h3>
-                <div class="f-select">
-                  <select
-                    class="form-control form-control-sm"
-                    v-model="newUnit.Unit_id"
-                    required
-                  >
-                    <option v-for="unit in Units" :value="unit.U_id" :key="unit.U_name">
-                      {{ unit.U_name }}
-                    </option>
-                  </select>
-                </div>
-              </div>
-
-              <div class="cu-field">
-                <h3 class="cu-label">
-                  <label>Endorsing Charge Nurse :</label>
-                </h3>
-                <div class="f-select">
-                  <select
-                    class="form-control form-control-sm"
-                    v-model="newUnit.Endorsing_EndoresingNurse_id"
-                    required
-                  >
-                    <option
-                      v-for="Nurse in Nurses"
-                      :value="Nurse.Emp_ID"
-                      :key="Nurse.Emp_ID"
-                    >
-                      {{ Nurse.FullName }}
-                    </option>
-                  </select>
-                </div>
-              </div>
-
-              <div class="cu-field">
-                <h3 class="cu-label">
-                  <label>Receive Charge Nurse :</label>
-                </h3>
-                <div class="f-select">
-                  <select
-                    class="form-control form-control-sm"
-                    v-model="newUnit.Receive_EndoresingNurse_id"
-                    required
-                  >
-                    <option
-                      v-for="Nurse in Nurses"
-                      :value="Nurse.Emp_ID"
-                      :key="Nurse.Emp_ID"
-                    >
-                      {{ Nurse.FullName }}
-                    </option>
-                  </select>
-                </div>
-              </div>
-
-              <div class="cu-field">
-                <div class="row align-items-end">
-                  <div class="col-md-6">
-                    <div class="cu-field">
-                      <h3 class="cu-label">
-                        <label>Received :</label>
-                      </h3>
-                      <div class="cu-input text-box">
-                        <span class="fa fa-edit"></span>
-                        <input type="text" v-model="newUnit.Received" required />
-                      </div>
-                    </div>
-                  </div>
-                  <div class="col-md-6">
-                    <div class="cu-field">
-                      <h3 class="cu-label">
-                        <label>Total Census :</label>
-                      </h3>
-                      <div class="cu-input text-box">
-                        <span class="fa fa-edit"></span>
-                        <input type="text" v-model="newUnit.Total_Census" required />
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div class="cu-field radio-group">
-                <div class="row align-items-end">
-                  <div class="col-md-6">
-                    <div class="cu-field">
-                      <h3 class="cu-label">
-                        <label>Current Shift: </label>
-                      </h3>
-                    </div>
-                    <div class="cu-field">
-                      <input
-                        id="Day"
-                        type="radio"
-                        name="Shift"
-                        value="Day"
-                        @click="newUnit.Shift = 'Day'"
-                        required
-                      />
-                      <label for="Day">
-                        <div class="cu-input cu-radio normal">
-                          <div class="contain">
-                            <span class="fa fa-check"></span>
-                            <div>Day</div>
-                          </div>
-                        </div>
-                      </label>
-                    </div>
-                  </div>
-                  <div class="col-md-6">
-                    <div class="cu-field">
-                      <input
-                        id="Night"
-                        type="radio"
-                        name="Shift"
-                        value="Night"
-                        @click="newUnit.Shift = 'Night'"
-                        required
-                      />
-                      <label for="Night">
-                        <div class="cu-input cu-radio normal">
-                          <div class="contain">
-                            <span class="fa fa-check"></span>
-                            <div>Night</div>
-                          </div>
-                        </div>
-                      </label>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div class="cu-field">
-                <h3 class="cu-label">
-                  <label>Shift Date :</label>
-                </h3>
-                <div class="cu-input text-box">
-                  <span class="fa fa-calendar-o"></span>
-                  <input :max="date" type="date" v-model="newUnit.Shift_date" required />
-                </div>
-              </div>
-
-              <div class="text-center">
-                <button class="special-btn">Save</button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </form>
-    </div> -->
   </div>
 </template>
 
@@ -443,8 +206,7 @@ export default {
         that.newUnit.Shift = that.currentShift.Shift;
         that.newUnit.Shift_date = that.currentShift.Date;
         that.newUnit.Branch_id = that.user.Branch_ID;
-        that.newUnit.Endorsing_ChargeNurse_id = that.currentShift.EndoresingNurse.Emp_ID;
-        that.newUnit.Endorsing_ChargeNurse = that.currentShift.EndoresingNurse.FullName;
+        that.newUnit.Endorsing_ChargeNurse = that.currentShift.EndoresingNurse.filter(x => x.Emp_ID == that.newUnit.Endorsing_ChargeNurse_id)[0].FullName;
         that.newUnit.Receive_ChargeNurse = that.user.FullName;
         that.newUnit.Receive_ChargeNurse_id = that.user.Emp_id;
         that.newUnit.Unit_id = that.currentShift.Unit_id;
@@ -485,8 +247,7 @@ export default {
         that.newUnit.Branch_id = that.user.Branch_ID;
         that.newUnit.Endorsing_ChargeNurse_id = that.user.Emp_id;
         that.newUnit.Endorsing_ChargeNurse = that.user.FullName;
-        that.newUnit.Receive_ChargeNurse = that.currentShift.handNurse.FullName;
-        that.newUnit.Receive_ChargeNurse_id = that.currentShift.handNurse.Emp_ID;
+        that.newUnit.Receive_ChargeNurse = that.currentShift.handNurse.filter(x => x.Emp_ID == that.newUnit.Receive_ChargeNurse_id)[0].FullName;
         that.newUnit.Unit_id = that.currentShift.Unit_id;
         that.newUnit.Unit_name = that.currentShift.Unit_name;
 
@@ -616,6 +377,8 @@ export default {
 
                 let shift = that.scheduleShifts[i].Shift.trim() == 'Day' ? 'Night' : 'Day';
                 let scheduleDate = that.scheduleShifts[i].Shift == 'Night' ? that.scheduleShifts[i].Date : moment(that.scheduleShifts[i].Date.trim()).add(-1, "day").format('YYYY-MM-DD');
+                that.scheduleShifts[i].EndoresingNurse = [];
+                that.scheduleShifts[i].handNurse = [];
                 getNurse(shift,scheduleDate, i);
 
             }
@@ -631,29 +394,40 @@ export default {
             function getNurse (shift,scheduleDate, i) {
               $.ajax({
                   type: "POST",
-                  url: that.apiUrl + "endoresment/add_Unit.aspx/getChargeNursesData",
-                  data:JSON.stringify({"data": 
-                      {"Unit_id":  that.scheduleShifts[i].Unit_id,"Shift": shift, "Date": scheduleDate}
+                  url: that.apiUrl + "endoresment/add_Unit.aspx/getNursesData",
+                  data:JSON.stringify({"data":
+                      {"Unit_id":  that.scheduleShifts[i].Unit_id,"Role_id":that.user.Role_id,"Shift": shift, "Date": scheduleDate}
                   }),
                   contentType: "application/json; charset=utf-8",
                   dataType: "json",
                   success: function (data) {
-                      if (moment(that.scheduleShifts[i].Date) >= moment(scheduleDate)) {
-                        if (JSON.parse(data.d).length > 0) {
-                          that.scheduleShifts[i].EndoresingNurse = JSON.parse(data.d)[0];
-                          that.scheduleShifts[i].handNurse = JSON.parse(data.d)[0];
-                        } else {
-                          that.scheduleShifts[i].EndoresingNurse = {FullName:'Unknown', Emp_ID: 0}
-                          that.scheduleShifts[i].handNurse = {FullName:'Unknown', Emp_ID: 0}
-                        }
-                      }
+                      let endCurrentShift = shift == 'Night' ? ' 7:59' : ' 19:59';
+                      let endOtherShift = shift == 'Night' ? ' 19:59' : ' 7:59';
+                      if (moment(that.scheduleShifts[i].Date.trim() + endCurrentShift).add(12,'Hour') < moment(scheduleDate + endOtherShift).add(12,'Hour')) {
 
+                          if (JSON.parse(data.d).length > 0) {
+                            that.scheduleShifts[i].handNurse.push(JSON.parse(data.d));
+                            that.scheduleShifts[i].handNurse = that.scheduleShifts[i].handNurse.flat();
+                          } else {
+                            that.scheduleShifts[i].handNurse.push({FullName:'Unknown', Emp_ID: 0})
+                          }
+
+                      } else {
+
+                          if (JSON.parse(data.d).length > 0) {
+                            that.scheduleShifts[i].EndoresingNurse.push(JSON.parse(data.d));
+                            that.scheduleShifts[i].EndoresingNurse = that.scheduleShifts[i].EndoresingNurse.flat();
+                          } else {
+                            that.scheduleShifts[i].EndoresingNurse = {FullName:'Unknown', Emp_ID: 0};
+                          }
+
+                      }
 
                       that.scheduleShifts[i].handoverDate = that.scheduleShifts[i].Shift == 'Day' ? that.scheduleShifts[i].Date : moment(that.scheduleShifts[i].Date.trim()).add(1, "day").format('YYYY-MM-DD');
                       
                   }
               });
-            }
+          }
         }
     });
   },

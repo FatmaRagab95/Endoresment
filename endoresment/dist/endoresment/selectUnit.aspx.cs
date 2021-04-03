@@ -16,9 +16,16 @@ public partial class _selectUnit : System.Web.UI.Page
     {
     }
 
+    public class branches
+    {
+        public int? id { get; set; }
+
+        public string Branch_EName { get; set; }
+    }
+
     // get units
     [WebMethod]
-    public static string getUnitsData()
+    public static string getUnitsData(branches branch)
     {
         string config =
             Convert.ToString(ConfigurationManager.ConnectionStrings["dbcon"]);
@@ -28,8 +35,9 @@ public partial class _selectUnit : System.Web.UI.Page
 
         con.Open();
 
-        using (SqlCommand cmd = new SqlCommand("select * from Units", con))
+        using (SqlCommand cmd = new SqlCommand("select * from Units where Branch_id = @Branch_id and Show = 1", con))
         {
+            cmd.Parameters.Add("@Branch_id", SqlDbType.Int).Value = branch.id;
             SqlDataReader idr = cmd.ExecuteReader();
 
             if (idr.HasRows)

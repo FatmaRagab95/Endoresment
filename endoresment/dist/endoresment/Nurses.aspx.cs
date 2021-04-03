@@ -72,7 +72,7 @@ public partial class _Nurses : System.Web.UI.Page
 
     // get Endoresment_Nurses_Units
     [WebMethod]
-    public static string getEndoresment_Nurses_UnitsData()
+    public static string getEndoresment_Nurses_UnitsData(Endoresment_Nurses_Units nurse)
     {
         string config =
             Convert.ToString(ConfigurationManager.ConnectionStrings["dbcon"]);
@@ -85,10 +85,11 @@ public partial class _Nurses : System.Web.UI.Page
 
         using (
             SqlCommand cmd =
-                new SqlCommand("select * from Endoresment_Nurses_Units where Active = 1",
+                new SqlCommand("select * from Endoresment_Nurses_Units where Active = 1 and Unit_id = @Unit_id and Nurse_id in (select Nurse_id from Endorsement_Nursing_schedule where Unit_id = @Unit_id and  (Shift_date >= DATEADD(day,-2, GETDATE()) ) )",
                     con)
         )
         {
+            cmd.Parameters.Add("@Unit_id", SqlDbType.Int).Value = nurse.Unit_id;
             SqlDataReader idr = cmd.ExecuteReader();
 
             if (idr.HasRows)

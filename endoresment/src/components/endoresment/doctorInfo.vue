@@ -110,6 +110,7 @@
                         class="bg-primary shadow m-auto"
                         v-model="month"
                         type="month"
+                        :max='month'
                       ></v-date-picker>
                     </v-row>
                   </div>

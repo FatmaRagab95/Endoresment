@@ -1,17 +1,49 @@
 <template>
-  <div class="nursesPdf text-capitalize pt-5">
-    <div class="container-fluid">
+  <div class="nursesPdf pt-5">
+    <div class="container">
       <!-- calender for select month -->
-
-      <v-row justify="center" class="mb-5">
+      <v-dialog
+        ref="dialog"
+        v-model="modal"
+        :return-value.sync="month"
+        width="290px"
+      >
+        <template v-slot:activator="{ on, attrs }">
+          <v-text-field
+            v-model="month"
+            label="Pick a month"
+            readonly
+            v-bind="attrs"
+            v-on="on"
+            class='card p-5 mb-3'
+          ></v-text-field>
+        </template>
         <v-date-picker
-          class="bg-primary shadow m-auto"
           v-model="month"
           type="month"
-        ></v-date-picker>
-      </v-row>
+          scrollable
+          color="green lighten-1"
+          :max="month"
+        >
+          <v-spacer></v-spacer>
+          <v-btn
+            text
+            color="primary"
+            @click="modal = false"
+          >
+            Cancel
+          </v-btn>
+          <v-btn
+            text
+            color="primary"
+            @click="$refs.dialog.save(month)"
+          >
+            OK
+          </v-btn>
+        </v-date-picker>
+      </v-dialog>
 
-      <div class="container card bg-white p-5" id="statistics">
+      <div class="card bg-white p-5" id="statistics">
         <h2 class="text-danger text-center">
           Endoresment Report
           <span class="text-dark"> {{ month }}</span>
@@ -213,6 +245,7 @@ export default {
       ShiftsData: [],
 
       month: new Date().toISOString().slice(0, 10).substring(0, 7),
+      modal: false,
 
       patientDetails: [],
       path: "",

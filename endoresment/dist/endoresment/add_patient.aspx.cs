@@ -205,7 +205,7 @@ public partial class _addPatient : System.Web.UI.Page
 
         using (
             SqlCommand cmd =
-                new SqlCommand("select * from Units where Branch_id = @Branch_id",
+                new SqlCommand("select * from Units where Branch_id = @Branch_id and Show = 1",
                     con)
         )
         {
