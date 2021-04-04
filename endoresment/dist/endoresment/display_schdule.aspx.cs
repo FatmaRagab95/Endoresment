@@ -186,4 +186,85 @@ public partial class display_schdule : System.Web.UI.Page
 
         public int? Nurse_id { get; set; }
     }
+
+        // get admin users data
+    [WebMethod]
+    public static string getadminusersData(adminusers data)
+    {
+        string config =
+            Convert.ToString(ConfigurationManager.ConnectionStrings["dbcon"]);
+        List<adminusers> adminusers = new List<adminusers>();
+
+        SqlConnection con = new SqlConnection(config);
+
+        con.Open();
+
+        using (
+            SqlCommand cmd =
+                new SqlCommand("select * from adminusers where (Role_id = 12 or Role_id = 17) and Area_id = @Area_id",
+                    con)
+        )
+        {
+            cmd.Parameters.Add("@Area_id", SqlDbType.Int).Value = data.Area_id;
+            SqlDataReader idr = cmd.ExecuteReader();
+
+            if (idr.HasRows)
+            {
+                adminusers = populateadminusersLisst(idr, con);
+            }
+        }
+
+        con.Close();
+
+        return JsonConvert.SerializeObject(adminusers);
+    }
+
+    public static List<adminusers>
+    populateadminusersLisst(SqlDataReader idr, SqlConnection con)
+    {
+        List<adminusers> adminusersI = new List<adminusers>();
+
+        while (idr.Read())
+        {
+            adminusersI
+                .Add(new adminusers {
+                    Emp_id =
+                        idr["Emp_id"] != DBNull.Value
+                            ? Convert.ToInt32(idr["Emp_id"])
+                            : 0,
+                    FullName =
+                        idr["FullName"] != DBNull.Value
+                            ? Convert.ToString(idr["FullName"])
+                            : String.Empty,
+                    Branch_ID =
+                        idr["Branch_ID"] != DBNull.Value
+                            ? Convert.ToInt32(idr["Branch_ID"])
+                            : 0,
+                    Role_id =
+                        idr["Role_id"] != DBNull.Value
+                            ? Convert.ToInt32(idr["Role_id"])
+                            : 0,
+                    Area_id =
+                        idr["Area_id"] != DBNull.Value
+                            ? Convert.ToInt32(idr["Area_id"])
+                            : 0
+                });
+        }
+
+        return adminusersI;
+    }
+
+    public class adminusers
+    {
+        public int? Emp_id { get; set; }
+
+        public string FullName { get; set; }
+
+        public int? Branch_ID { get; set; }
+
+        public int? Role_id { get; set; }
+
+        public int? Area_id { get; set; }
+    }
+
 }
