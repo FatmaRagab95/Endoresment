@@ -2,7 +2,7 @@
   <div class="nursesPdf pt-5">
     <div class="container">
       <!-- calender for select month -->
-      <v-dialog ref="dialog" v-model="modal" :return-value.sync="month" width="290px">
+      <v-dialog ref="dialog" v-model="modal" width="290px">
         <template v-slot:activator="{ on, attrs }">
           <v-text-field
             v-model="month"
@@ -154,7 +154,7 @@
 
         <!-- start shift -->
 
-        <div class="row card shadow mb-4">
+        <!--  <div class="row card shadow mb-4">
           <div class="card-header" id="shifts">
             <h3 class="text-primary">Shifts ....</h3>
           </div>
@@ -228,7 +228,7 @@
               </div>
             </div>
           </div>
-        </div>
+        </div>-->
 
         <!-- end shift -->
 

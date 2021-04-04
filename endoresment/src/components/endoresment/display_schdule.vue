@@ -192,6 +192,8 @@
                         <td>{{ nurse.Nurse_id }}</td>
                         <td v-for="shift in nurse.shifts" :key="shift.fullDate">
                           <input
+                            class="calendar-span text-dark text-uppercase"
+                            style="font-size: 20px"
                             :class="
                               shift.shift
                                 ? 'bg-success'
