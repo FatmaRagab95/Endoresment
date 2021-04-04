@@ -8,7 +8,8 @@
               <div class="title">
                 <span>
                   <i class="fa fa-hospital-o mainColor mr-1"></i>Display Nursing
-                  Schedule</span>
+                  Schedule</span
+                >
               </div>
 
               <div class="cu-field">
@@ -22,11 +23,11 @@
                 ></v-select>
               </div>
 
-              <v-row justify="center" class='mt-3'>
+              <v-row justify="center" class="mt-3">
                 <v-date-picker
-              class='bg-primary shadow m-auto'
-              v-model="month"
-              type="month"
+                  class="bg-primary shadow m-auto"
+                  v-model="month"
+                  type="month"
                 ></v-date-picker>
               </v-row>
 
@@ -41,23 +42,24 @@
       </form>
 
       <form v-if="displayTable">
-        
         <div class="container-fluid pt-5">
           <div class="card shadow">
             <div class="row p-4 align-items-center">
-              <div class="col-lg-4 col-md-6"><span class="text-dark mr-2 font-weight-bold">Month :</span>
-                {{date}}
+              <div class="col-lg-4 col-md-6">
+                <span class="text-dark mr-2 font-weight-bold">Month :</span>
+                {{ date }}
               </div>
-              <div class="col-lg-4 col-md-6"><span class="text-dark mr-2 font-weight-bold">Unit :</span>
+              <div class="col-lg-4 col-md-6">
+                <span class="text-dark mr-2 font-weight-bold">Unit :</span>
                 {{ Units.filter((x) => x.U_id == unit)[0].U_name }}
               </div>
               <div class="col-lg-4 col-md-6">
-                  <v-select
-                    :items="items"
-                    label="Filter"
-                    v-model='filtered'
-                    @change='filterTable()'
-                  ></v-select>
+                <v-select
+                  :items="items"
+                  label="Filter"
+                  v-model="filtered"
+                  @change="filterTable()"
+                ></v-select>
               </div>
             </div>
 
@@ -70,43 +72,67 @@
               dark
               big
               color="green accent-3"
-              @click='displayTable = !displayTable'
+              @click="displayTable = !displayTable"
             >
-              <v-icon dark>
-                mdi-pencil
-              </v-icon>
+              <v-icon dark> mdi-pencil </v-icon>
+            </v-btn>
+            <v-btn
+              class="mx-2"
+              fab
+              bottom
+              right
+              absolute
+              dark
+              big
+              color="red accent-3"
+              data-toggle="modal"
+              data-target="#exampleModalCenter"
+            >
+              <v-icon dark> mdi-calendar-edit </v-icon>
             </v-btn>
           </div>
         </div>
 
         <div class="container-fluid pt-5 pb-5">
           <div class="card shadow p-3">
-            <v-simple-table 
-              fixed-header
-              height="350px">
+            <v-simple-table fixed-header height="350px">
               <template v-slot:default>
                 <thead>
                   <tr>
                     <th>#</th>
                     <th>Staff Name</th>
                     <th>ID</th>
-                    <th v-for='(day, i) in monthCalendar' :key='day.day' class='text-center pl-1 pr-1' :class='day.day.substr(-3,3) == "Fri" ? "bg-grey" : "bg-white"'>
-                      <span class='d-block'>{{i + 1}}</span>
-                      <span class='d-block'>{{day.day.substr(-3,3)}}</span>
+                    <th
+                      v-for="(day, i) in monthCalendar"
+                      :key="day.day"
+                      class="text-center pl-1 pr-1"
+                      :class="day.day.substr(-3, 3) == 'Fri' ? 'bg-grey' : 'bg-white'"
+                    >
+                      <span class="d-block">{{ i + 1 }}</span>
+                      <span class="d-block">{{ day.day.substr(-3, 3) }}</span>
                     </th>
-                    <th class='bg-primary text-white'>Total</th>
+                    <th class="bg-primary text-white">Total</th>
                   </tr>
                 </thead>
-                <tbody v-if='displayed.length > 0'>
-                  <tr v-for='(nurse, i) in displayed' :key='nurse.Nurse_id'>
-                    <td>{{i + 1}}</td>
-                    <td style='min-width:120px'>{{nurse.Nurse_name}}</td>
-                    <td>{{nurse.Nurse_id}}</td>
-                    <td v-for='shift in nurse.shifts' :key='shift.fullDate'>
-                      <span class='calendar-span' 
-                      :class='shift.shift ? "bg-success" : shift.name.substr(-3,3) != "Fri" ?  "bg-light border" :"bg-grey"'>{{shift.shift}}</span>
+                <tbody v-if="displayed.length > 0">
+                  <tr v-for="(nurse, i) in displayed" :key="nurse.Nurse_id">
+                    <td>{{ i + 1 }}</td>
+                    <td style="min-width: 120px">{{ nurse.Nurse_name }}</td>
+                    <td>{{ nurse.Nurse_id }}</td>
+                    <td v-for="shift in nurse.shifts" :key="shift.fullDate">
+                      <span
+                        class="calendar-span"
+                        :class="
+                          shift.shift
+                            ? 'bg-success'
+                            : shift.name.substr(-3, 3) != 'Fri'
+                            ? 'bg-light border'
+                            : 'bg-grey'
+                        "
+                        >{{ shift.shift }}</span
+                      >
                     </td>
-                    <td class='bg-primary text-white text-center'>{{nurse.Total}}</td>
+                    <td class="bg-primary text-white text-center">{{ nurse.Total }}</td>
                   </tr>
                 </tbody>
               </template>
@@ -115,31 +141,111 @@
         </div>
       </form>
     </div>
+
+    <!-- start edit Modal -->
+    <div
+      class="modal fade"
+      id="exampleModalCenter"
+      tabindex="-1"
+      role="dialog"
+      aria-labelledby="exampleModalCenterTitle"
+      aria-hidden="true"
+    >
+      <div
+        class="modal-dialog modal-dialog-centered"
+        role="document"
+        style="max-width: 1000px; max-height: 600px; margin-top: 100px"
+      >
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLongTitle">Edit Schdule</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div class="container-fluid pt-5 pb-5">
+              <div class="card shadow p-3">
+                <v-simple-table fixed-header height="350px">
+                  <template v-slot:default>
+                    <thead>
+                      <tr>
+                        <th>#</th>
+                        <th>Staff Name</th>
+                        <th>ID</th>
+                        <th
+                          v-for="(day, i) in monthCalendar"
+                          :key="day.day"
+                          class="text-center pl-1 pr-1"
+                          :class="day.day.substr(-3, 3) == 'Fri' ? 'bg-grey' : 'bg-white'"
+                        >
+                          <span class="d-block">{{ i + 1 }}</span>
+                          <span class="d-block">{{ day.day.substr(-3, 3) }}</span>
+                        </th>
+                        <th class="bg-primary text-white">Total</th>
+                      </tr>
+                    </thead>
+                    <tbody v-if="displayed.length > 0">
+                      <tr v-for="(nurse, i) in displayed" :key="nurse.Nurse_id">
+                        <td>{{ i + 1 }}</td>
+                        <td style="min-width: 120px">{{ nurse.Nurse_name }}</td>
+                        <td>{{ nurse.Nurse_id }}</td>
+                        <td v-for="shift in nurse.shifts" :key="shift.fullDate">
+                          <input
+                            :class="
+                              shift.shift
+                                ? 'bg-success'
+                                : shift.name.substr(-3, 3) != 'Fri'
+                                ? 'bg-light border'
+                                : 'bg-grey'
+                            "
+                            v-model="shift.shift"
+                          />
+                        </td>
+                        <td class="bg-primary text-white text-center">
+                          {{ nurse.Total }}
+                        </td>
+                      </tr>
+                    </tbody>
+                  </template>
+                </v-simple-table>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                    Close
+                  </button>
+                  <button type="button" class="btn btn-primary">edit</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- end edit Modal -->
   </div>
 </template>
 
 <script>
-
-import { dragscroll } from 'vue-dragscroll'
+import { dragscroll } from "vue-dragscroll";
 
 export default {
   name: "display_schdule",
   props: ["link", "user"],
   directives: {
-      dragscroll
+    dragscroll,
   },
   data() {
     return {
       apiUrl: this.link,
-      items: ['All', 'Nurses', 'Charge Nurses'],
-      filtered:'All',
+      items: ["All", "Nurses", "Charge Nurses"],
+      filtered: "All",
       Units: [],
       Nurses: [],
-      displayed: [],   
+      displayed: [],
       Endorsement_Nursing_schedule: [],
 
-      displayTable:false,
-      date:'',
+      displayTable: false,
+      date: "",
 
       month: "",
       unit: 1,
@@ -159,17 +265,15 @@ export default {
           start.isBefore(end);
           start.add(1, "day")
         ) {
-          arr.push(
-            {
-              fullDate: start.format("YYYY-MM-DD"),
-              day: start.format("D-ddd")
-            }
-          );
+          arr.push({
+            fullDate: start.format("YYYY-MM-DD"),
+            day: start.format("D-ddd"),
+          });
         }
         return arr;
       }
       this.monthCalendar = getMonths(this.month);
-      this.date  = moment(this.month).format('MMMM-YYYY');
+      this.date = moment(this.month).format("MMMM-YYYY");
 
       //get getEndorsement_Nursing_scheduleData
       let that = this;
@@ -186,16 +290,14 @@ export default {
           that.selectedMonth = that.Endorsement_Nursing_schedule;
           that.tableData();
           that.displayTable = true;
-        }
+        },
       });
-
     },
     tableData() {
       // 1- get nurses names in Endorsement_Nursing_schedule without duplicate
-      this.Nurses = this.Endorsement_Nursing_schedule.filter((thing, index, self) =>
-        index === self.findIndex((t) => (
-          t.Nurse_id === thing.Nurse_id
-        ))
+      this.Nurses = this.Endorsement_Nursing_schedule.filter(
+        (thing, index, self) =>
+          index === self.findIndex((t) => t.Nurse_id === thing.Nurse_id)
       );
 
       // 2- push all shift data for 30 days
@@ -204,16 +306,22 @@ export default {
       this.Nurses.map((x, n) => {
         x.shifts = [];
         x.Total = 0;
-        that.monthCalendar.map(z => {
+        that.monthCalendar.map((z) => {
           let obj = {};
           obj.name = z.day;
 
-          if (that.Endorsement_Nursing_schedule.filter(i => i.Nurse_name == x.Nurse_name && z.fullDate.trim() == i.Date.trim()).length > 0) {
-            obj.shift = that.Endorsement_Nursing_schedule.filter(i => i.Nurse_name == x.Nurse_name && z.fullDate.trim() == i.Date.trim())[0].Shift.substr(0,1);
+          if (
+            that.Endorsement_Nursing_schedule.filter(
+              (i) => i.Nurse_name == x.Nurse_name && z.fullDate.trim() == i.Date.trim()
+            ).length > 0
+          ) {
+            obj.shift = that.Endorsement_Nursing_schedule.filter(
+              (i) => i.Nurse_name == x.Nurse_name && z.fullDate.trim() == i.Date.trim()
+            )[0].Shift.substr(0, 1);
             obj.work = true;
             x.Total++;
           } else {
-            obj.shift = '';
+            obj.shift = "";
             obj.work = false;
           }
 
@@ -226,15 +334,14 @@ export default {
       });
     },
     filterTable() {
-      if (this.filtered == 'All') {
+      if (this.filtered == "All") {
         this.displayed = this.Nurses;
-
-      } else if (this.filtered == 'Nurses') {
-        this.displayed = this.Nurses.filter(x => x.Nurse_role == 12);
+      } else if (this.filtered == "Nurses") {
+        this.displayed = this.Nurses.filter((x) => x.Nurse_role == 12);
       } else {
-        this.displayed = this.Nurses.filter(x => x.Nurse_role == 17);
+        this.displayed = this.Nurses.filter((x) => x.Nurse_role == 17);
       }
-    }
+    },
   },
 
   created() {
@@ -258,10 +365,10 @@ export default {
 
 <style scoped>
 .display_schdule {
-    min-height:100vh;
-    background-color:#f6f8fb;
-    background:#f6f8fb url('../../assets/layout/img/backgrounds/bg9.svg') top no-repeat;
-    background-size:contain;
+  min-height: 100vh;
+  background-color: #f6f8fb;
+  background: #f6f8fb url("../../assets/layout/img/backgrounds/bg9.svg") top no-repeat;
+  background-size: contain;
 }
 .custom-form {
   margin: 15px;
@@ -319,23 +426,24 @@ export default {
   margin-right: 15px;
 }
 th {
-  font-size:16px;
+  font-size: 16px;
 }
 .calendar-span {
-  display:block;
-  width:20px;
-  height:20px;
-  line-height:20px;
-  text-align:center;
-  color:#fff;
-  border-radius:5px;
-  font-size:12px;
+  display: block;
+  width: 20px;
+  height: 20px;
+  line-height: 20px;
+  text-align: center;
+  color: #fff;
+  border-radius: 5px;
+  font-size: 12px;
 }
 .v-data-table > .v-data-table__wrapper > table > thead > tr > th {
-  font-size:14px;
+  font-size: 14px;
 }
-table th, table td {
-    display: table-cell;
-    vertical-align: middle;
+table th,
+table td {
+  display: table-cell;
+  vertical-align: middle;
 }
 </style>

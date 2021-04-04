@@ -6,7 +6,12 @@
         <div class="row">
           <div class="col-lg-7">
             <div class="card shadow bg-white mb-5">
-              <router-link :to='{name:"Room Details", params:{id:unitId}}' class="btn btn-bg btn-primary text-white" target="_blank">View Rooms</router-link>
+              <router-link
+                :to="{ name: 'Room Details', params: { id: unitId } }"
+                class="btn btn-bg btn-primary text-white"
+                target="_blank"
+                >View Rooms</router-link
+              >
             </div>
             <div class="card bg-white shadow">
               <h4><i class="fa fa-table"></i> Latest Shifts</h4>
@@ -88,7 +93,7 @@
 <script>
 export default {
   name: "UnitDetails",
-  props: ['link'],
+  props: ["link"],
   data() {
     return {
       UnitsDash: [],
@@ -105,7 +110,7 @@ export default {
   },
   created() {
     let that = this;
-    
+
     //get Units dahsboard
     $.ajax({
       type: "POST",
@@ -114,31 +119,37 @@ export default {
       contentType: "application/json; charset=utf-8",
       dataType: "json",
       success: function (data) {
-        that.UnitsDash = JSON.parse(data.d).filter( x => {
-          let checkDate = x.Shift_date.substr(3, 3) +
-          x.Shift_date.substr(0, 3) +
-          x.Shift_date.substr(6, 4);
+        that.UnitsDash = JSON.parse(data.d).filter((x) => {
+          let checkDate = x.Shift_date.substr(0, 10);
 
-          let time = x.Shift.trim() == 'Day' ? moment(checkDate + ' 8:00')  : moment(checkDate + ' 20:00');
-
-          return  time <= moment(new Date());
+          let time =
+            x.Shift.trim() == "Day"
+              ? moment(moment(checkDate).format("YYYY-MM-DD") + " 8:00")
+              : moment(moment(checkDate).format("YYYY-MM-DD") + " 20:00");
+          console.log(time.format());
+          return time <= moment(new Date());
         });
         that.UnitsDash.map((x) => {
-          let checkDate =
-            x.Shift_date.substr(3, 3) +
-            x.Shift_date.substr(0, 3) +
-            x.Shift_date.substr(6, 4);
-            if (new Date().getHours() < 20 && new Date().getHours() >= 8) {
-              if (checkDate == moment(new Date()).format("MM/DD/YYYY")) {
-                that.todayData = x;
-              }
-            } else {
-              if (checkDate == moment(new Date()).format("MM/DD/YYYY") && new Date().getHours() < 24) {
-                that.todayData = x;
-              } else if (checkDate == moment(new Date()  - (1000 * 24 * 60 * 60)).format("MM/DD/YYYY")) {
-                that.todayData = x;
-              }
+          let checkDate = x.Shift_date.substr(0, 10);
+          if (new Date().getHours() < 20 && new Date().getHours() >= 8) {
+            if (
+              moment(checkDate).format("YYYY-MM-DD") ==
+              moment(new Date()).format("YYYY-MM-DD")
+            ) {
+              that.todayData = x;
             }
+          } else {
+            if (
+              checkDate == moment(new Date()).format("YYYY-MM-DD") &&
+              new Date().getHours() < 24
+            ) {
+              that.todayData = x;
+            } else if (
+              checkDate == moment(new Date() - 1000 * 24 * 60 * 60).format("YYYY-MM-DD")
+            ) {
+              that.todayData = x;
+            }
+          }
         });
       },
       complete: function () {
