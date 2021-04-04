@@ -54,6 +54,37 @@ public partial class Nursing_schedule : System.Web.UI.Page
         return JsonConvert.SerializeObject(NurseSchedule);
     }
 
+    // update schedule shift
+    [WebMethod]
+    public static string updateSchdule(NurseSchedule data)
+    {
+        string config =
+            Convert.ToString(ConfigurationManager.ConnectionStrings["dbcon"]);
+
+        List<NurseSchedule> NurseSchedule = new List<NurseSchedule>();
+
+        SqlConnection con = new SqlConnection(config);
+
+        con.Open();
+        using (
+            SqlCommand cmd1 =
+                new SqlCommand("update Endorsement_Nursing_schedule set Shift = @Shift where Unit_id = @Unit_id and Nurse_id = @Nurse_id and Shift_Date = @Date",
+                    con)
+        )
+        {
+            cmd1.Parameters.Add("@Date", SqlDbType.VarChar).Value = data.Date;
+            cmd1.Parameters.Add("@Shift", SqlDbType.VarChar).Value = data.Shift;
+            cmd1.Parameters.Add("@Unit_id", SqlDbType.Int).Value = data.Unit_id;
+            cmd1.Parameters.Add("@Nurse_id", SqlDbType.Int).Value =
+                data.Nurse_id;
+
+            cmd1.ExecuteNonQuery();
+        }
+        con.Close();
+
+        return JsonConvert.SerializeObject(NurseSchedule);
+    }
+
     public class NurseSchedule
     {
         public string Date { get; set; }

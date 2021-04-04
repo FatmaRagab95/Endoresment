@@ -129,7 +129,7 @@
                             ? 'bg-light border'
                             : 'bg-grey'
                         "
-                        >{{ shift.shift }}</span
+                        >{{ shift.shift.substr(0,1) }}</span
                       >
                     </td>
                     <td class="bg-primary text-white text-center">{{ nurse.Total }}</td>
@@ -152,13 +152,16 @@
       aria-hidden="true"
     >
       <div
-        class="modal-dialog modal-dialog-centered"
+        class="modal-dialog modal-lg modal-dialog-centered"
         role="document"
-        style="max-width: 1000px; max-height: 600px; margin-top: 100px"
+        style="max-width:1300px; margin-top: 120px"
       >
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLongTitle">Edit Schdule</h5>
+            <h5 class="modal-title" id="exampleModalLongTitle">
+              <i class='fa fa-edit text-success'></i>
+              Edit Schedule
+            </h5>
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
               <span aria-hidden="true">&times;</span>
             </button>
@@ -175,7 +178,7 @@
                         <th>ID</th>
                         <th
                           v-for="(day, i) in monthCalendar"
-                          :key="day.day"
+                          :key="'i' + day.day"
                           class="text-center pl-1 pr-1"
                           :class="day.day.substr(-3, 3) == 'Fri' ? 'bg-grey' : 'bg-white'"
                         >
@@ -185,23 +188,19 @@
                         <th class="bg-primary text-white">Total</th>
                       </tr>
                     </thead>
-                    <tbody v-if="displayed.length > 0">
-                      <tr v-for="(nurse, i) in displayed" :key="nurse.Nurse_id">
+                    <tbody v-show="displayed.length > 0">
+                      <tr v-for="(nurse, i) in displayed" :key="'i' + nurse.Nurse_id">
                         <td>{{ i + 1 }}</td>
                         <td style="min-width: 120px">{{ nurse.Nurse_name }}</td>
                         <td>{{ nurse.Nurse_id }}</td>
-                        <td v-for="shift in nurse.shifts" :key="shift.fullDate">
-                          <input
-                            class="calendar-span text-dark text-uppercase"
-                            :class="
-                              shift.shift
-                                ? 'bg-success'
-                                : shift.name.substr(-3, 3) != 'Fri'
-                                ? 'bg-light border'
-                                : 'bg-grey'
-                            "
+                        <td v-for="shift in nurse.shifts" :key="'i' + shift.fullDate">
+                          <v-select
+                          :class="shift.shift == '' ? 'text-secondary' : 'text-success'"
+                            :items="[{name:'Day', val:'Day'}, {name:'Night', val:'Night'}, {name:'None', val:''}]"
+                            item-text='name'
+                            :item-value="'val'"
                             v-model="shift.shift"
-                          />
+                          ></v-select>
                         </td>
                         <td class="bg-primary text-white text-center">
                           {{ nurse.Total }}
@@ -211,10 +210,10 @@
                   </template>
                 </v-simple-table>
                 <div class="modal-footer">
-                  <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                  <button type="button" class="btn btn-secondary shadow" data-dismiss="modal">
                     Close
                   </button>
-                  <button type="button" class="btn btn-primary">edit</button>
+                  <button type="button" class="btn btn-primary shadow" @click='edit()'>Edit</button>
                 </div>
               </div>
             </div>
@@ -241,6 +240,7 @@ export default {
       items: ["All", "Nurses", "Charge Nurses"],
       filtered: "All",
       Units: [],
+      adminusers:[],
       Nurses: [],
       displayed: [],
       Endorsement_Nursing_schedule: [],
@@ -254,10 +254,18 @@ export default {
 
       monthCalendar: [],
       selectedMonth: [],
+      dialog:false
     };
   },
   methods: {
     monthDays: function () {
+      swal({
+        title: "Preparing table!",
+        text: "Please wait!",
+        buttons: false,
+        closeOnClickOutside: false,
+      });
+
       function getMonths(date) {
         var arr = [];
         var start = moment(date, "YYYY-MM");
@@ -289,43 +297,57 @@ export default {
         success: function (data) {
           that.Endorsement_Nursing_schedule = JSON.parse(data.d);
           that.selectedMonth = that.Endorsement_Nursing_schedule;
-          that.tableData();
-          that.displayTable = true;
+              that.displayTable = true;
+              //get getadminusersData
+              $.ajax({
+                type: "POST",
+                url: that.apiUrl + "endoresment/display_schdule.aspx/getadminusersData",
+                data: JSON.stringify({ data: { Area_id: that.unit } }),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (data) {
+                  that.adminusers = JSON.parse(data.d);
+                  that.tableData();
+                },
+              });
         },
       });
     },
     tableData() {
-      // 1- get nurses names in Endorsement_Nursing_schedule without duplicate
-      this.Nurses = this.Endorsement_Nursing_schedule.filter(
-        (thing, index, self) =>
-          index === self.findIndex((t) => t.Nurse_id === thing.Nurse_id)
-      );
+      // 1- get nurses names
+      this.Nurses = this.adminusers;
 
-      // 2- push all shift data for 30 days
+      // 2- push all shift data for 30 days for each nurse
       let that = this;
 
       this.Nurses.map((x, n) => {
         x.shifts = [];
         x.Total = 0;
+        x.Nurse_name = x.FullName;
+        x.Nurse_role = x.Role_id;
+        x.Nurse_id = x.Emp_id;
+        x.Unit_id = that.unit;
+        x.Unit_name = that.Units.filter((u) => u.U_id == that.unit)[0].U_name;
+  
         that.monthCalendar.map((z) => {
           let obj = {};
           obj.name = z.day;
 
           if (
             that.Endorsement_Nursing_schedule.filter(
-              (i) => i.Nurse_name == x.Nurse_name && z.fullDate.trim() == i.Date.trim()
+              (i) => i.Nurse_name == x.FullName && z.fullDate.trim() == i.Date.trim()
             ).length > 0
           ) {
             obj.shift = that.Endorsement_Nursing_schedule.filter(
-              (i) => i.Nurse_name == x.Nurse_name && z.fullDate.trim() == i.Date.trim()
-            )[0].Shift.substr(0, 1);
+              (i) => i.Nurse_name == x.FullName && z.fullDate.trim() == i.Date.trim()
+            )[0].Shift.trim();
             obj.work = true;
             x.Total++;
           } else {
             obj.shift = "";
             obj.work = false;
           }
-
+          obj.fullDate = z.fullDate;
           x.shifts.push(obj);
         });
 
@@ -333,6 +355,8 @@ export default {
           this.displayed = this.Nurses;
         }
       });
+
+      swal.close();
     },
     filterTable() {
       if (this.filtered == "All") {
@@ -343,6 +367,91 @@ export default {
         this.displayed = this.Nurses.filter((x) => x.Nurse_role == 17);
       }
     },
+    edit() {
+      swal({
+        title: "Updating!",
+        text: "Please wait!",
+        buttons: false,
+        closeOnClickOutside: false,
+      });
+
+      let that = this;
+      let f = 0,
+      num = that.displayed.length * that.displayed[0].shifts.length;
+
+      for (let i = 0; i < that.displayed.length; i++) {
+        for (let z = 0; z < that.displayed[i].shifts.length; z++) {
+          f++;
+          console.log(f);
+          let currentShift = that.displayed[i].shifts[z];
+          let obj = {
+            Date:currentShift.fullDate,
+            Shift: currentShift.shift,
+            Unit_id: that.displayed[i].Unit_id,
+            Unit_name: that.displayed[i].Unit_name,
+            Nurse_role: that.displayed[i].Nurse_role,
+            Nurse_name: that.displayed[i].Nurse_name,
+            Nurse_id: that.displayed[i].Nurse_id,
+          };
+          if (currentShift.shift.length > 0 && currentShift.work) {
+            // update shift
+                $.ajax({
+                  type: "POST",
+                  url: that.apiUrl + "endoresment/Nursing_schedule.aspx/updateSchdule",
+                  data: JSON.stringify({ data: obj }),
+                  contentType: "application/json; charset=utf-8",
+                  dataType: "json",
+                  success: function (data) {
+                    if (f == num) {
+                      swal({
+                          title: "Done!",
+                          text: `You successfully updated scheduled shifts!`,
+                          icon: "success",
+                      }).then(x => {
+                          $('.modal').modal('hide');
+                          location.reload();
+                      });
+                    }
+                  },
+                });
+
+          } else if (currentShift.shift.length > 0 && currentShift.work == false) {
+
+            // insert shift
+              $.ajax({
+                type: "POST",
+                url: that.apiUrl + "endoresment/Nursing_schedule.aspx/newSchdule",
+                data: JSON.stringify({ data: obj }),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (data) {
+                  if (f == num) {
+                    swal({
+                        title: "Done!",
+                        text: `You successfully updated scheduled shifts!`,
+                        icon: "success",
+                    }).then(x => {
+                        $('.modal').modal('hide');
+                        location.reload();
+                    });
+                  }
+                },
+              });
+          } else {
+            if (f == num) {
+              swal({
+                  title: "Done!",
+                  text: `You successfully updated scheduled shifts!`,
+                  icon: "success",
+              }).then(x => {
+                  $('.modal').modal('hide');
+                  location.reload();
+              });
+            }
+          }
+        }
+      }
+    }
   },
 
   created() {
