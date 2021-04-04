@@ -73,8 +73,10 @@
                           .Patient_FullName
                       }}
                     </td>
-                    <td>{{ patient.Date_from.split(" ")[0] }}</td>
-                    <td v-if="patient.Date_to.length > 0">{{ patient.Date_to }}</td>
+                    <td>{{ patient.Date_from.substr(0, 10) }}</td>
+                    <td v-if="patient.Date_to.length > 0">
+                      {{ patient.Date_to.substr(0, 10) }}
+                    </td>
                     <td v-else>Tell Now</td>
                   </tr>
                 </tbody>
