@@ -15,7 +15,6 @@
                     <v-dialog
                       ref="dialog"
                       v-model="modal"
-                      :return-value.sync="UnitDash[0].Shift_date"
                       width="290px"
                     >
                     <template v-slot:activator="{ on, attrs }">
