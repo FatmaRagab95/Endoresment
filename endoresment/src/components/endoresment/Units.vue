@@ -174,7 +174,9 @@ export default {
   },
   watch: {
     search: function () {
-      this.filtered = this.Units.filter((x) => x.U_name.startsWith(this.search));
+      this.filtered = this.Units.filter((x) =>
+        x.U_name.toLowerCase().startsWith(this.search.toLowerCase())
+      );
     },
   },
   created() {

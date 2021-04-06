@@ -9,10 +9,7 @@
             </h3>
           </span>
           <span class="col-md-6">
-            <button
-              class="btn btn-primary pull-right shadow"
-              @click.prevent="OnSubmit"
-            >
+            <button class="btn btn-primary pull-right shadow" @click.prevent="OnSubmit">
               Submit selection
             </button>
           </span>
@@ -29,7 +26,8 @@
               />
               <span
                 class="btn btn-primary shadow pt-1 pb-1 rounded mr-2 text-center"
-                style="width: 10%">
+                style="width: 10%"
+              >
                 <i class="fa fa-search" aria-hidden="true"></i>
               </span>
             </form>
@@ -267,7 +265,7 @@ export default {
   created() {
     let that = this;
     this.path = this.$router.history.current.path.split("/")[2];
-    this.updateDate = moment(new Date()).format('YYYY-MM-DD');
+    this.updateDate = moment(new Date()).format("YYYY-MM-DD");
 
     //get patients data
     $.ajax({
@@ -321,7 +319,7 @@ export default {
 <style scoped>
 .select-form {
   min-height: 100vh;
-  padding-bottom:120px;
-  margin-bottom:120px;
+  padding-bottom: 120px;
+  margin-bottom: 120px;
 }
 </style>

@@ -92,7 +92,7 @@
                 />
                 <button
                   class="btn btn-success mt-1 btn-sm"
-                  @click.prevent="updateStat(2)"
+                  @click.prevent="updateStat(2, patientData.Bed_id)"
                 >
                   Submit
                 </button>
@@ -118,7 +118,7 @@
                 />
                 <button
                   class="btn btn-success mt-1 btn-sm"
-                  @click.prevent="updateStat(3)"
+                  @click.prevent="updateStat(3, patientData.Bed_id)"
                 >
                   Submit
                 </button>
@@ -458,7 +458,7 @@ export default {
     };
   },
   methods: {
-    updateStat(stat) {
+    updateStat(stat, Id) {
       let that = this;
       swal({
         title: "Are you sure?",
@@ -480,6 +480,19 @@ export default {
             contentType: "application/json; charset=utf-8",
             dataType: "json",
             success: function (data) {
+              let bed = {
+                id: Id,
+                Status_id: 1,
+                Status_name: "Empty",
+              };
+              $.ajax({
+                type: "POST",
+                url: that.apiUrl + "endoresment/patientData.aspx/updateRoomData",
+                data: JSON.stringify({ room: bed }),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+              });
+
               swal({
                 title: "Updated!",
                 icon: "success",
