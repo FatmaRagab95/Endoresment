@@ -111,6 +111,7 @@
               <v-icon dark> mdi-pencil </v-icon>
             </v-btn>
             <v-btn
+              v-if="user.Role_id == 19"
               class="mx-2"
               fab
               bottom

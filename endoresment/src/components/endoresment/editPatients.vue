@@ -56,24 +56,34 @@
             </h5>
             <div class="card overflow-auto p-3 shadow rounded" style="height: 500px">
               <div
-                class="pt-2 pb-2 border-bottom"
+                class="pt-2 pb-2 border-bottom d-flex justify-content-between"
                 v-for="(patient, i) in filterNames(patients, selectedName.toLowerCase())"
                 :key="i + 'f'"
               >
-                <span
-                  ><input
-                    style="width: 20px; height: 20px"
-                    class="rounded bg-dark"
-                    :id="patient.id"
-                    type="checkbox"
-                    name="role"
-                    :value="{ id: patient.id, name: patient.Patient_FullName }"
-                    v-model="selectedPatients"
-                /></span>
-                <span class="ml-3"
-                  ><label :for="patient.id">{{ patient.Patient_FullName }}</label></span
+                <span class="w-50">
+                  <span
+                    ><input
+                      style="width: 20px; height: 20px"
+                      class="rounded bg-dark"
+                      :id="patient.id"
+                      type="checkbox"
+                      name="role"
+                      :value="{ id: patient.id, name: patient.Patient_FullName }"
+                      v-model="selectedPatients"
+                  /></span>
+                  <span class="ml-3"
+                    ><label :for="patient.id">{{ patient.Patient_FullName }}</label></span
+                  ></span
                 >
-                <span class="pull-right"></span>
+                <span class="text-left w-25"
+                  ><span class="text-secondary">Medicl Number : </span
+                  >{{ patient.Medical_Number }}</span
+                >
+
+                <span class="text-right w-25"
+                  ><span class="text-secondary">Room : </span
+                  ><span class="text-success">{{ patient.Room }}</span></span
+                >
               </div>
             </div>
           </div>

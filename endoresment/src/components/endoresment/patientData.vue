@@ -72,6 +72,7 @@
             <div class="col-sm-4 mb-1">
               <button class="btn btn-block btn-primary shadow-sm btn-sm">Transfer</button>
             </div>
+
             <div class="col-sm-4 mb-1">
               <button
                 class="btn btn-block btn-danger shadow-sm btn-sm"
@@ -88,6 +89,7 @@
                   class="form-control"
                   type="date"
                   :max="today"
+                  :min="today"
                   v-model="dischargeDate"
                 />
                 <button
@@ -114,6 +116,7 @@
                   class="form-control"
                   type="date"
                   :max="today"
+                  :min="today"
                   v-model="deathDate"
                 />
                 <button
@@ -459,50 +462,57 @@ export default {
   },
   methods: {
     updateStat(stat, Id) {
-      let that = this;
-      swal({
-        title: "Are you sure?",
-        icon: "warning",
-        buttons: true,
-        dangerMode: true,
-      }).then((confirm) => {
-        if (confirm) {
-          let obj = {
-            id: that.id,
-            Patient_Status: stat,
-            Discharged_date: that.dischargeDate,
-            Death_date: that.deathDate,
-          };
-          $.ajax({
-            type: "POST",
-            url: that.apiUrl + "endoresment/patientData.aspx/updatePatientData",
-            data: JSON.stringify({ patient: obj }),
-            contentType: "application/json; charset=utf-8",
-            dataType: "json",
-            success: function (data) {
-              let bed = {
-                id: Id,
-                Status_id: 1,
-                Status_name: "Empty",
-              };
-              $.ajax({
-                type: "POST",
-                url: that.apiUrl + "endoresment/patientData.aspx/updateRoomData",
-                data: JSON.stringify({ room: bed }),
-                contentType: "application/json; charset=utf-8",
-                dataType: "json",
-              });
+      if (this.dischargeDate || this.deathDate) {
+        let that = this;
+        swal({
+          title: "Are you sure?",
+          icon: "warning",
+          buttons: true,
+          dangerMode: true,
+        }).then((confirm) => {
+          if (confirm) {
+            let obj = {
+              id: that.id,
+              Patient_Status: stat,
+              Discharged_date: that.dischargeDate,
+              Death_date: that.deathDate,
+            };
+            $.ajax({
+              type: "POST",
+              url: that.apiUrl + "endoresment/patientData.aspx/updatePatientData",
+              data: JSON.stringify({ patient: obj }),
+              contentType: "application/json; charset=utf-8",
+              dataType: "json",
+              success: function (data) {
+                let bed = {
+                  id: Id,
+                  Status_id: 1,
+                  Status_name: "Empty",
+                };
+                $.ajax({
+                  type: "POST",
+                  url: that.apiUrl + "endoresment/patientData.aspx/updateRoomData",
+                  data: JSON.stringify({ room: bed }),
+                  contentType: "application/json; charset=utf-8",
+                  dataType: "json",
+                });
 
-              swal({
-                title: "Updated!",
-                icon: "success",
-              });
+                swal({
+                  title: "Updated!",
+                  icon: "success",
+                });
 
-              that.patientData.Patient_Status = stat;
-            },
-          });
-        }
-      });
+                that.patientData.Patient_Status = stat;
+              },
+            });
+          }
+        });
+      } else {
+        swal({
+          title: "Enter Date!",
+          icon: "warning",
+        });
+      }
     },
   },
   created() {

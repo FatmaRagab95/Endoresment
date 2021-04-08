@@ -329,7 +329,7 @@ public partial class _viewPatients : System.Web.UI.Page
 
         using (
             SqlCommand cmd =
-                new SqlCommand("select * from Endorsement_PatientData where Consultant_id = @Consultant_id",
+                new SqlCommand("select * from Endorsement_PatientData where Consultant_id = @Consultant_id and Patient_Status = 1",
                     con)
         )
         {
@@ -365,7 +365,7 @@ public partial class _viewPatients : System.Web.UI.Page
 
         using (
             SqlCommand cmd =
-                new SqlCommand("select * from Endorsement_PatientData where Specialty = @Spcy_Description",
+                new SqlCommand("select * from Endorsement_PatientData where Specialty = @Spcy_Description and Patient_Status = 1",
                     con)
         )
         {

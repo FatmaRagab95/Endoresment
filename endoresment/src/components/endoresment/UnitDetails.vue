@@ -24,7 +24,7 @@
                       <th scope="col">Date</th>
                       <th scope="col">Shift</th>
                       <th scope="col">Details</th>
-                      <th scope="col">Controls</th>
+                      <th scope="col" v-if="user.Role_id == 19">Controls</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -39,7 +39,7 @@
                           >Details</router-link
                         >
                       </td>
-                      <td>
+                      <td v-if="user.Role_id == 19">
                         <router-link
                           :to="'/editShiftDetials/' + shift.id"
                           class="fa fa-edit bg-success text-white btn-sm btn"
@@ -93,7 +93,7 @@
 <script>
 export default {
   name: "UnitDetails",
-  props: ["link"],
+  props: ["link", "user", "edits"],
   data() {
     return {
       UnitsDash: [],
