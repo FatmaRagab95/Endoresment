@@ -689,9 +689,9 @@
                     >
                       <div class="row">
                         <!-- patient name -->
-                        <div class="cu-field col-md-6">
+                        <div class="cu-field col-md-12">
                           <h3 class="cu-label">
-                            <label>patient name :</label>
+                            <label>Patient Full Name :</label>
                           </h3>
                           <div class="cu-input text-box" style="max-width: 100%">
                             <span class="fa fa-edit"></span>
@@ -718,17 +718,6 @@
                           </div>
                         </div>
 
-                        <!-- patient age -->
-                        <div class="cu-field col-md-6">
-                          <h3 class="cu-label">
-                            <label>Patient Age :</label>
-                          </h3>
-                          <div class="cu-input text-box">
-                            <span class="fa fa-edit"></span>
-                            <input type="text" v-model="newPatient.Age" required />
-                          </div>
-                        </div>
-
                         <!-- patient gender -->
                         <div class="cu-field col-md-6">
                           <h3 class="cu-label">
@@ -745,6 +734,34 @@
                             </select>
                           </div>
                         </div>
+
+                        <!-- patient birth date -->
+                        <div class="cu-field col-md-6">
+                          <h3 class="cu-label">
+                            <label>Patient Birth Date :</label>
+                          </h3>
+                          <div class="cu-input text-box">
+                            <span class="fa fa-edit"></span>
+                            <input
+                              type="date"
+                              :max="currentDate"
+                              v-model="newPatient.Age"
+                              required
+                            />
+                          </div>
+                        </div>
+
+                        <!-- patient age -->
+                        <div class="cu-field col-md-6">
+                          <h3 class="cu-label">
+                            <label>Patient Age :</label>
+                          </h3>
+                          <div class="cu-input text-box">
+                            <span class="fa fa-edit"></span>
+                            <span>{{ newPatient.Age }}</span>
+                          </div>
+                        </div>
+
                         <!-- specialty -->
                         <div class="cu-field col-md-6">
                           <h3 class="cu-label">
