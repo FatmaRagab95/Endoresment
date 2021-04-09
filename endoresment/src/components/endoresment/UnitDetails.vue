@@ -16,6 +16,7 @@
             <div class="card bg-white shadow">
               <h4><i class="fa fa-table"></i> Latest Shifts</h4>
 
+              <div>{{ UnitDash }}</div>
               <div class="table-card overflow-auto">
                 <table class="table text-center">
                   <thead>
@@ -24,7 +25,7 @@
                       <th scope="col">Date</th>
                       <th scope="col">Shift</th>
                       <th scope="col">Details</th>
-                      <th scope="col">Controls</th>
+                      <th scope="col" v-if="user.Role_id == 19">Controls</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -39,12 +40,29 @@
                           >Details</router-link
                         >
                       </td>
-                      <td>
+                      <td v-if="user.Role_id == 19">
                         <router-link
                           :to="'/editShiftDetials/' + shift.id"
                           class="fa fa-edit bg-success text-white btn-sm btn"
                         ></router-link>
                         <i class="fa fa-trash bg-danger text-white btn-sm btn"></i>
+                      </td>
+                      <td
+                        v-else-if="UnitDash.filter((x) => x.Unit_id == unitId).length > 0"
+                      >
+                        <span
+                          v-if="
+                            shift.Shift_date.substr(0, 10).trim() ==
+                              UnitDash[0].Shift_date.substr(0, 10).trim() &&
+                            shift.Shift.trim() == UnitDash[0].Shift.trim()
+                          "
+                        >
+                          <router-link
+                            :to="'/editShiftDetials/' + shift.id"
+                            class="fa fa-edit bg-success text-white btn-sm btn"
+                          ></router-link>
+                          <i class="fa fa-trash bg-danger text-white btn-sm btn"></i>
+                        </span>
                       </td>
                     </tr>
                   </tbody>
@@ -93,7 +111,7 @@
 <script>
 export default {
   name: "UnitDetails",
-  props: ["link"],
+  props: ["link", "user", "edits", "UnitDash"],
   data() {
     return {
       UnitsDash: [],
@@ -186,6 +204,15 @@ export default {
         });
       },
     });
+
+    setTimeout(function () {
+      if (that.UnitDash.filter((x) => x.Unit_id == that.unitId).length > 0) {
+        that.UnitDash = that.UnitDash.filter((x) => x.Unit_id == that.unitId);
+        that.UnitDash.map(
+          (z) => (z.Shift_date = moment(z.Shift_date).format("YYYY-MM-DD"))
+        );
+      }
+    }, 1000);
   },
 };
 </script>

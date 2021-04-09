@@ -226,7 +226,7 @@ const router = new Router({
         requiresAuth: true,
         cat: "Endoresment",
         viewMenu: true,
-        auth: 'all',
+        auth: '19',
         authCheck:true
       },
     },
@@ -252,7 +252,7 @@ const router = new Router({
         requiresAuth: true,
         cat: "Endoresment",
         viewMenu: true,
-        auth: 'all',
+        auth: '19',
         authCheck:true
       },
     },

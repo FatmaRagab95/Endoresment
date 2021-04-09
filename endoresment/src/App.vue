@@ -171,6 +171,12 @@ export default {
                 dataType: "json",
                 success: function (data) {
                   that.DoctorPatients = JSON.parse(data.d);
+                  if (that.DoctorPatients.length > 0) {
+                    that.DoctorPatients.map((x) => that.$set(x, "edit", false));
+                    for (let i = 0; i < that.DoctorPatients.length; i++) {
+                      that.DoctorPatients[i].Room = that.DoctorPatients[i].Room.trim();
+                    }
+                  }
                 },
               });
             } else {
@@ -187,6 +193,12 @@ export default {
                 dataType: "json",
                 success: function (data) {
                   that.DoctorPatients = JSON.parse(data.d);
+                  if (that.DoctorPatients.length > 0) {
+                    that.DoctorPatients.map((x) => that.$set(x, "edit", false));
+                    for (let i = 0; i < that.DoctorPatients.length; i++) {
+                      that.DoctorPatients[i].Room = that.DoctorPatients[i].Room.trim();
+                    }
+                  }
                 },
               });
 
