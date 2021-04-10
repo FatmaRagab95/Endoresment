@@ -85,13 +85,9 @@
                                     name="nurse"
                                     v-model="newUnit.Endorsing_ChargeNurse_id" required></v-select>
                               </li>
-                              <li class='border-bottom'>
-                                <v-text-field
-                                  v-model="newUnit.Received"
-                                  type='number'
-                                  label="Patients received"
-                                  required
-                                ></v-text-field>
+                              <li class='p-3 cu-flex'>
+                                  <span class='keyWords'>Received:</span>
+                                  <span class='values text-secondary'>{{currentShift.patientsNum}} Patients</span>
                               </li>
                               <li class='p-3 cu-flex'>
                                   <span class='keyWords'>Shift Date:</span>
@@ -127,7 +123,7 @@
                   <div class="modal-body">
                       <form @submit.prevent='submitUnit()'>
                           <ul class='shift-info list-unstyled'>
-                              <li class='pb-3'>
+                              <li class='pb-3' v-if='currentShift.handNurse.length > 0'>
                                     <v-select
                                     :items="currentShift.handNurse"
                                     item-text="FullName"
@@ -137,13 +133,19 @@
                                     name="nurse"
                                     v-model="newUnit.Receive_ChargeNurse_id" required></v-select>
                               </li>
-                              <li class='border-bottom'>
-                                <v-text-field
-                                  v-model="newUnit.Received"
-                                  type='number'
-                                  label="Patients received"
-                                  required
-                                ></v-text-field>
+                              <li class='pb-3' v-else>
+                                    <v-select
+                                    :items="currentShift.EndoresingNurse"
+                                    item-text="FullName"
+                                    :item-value="'Emp_ID'"
+                                    label="Handover To"
+                                    placeholder="Select a nurse"
+                                    name="nurse"
+                                    v-model="newUnit.Receive_ChargeNurse_id" required></v-select>
+                              </li>
+                              <li class='p-3 cu-flex'>
+                                  <span class='keyWords'>Received:</span>
+                                  <span class='values text-secondary'>{{currentShift.patientsNum}} Patients</span>
                               </li>
                               <li class='p-3 cu-flex'>
                                   <span class='keyWords'>Shift Date:</span>
@@ -211,6 +213,7 @@ export default {
         that.newUnit.Receive_ChargeNurse_id = that.user.Emp_id;
         that.newUnit.Unit_id = that.currentShift.Unit_id;
         that.newUnit.Unit_name = that.currentShift.Unit_name;
+        that.newUnit.Received = that.currentShift.patientsNum;
 
         //insert Unit dashboard details
         $.ajax({
@@ -250,6 +253,7 @@ export default {
         that.newUnit.Receive_ChargeNurse = that.currentShift.handNurse.filter(x => x.Emp_ID == that.newUnit.Receive_ChargeNurse_id)[0].FullName;
         that.newUnit.Unit_id = that.currentShift.Unit_id;
         that.newUnit.Unit_name = that.currentShift.Unit_name;
+        that.newUnit.Received = that.currentShift.patientsNum;
 
         //insert Unit dashboard details
         $.ajax({
@@ -312,6 +316,7 @@ export default {
             contentType: "application/json; charset=utf-8",
             dataType: "json",
             success: function (data) {
+
                 swal({
                   title: "Confirmed!",
                   icon: "success",
@@ -326,33 +331,6 @@ export default {
   created() {
     let that = this;
 
-    //get units
-    /*
-    $.ajax({
-      type: "POST",
-      url: that.apiUrl + "endoresment/add_unit.aspx/getUnitsData",
-      contentType: "application/json; charset=utf-8",
-      data: JSON.stringify({ branch: { id:  that.user.Branch_ID} }),
-      dataType: "json",
-      success: function (data) {
-        that.Units = JSON.parse(data.d);
-      },
-    });
-    */
-
-    //get nurses
-    /*
-    $.ajax({
-      type: "POST",
-      url: that.apiUrl + "endoresment/add_unit.aspx/getNursesData",
-      contentType: "application/json; charset=utf-8",
-      data: JSON.stringify({ branch: { id:  that.user.Branch_ID} }),
-      dataType: "json",
-      success: function (data) {
-        that.Nurses = JSON.parse(data.d);
-      },
-    });
-    */
     // check scheduled shifts
     $.ajax({
         type: "POST",

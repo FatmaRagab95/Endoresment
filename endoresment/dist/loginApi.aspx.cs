@@ -73,17 +73,41 @@ public partial class Login : System.Web.UI.Page
                         idr["FullName"] != DBNull.Value
                             ? Convert.ToString(idr["FullName"])
                             : String.Empty,
+                    user_name =
+                        idr["user_name"] != DBNull.Value
+                            ? Convert.ToString(idr["user_name"])
+                            : String.Empty,
                     Email =
                         idr["Email"] != DBNull.Value
                             ? Convert.ToString(idr["Email"])
+                            : String.Empty,
+                    Title =
+                        idr["Title"] != DBNull.Value
+                            ? Convert.ToString(idr["Title"])
                             : String.Empty,
                     Dept_id =
                         idr["Dept_id"] != DBNull.Value
                             ? Convert.ToInt32(idr["Dept_id"])
                             : 0,
+                    Dept_name =
+                        idr["Dept_name"] != DBNull.Value
+                            ? Convert.ToString(idr["Dept_name"])
+                            : String.Empty,
                     Branch_name =
                         idr["Branch_name"] != DBNull.Value
                             ? Convert.ToString(idr["Branch_name"])
+                            : String.Empty,
+                    Hiring_Date =
+                        idr["Hiring_Date"] != DBNull.Value
+                            ? Convert.ToString(idr["Hiring_Date"])
+                            : String.Empty,
+                    Mobile_1 =
+                        idr["Mobile_1"] != DBNull.Value
+                            ? Convert.ToString(idr["Mobile_1"])
+                            : String.Empty,
+                    Mobile_2 =
+                        idr["Mobile_2"] != DBNull.Value
+                            ? Convert.ToString(idr["Mobile_2"])
                             : String.Empty,
                     Branch_ID =
                         idr["Branch_ID"] != DBNull.Value
@@ -111,12 +135,18 @@ public partial class Login : System.Web.UI.Page
         public int? Emp_id { get; set; }
 
         public string FullName { get; set; }
+        public string user_name { get; set; }
 
         public string Email { get; set; }
+        public string Title { get; set; }
 
         public int? Dept_id { get; set; }
+        public string Dept_name { get; set; }
+        public string Hiring_Date { get; set; }
 
         public string Branch_name { get; set; }
+        public string Mobile_1 { get; set; }
+        public string Mobile_2 { get; set; }
 
         public int? Branch_ID { get; set; }
         public int? Role_id { get; set; }

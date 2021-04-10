@@ -106,24 +106,11 @@
               dark
               big
               color="green accent-3"
-              @click="displayTable = !displayTable"
-            >
-              <v-icon dark> mdi-pencil </v-icon>
-            </v-btn>
-            <v-btn
-              v-if="user.Role_id == 19"
-              class="mx-2"
-              fab
-              bottom
-              right
-              absolute
-              dark
-              big
-              color="red accent-3"
               data-toggle="modal"
               data-target="#exampleModalCenter"
+              v-if='user.Role_id == 19'
             >
-              <v-icon dark> mdi-calendar-edit </v-icon>
+              <v-icon dark> mdi-pencil </v-icon>
             </v-btn>
           </div>
         </div>
@@ -151,12 +138,12 @@
                 </thead>
                 <tbody v-if="displayed.length > 0">
                   <tr v-for="(nurse, i) in displayed" :key="nurse.Nurse_id">
-                    <td v-if="nurse.Role_id == 17" style="background-color: #f7e6e6">
+                    <td v-if="nurse.Role_id == 17" style="background-color: #fff7c1">
                       {{ i + 1 }}
                     </td>
                     <td v-else>{{ i + 1 }}</td>
                     <td
-                      style="min-width: 120px; background-color: #f7e6e6"
+                      style="min-width: 120px; background-color: #fff7c1"
                       v-if="nurse.Role_id == 17"
                     >
                       {{ nurse.Nurse_name }}
@@ -164,7 +151,7 @@
                     <td style="min-width: 120px" v-else>
                       {{ nurse.Nurse_name }}
                     </td>
-                    <td v-if="nurse.Role_id == 17" style="background-color: #f7e6e6">
+                    <td v-if="nurse.Role_id == 17" style="background-color: #fff7c1">
                       {{ nurse.Nurse_id }}
                     </td>
                     <td v-else>{{ nurse.Nurse_id }}</td>

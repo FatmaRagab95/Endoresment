@@ -112,7 +112,7 @@ public partial class _addUnit : System.Web.UI.Page
 
         using (
             SqlCommand cmd =
-                new SqlCommand("select * from Endorsement_Nursing_schedule where Nurse_id = @Nurse_id and Shift_date >=  DATEADD(day,-2, GETDATE()) and Shift_date <  DATEADD(day,0, GETDATE())",
+                new SqlCommand("SELECT s.Id,s.Shift_date,s.Shift,s.Unit_id,s.Unit_name,s.Nurse_role,s.Nurse_name,s.Nurse_id, Endorsement_PatientData.Unit, COUNT(Endorsement_PatientData.id) AS  patientsNum from Endorsement_PatientData INNER JOIN Endorsement_Nursing_schedule as s On s.Nurse_id = @Nurse_id and s.Shift_date >=  DATEADD(day,-2, GETDATE()) and s.Shift_date <  DATEADD(day,0, GETDATE()) and Endorsement_PatientData.Unit = s.Unit_name and Endorsement_PatientData.Patient_Status = 1 GROUP BY Endorsement_PatientData.Unit, s.Id,s.Shift_date,s.Shift,s.Unit_id,s.Unit_name,s.Nurse_role,s.Nurse_name,s.Nurse_id",
                     con)
         )
         {
@@ -175,6 +175,10 @@ public partial class _addUnit : System.Web.UI.Page
                     Nurse_id =
                         idr["Nurse_id"] != DBNull.Value
                             ? Convert.ToInt32(idr["Nurse_id"])
+                            : 0,
+                    patientsNum =
+                        idr["patientsNum"] != DBNull.Value
+                            ? Convert.ToInt32(idr["patientsNum"])
                             : 0
                 });
         }
@@ -200,6 +204,7 @@ public partial class _addUnit : System.Web.UI.Page
         public string Nurse_name { get; set; }
 
         public int? Nurse_id { get; set; }
+        public int? patientsNum { get; set; }
     }
 
         // get Charge Nurses

@@ -2,6 +2,7 @@ import Vue from "vue";
 import Router from "vue-router";
 import login from "@/components/login";
 
+import Profile from "@/components/endoresment/Profile";
 import addUnit from "@/components/endoresment/addUnit";
 import Units from "@/components/endoresment/Units";
 import addPatient from "@/components/endoresment/add_patient";
@@ -36,7 +37,17 @@ const router = new Router({
       path: "/login",
       name: "login",
       component: login,
-      meta: {},
+      meta: {
+        viewMenu: false,
+      },
+    },
+    {
+      path: "/Profile",
+      name: "Profile",
+      component: Profile,
+      meta: {
+        viewMenu: false,
+      },
     },
     {
       path: "/",
