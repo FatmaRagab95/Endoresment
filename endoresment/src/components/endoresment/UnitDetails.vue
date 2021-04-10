@@ -44,7 +44,11 @@
                           :to="'/editShiftDetials/' + shift.id"
                           class="fa fa-edit bg-success text-white btn-sm btn"
                         ></router-link>
-                        <i class="fa fa-trash bg-danger text-white btn-sm btn"></i>
+                        <i
+                          class="fa fa-trash bg-danger text-white btn-sm btn"
+                          style="cursor: pointer"
+                          @click.prevent="deleteShift(shift.id, true)"
+                        ></i>
                       </td>
                       <td
                         v-else-if="UnitDash.filter((x) => x.Unit_id == unitId).length > 0"
@@ -60,7 +64,6 @@
                             :to="'/editShiftDetials/' + shift.id"
                             class="fa fa-edit bg-success text-white btn-sm btn"
                           ></router-link>
-                          <i class="fa fa-trash bg-danger text-white btn-sm btn"></i>
                         </span>
                       </td>
                     </tr>
@@ -124,6 +127,34 @@ export default {
       },
       apiUrl: this.link,
     };
+  },
+  methods: {
+    deleteShift: function (id, hide) {
+      let that = this;
+      swal({
+        title: "Are you sure?",
+        buttons: true,
+      }).then((confirm) => {
+        if (confirm) {
+          $.ajax({
+            type: "POST",
+            url: that.apiUrl + "endoresment/UnitDetails.aspx/deletedShift",
+            data: JSON.stringify({ detail: { id: id, Hide: hide } }),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function () {
+              swal({
+                title: "Sweet!",
+                text: "You have successfully deleted the shift ...",
+                icon: "success",
+                dangerMode: true,
+              });
+              location.reload();
+            },
+          });
+        }
+      });
+    },
   },
   created() {
     let that = this;
