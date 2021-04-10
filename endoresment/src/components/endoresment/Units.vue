@@ -39,26 +39,6 @@
               </div>
             </div>
           </div>
-          <!-- <div class="">
-                        <div class='outer'>
-                            <div class='inner bg-white shadow text-center'>
-
-                                <span class='num'>{{sumDash('Admission')}}</span>
-                                ER
-
-                            </div>
-                        </div>
-                    </div>
-                    <div class="">
-                        <div class='outer'>
-                            <div class='inner bg-white shadow text-center'>
-
-                                <span class='num'>{{sumDash('Transfer_In')}}</span>
-                                OR
-
-                            </div>
-                        </div>
-                    </div> -->
           <div class="">
             <div class="outer">
               <div class="inner bg-white shadow text-center">
@@ -228,6 +208,9 @@ export default {
             );
           });
         }
+        
+        that.UnitsDash = that.UnitsDash.filter((v,i,a)=>a.findIndex(t=>(t.Unit_id === v.Unit_id))===i);
+
       },
     });
   },
