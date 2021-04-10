@@ -30,7 +30,7 @@ public partial class _addPatient : System.Web.UI.Page
         con.Open();
         using (
             SqlCommand cmd1 =
-                new SqlCommand("insert into Endorsement_PatientData (Patient_FullName, Branch_id, Branch_name,Gender,Unit,Room,Bed_id,Addmission_date,Age,Specialty,Consultant_id,Consultant_Name,Patient_Status,Entry_user,Medical_Number) values (@Patient_FullName,@Branch_id, (select Branch_EName from Branches where id = @Branch_id), @Gender, @Unit, @Room, @Bed_id, @Addmission_date, @Age, @Specialty,@Consultant_id,@Consultant_Name, @Patient_Status ,@Entry_user, @Medical_Number)",
+                new SqlCommand("insert into Endorsement_PatientData (Patient_FullName, Branch_id, Branch_name,Gender,Unit,Room,Bed_id,Addmission_date,Age,Specialty,Consultant_id,Consultant_Name,Patient_Status,Entry_user,Medical_Number,Date_Birth) values (@Patient_FullName,@Branch_id, (select Branch_EName from Branches where id = @Branch_id), @Gender, @Unit, @Room, @Bed_id, @Addmission_date, @Age, @Specialty,@Consultant_id,@Consultant_Name, @Patient_Status ,@Entry_user, @Medical_Number,@Date_Birth)",
                     con)
         )
         {
@@ -48,6 +48,8 @@ public partial class _addPatient : System.Web.UI.Page
             cmd1.Parameters.Add("@Addmission_date", SqlDbType.VarChar).Value =
                 data.Addmission_date;
             cmd1.Parameters.Add("@Age", SqlDbType.VarChar).Value = data.Age;
+            cmd1.Parameters.Add("@Date_Birth", SqlDbType.VarChar).Value =
+                data.Date_Birth;
             cmd1.Parameters.Add("@Specialty", SqlDbType.VarChar).Value =
                 data.Specialty;
             cmd1.Parameters.Add("@Consultant_id", SqlDbType.Int).Value =
@@ -115,6 +117,8 @@ public partial class _addPatient : System.Web.UI.Page
         public string Addmission_date { get; set; }
 
         public string Age { get; set; }
+
+        public string Date_Birth { get; set; }
 
         public string Specialty { get; set; }
 

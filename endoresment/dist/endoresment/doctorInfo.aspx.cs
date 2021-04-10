@@ -569,6 +569,23 @@ public partial class doctorInfo : System.Web.UI.Page
                         idr["Patient_id"] != DBNull.Value
                             ? Convert.ToInt32(idr["Patient_id"])
                             : 0,
+                    Insert_Nurse =
+                        idr["Insert_Nurse"] != DBNull.Value
+                            ? Convert.ToInt32(idr["Insert_Nurse"])
+                            : 0,
+                    Insert_Doctor =
+                        idr["Insert_Doctor"] != DBNull.Value
+                            ? Convert.ToInt32(idr["Insert_Doctor"])
+                            : 0,
+                    Shift = Convert.ToString(idr["Shift"]),
+                    Insert_Nurse_Time =
+                        idr["Insert_Nurse_Time"] != DBNull.Value
+                            ? Convert.ToString(idr["Insert_Nurse_Time"])
+                            : String.Empty,
+                    Insert_Doctor_Time =
+                        idr["Insert_Doctor_Time"] != DBNull.Value
+                            ? Convert.ToString(idr["Insert_Doctor_Time"])
+                            : String.Empty,
                     Entry_date = Convert.ToString(idr["Entry_date"])
                 });
         }
@@ -583,6 +600,16 @@ public partial class doctorInfo : System.Web.UI.Page
         public int? Patient_id { get; set; }
 
         public int? Consultaion { get; set; }
+
+        public int? Insert_Nurse { get; set; }
+
+        public int? Insert_Doctor { get; set; }
+
+        public string Shift { get; set; }
+
+        public string Insert_Nurse_Time { get; set; }
+
+        public string Insert_Doctor_Time { get; set; }
 
         public string Entry_date { get; set; }
     }

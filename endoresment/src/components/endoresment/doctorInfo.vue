@@ -276,6 +276,8 @@
                                 <th scope="col">Gender</th>
                                 <th scope="col">Age</th>
                                 <th scope="col">Room</th>
+                                <th scope="col">Shift</th>
+                                <th scope="col">Date</th>
                               </tr>
                             </thead>
                             <tbody>
@@ -353,6 +355,17 @@
                                   }}
                                 </td>
                                 <td class="text-secondary" v-else>no data registered</td>
+                                <td v-if="pat.Shift.length > 0">
+                                  {{ pat.Shift }}
+                                </td>
+                                <td class="text-secondary" v-else>no data registered</td>
+                                <td>
+                                  {{
+                                    pat.Insert_Doctor
+                                      ? pat.Insert_Doctor_Time.substr(0, 10)
+                                      : pat.Insert_Nurse_Time.substr(0, 10)
+                                  }}
+                                </td>
                               </tr>
                             </tbody>
                           </table>
@@ -543,6 +556,20 @@ export default {
       dataType: "json",
       success: function (data) {
         that.PatientFollow = JSON.parse(data.d);
+
+        /*  that.PatientFollow.map((z) => {
+          if (z.Insert_Doctor_Time.length > 0 && z.Insert_Nurse_Time.length > 0) {
+            z.Insert_Nurse_Time = moment(z.Insert_Nurse_Time).format("YYYY-MM-DD");
+            z.Insert_Doctor_Time = moment(z.Insert_Doctor_Time).format("YYYY-MM-DD");
+          } else if (z.Insert_Nurse_Time.length == 0 && z.Insert_Nurse_Time.length == 0) {
+            z.Insert_Nurse_Time = "no date available";
+            z.Insert_Doctor_Time = "no date available";
+          } else if (z.Insert_Nurse_Time.length > 0 && z.Insert_Nurse_Time.length == 0) {
+            z.Insert_Nurse_Time = moment(z.Insert_Nurse_Time).format("YYYY-MM-DD");
+          } else if (z.Insert_Nurse_Time.length == 0 && z.Insert_Nurse_Time.length > 0) {
+            z.Insert_Doctor_Time = moment(z.Insert_Doctor_Time).format("YYYY-MM-DD");
+          }
+        });*/
       },
     });
 

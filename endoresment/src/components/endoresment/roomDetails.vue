@@ -745,7 +745,7 @@
                             <input
                               type="date"
                               :max="currentDate"
-                              v-model="newPatient.Age"
+                              v-model="newPatient.Date_Birth"
                               required
                             />
                           </div>
@@ -758,7 +758,7 @@
                           </h3>
                           <div class="cu-input text-box">
                             <span class="fa fa-edit"></span>
-                            <span>{{ newPatient.Age }}</span>
+                            <span class="w-100 text-left">{{ newPatient.Age }}</span>
                           </div>
                         </div>
 
@@ -869,6 +869,7 @@ export default {
         Bed_id: 0,
         Addmission_date: "",
         Age: "",
+        Date_Birth: "",
         Specialty: "",
         Consultant_id: 0,
         Consultant_Name: "",
@@ -983,6 +984,20 @@ export default {
     },
   },
   watch: {
+    "newPatient.Date_Birth": function () {
+      if (moment().diff(this.newPatient.Date_Birth, "days") >= 365) {
+        this.newPatient.Age =
+          moment().diff(this.newPatient.Date_Birth, "years") + " years";
+      } else if (
+        moment().diff(this.newPatient.Date_Birth, "days") < 365 &&
+        moment().diff(this.newPatient.Date_Birth, "days") >= 30
+      ) {
+        this.newPatient.Age =
+          moment().diff(this.newPatient.Date_Birth, "months") + " months";
+      } else {
+        this.newPatient.Age = moment().diff(this.newPatient.Date_Birth, "days") + " days";
+      }
+    },
     selectedUnit: function () {
       this.RoomsInfo();
     },

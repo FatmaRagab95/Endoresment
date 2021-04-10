@@ -28,7 +28,11 @@ public partial class _roomDetails : System.Web.UI.Page
 
         con.Open();
 
-        using (SqlCommand cmd = new SqlCommand("select * from Units where Branch_id = @Branch_id and Show = 1", con))
+        using (
+            SqlCommand cmd =
+                new SqlCommand("select * from Units where Branch_id = @Branch_id and Show = 1",
+                    con)
+        )
         {
             cmd.Parameters.Add("@Branch_id", SqlDbType.Int).Value = branch.id;
             SqlDataReader idr = cmd.ExecuteReader();
@@ -85,7 +89,8 @@ public partial class _roomDetails : System.Web.UI.Page
 
         using (
             SqlCommand cmd =
-                new SqlCommand("select * from Endorsement_Rooms where unit_id = @unit_id", con)
+                new SqlCommand("select * from Endorsement_Rooms where unit_id = @unit_id",
+                    con)
         )
         {
             cmd.Parameters.Add("@unit_id", SqlDbType.VarChar).Value =
@@ -163,7 +168,8 @@ public partial class _roomDetails : System.Web.UI.Page
 
         using (
             SqlCommand cmd =
-                new SqlCommand("select * from Endorsement_RoomsDashboard where Room_id in (select id from Endorsement_Rooms where unit_id = @unit_id)", con)
+                new SqlCommand("select * from Endorsement_RoomsDashboard where Room_id in (select id from Endorsement_Rooms where unit_id = @unit_id)",
+                    con)
         )
         {
             cmd.Parameters.Add("@unit_id", SqlDbType.VarChar).Value =
@@ -250,11 +256,11 @@ public partial class _roomDetails : System.Web.UI.Page
 
         using (
             SqlCommand cmd =
-                new SqlCommand("select * from Endorsement_PatientData WHERE Patient_Status = 1 and Branch_id = @Branch_id and Unit = @Unit",con)
+                new SqlCommand("select * from Endorsement_PatientData WHERE Patient_Status = 1 and Branch_id = @Branch_id and Unit = @Unit",
+                    con)
         )
         {
-            cmd.Parameters.Add("@Unit", SqlDbType.VarChar).Value =
-                info.Unit;
+            cmd.Parameters.Add("@Unit", SqlDbType.VarChar).Value = info.Unit;
             cmd.Parameters.Add("@Branch_id", SqlDbType.VarChar).Value =
                 info.Branch_id;
             SqlDataReader idr = cmd.ExecuteReader();
@@ -320,7 +326,9 @@ public partial class _roomDetails : System.Web.UI.Page
         public string Patient_FullName { get; set; }
 
         public int? Bed_id { get; set; }
+
         public int? Branch_id { get; set; }
+
         public string Unit { get; set; }
 
         public string Room { get; set; }
@@ -348,7 +356,7 @@ public partial class _roomDetails : System.Web.UI.Page
         con.Open();
         using (
             SqlCommand cmd1 =
-                new SqlCommand("insert into Endorsement_PatientData (Patient_FullName, Branch_id, Branch_name,Gender,Unit,Room,Bed_id,Addmission_date,Age,Specialty,Consultant_id,Consultant_Name,Patient_Status,Entry_user,Medical_Number) values (@Patient_FullName,@Branch_id, (select Branch_EName from Branches where id = @Branch_id), @Gender, @Unit, @Room, @Bed_id, @Addmission_date, @Age, @Specialty,@Consultant_id,@Consultant_Name, @Patient_Status ,@Entry_user, @Medical_Number)",
+                new SqlCommand("insert into Endorsement_PatientData (Patient_FullName, Branch_id, Branch_name,Gender,Unit,Room,Bed_id,Addmission_date,Age,Specialty,Consultant_id,Consultant_Name,Patient_Status,Entry_user,Medical_Number,Date_Birth) values (@Patient_FullName,@Branch_id, (select Branch_EName from Branches where id = @Branch_id), @Gender, @Unit, @Room, @Bed_id, @Addmission_date, @Age, @Specialty,@Consultant_id,@Consultant_Name, @Patient_Status ,@Entry_user, @Medical_Number,@Date_Birth)",
                     con)
         )
         {
@@ -366,9 +374,12 @@ public partial class _roomDetails : System.Web.UI.Page
             cmd1.Parameters.Add("@Addmission_date", SqlDbType.VarChar).Value =
                 data.Addmission_date;
             cmd1.Parameters.Add("@Age", SqlDbType.VarChar).Value = data.Age;
+            cmd1.Parameters.Add("@Date_Birth", SqlDbType.VarChar).Value =
+                data.Date_Birth;
             cmd1.Parameters.Add("@Specialty", SqlDbType.VarChar).Value =
                 data.Specialty;
-            cmd1.Parameters.Add("@Consultant_id", SqlDbType.Int).Value = data.Consultant_id;
+            cmd1.Parameters.Add("@Consultant_id", SqlDbType.Int).Value =
+                data.Consultant_id;
             cmd1.Parameters.Add("@Consultant_Name", SqlDbType.VarChar).Value =
                 data.Consultant_Name;
             cmd1.Parameters.Add("@Patient_Status", SqlDbType.Int).Value = 1;
@@ -432,6 +443,8 @@ public partial class _roomDetails : System.Web.UI.Page
         public string Addmission_date { get; set; }
 
         public string Age { get; set; }
+
+        public string Date_Birth { get; set; }
 
         public string Specialty { get; set; }
 
@@ -558,7 +571,8 @@ public partial class _roomDetails : System.Web.UI.Page
     [WebMethod]
     public static string getConsultantsData(Consultants info)
     {
-        string config = Convert.ToString(ConfigurationManager.ConnectionStrings["dbcon"]);
+        string config =
+            Convert.ToString(ConfigurationManager.ConnectionStrings["dbcon"]);
         List<Consultants> Consultants = new List<Consultants>();
 
         SqlConnection con = new SqlConnection(config);
@@ -566,11 +580,14 @@ public partial class _roomDetails : System.Web.UI.Page
         con.Open();
 
         using (
-            SqlCommand cmd = new SqlCommand("select * from Doctors_Data where Type = 'Consultant' and Spcy_id = @Spcy_id and Branch = @Branch_ID", con)
+            SqlCommand cmd =
+                new SqlCommand("select * from Doctors_Data where Type = 'Consultant' and Spcy_id = @Spcy_id and Branch = @Branch_ID",
+                    con)
         )
         {
             cmd.Parameters.Add("@Spcy_id", SqlDbType.Int).Value = info.Spcy_id;
-            cmd.Parameters.Add("@Branch_ID", SqlDbType.Int).Value = info.Branch_ID;
+            cmd.Parameters.Add("@Branch_ID", SqlDbType.Int).Value =
+                info.Branch_ID;
             SqlDataReader idr = cmd.ExecuteReader();
 
             if (idr.HasRows)
@@ -593,9 +610,15 @@ public partial class _roomDetails : System.Web.UI.Page
         {
             ConsultantsI
                 .Add(new Consultants {
-                    Dr_Code = idr["Dr_Code"] != DBNull.Value ? Convert.ToInt32(idr["Dr_Code"]) : 0,
+                    Dr_Code =
+                        idr["Dr_Code"] != DBNull.Value
+                            ? Convert.ToInt32(idr["Dr_Code"])
+                            : 0,
                     DR_Name = Convert.ToString(idr["DR_Name"]),
-                    Spcy_id = idr["Spcy_id"] != DBNull.Value ? Convert.ToInt32(idr["Spcy_id"]) : 0,
+                    Spcy_id =
+                        idr["Spcy_id"] != DBNull.Value
+                            ? Convert.ToInt32(idr["Spcy_id"])
+                            : 0
                 });
         }
 
@@ -605,8 +628,11 @@ public partial class _roomDetails : System.Web.UI.Page
     public class Consultants
     {
         public int? Dr_Code { get; set; }
+
         public string DR_Name { get; set; }
+
         public int? Spcy_id { get; set; }
+
         public int? Branch_ID { get; set; }
     }
 }

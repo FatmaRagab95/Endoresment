@@ -95,7 +95,7 @@ public partial class _UnitDetials : System.Web.UI.Page
 
         using (
             SqlCommand cmd =
-                new SqlCommand("SELECT TOP(5) id,Unit_name,Shift,Shift_date,Total_Census,Received,Admission,Transfer_In,Transfer_Out from Endorsement_UnitsDashboard where Unit_id = @Unit_id order by id desc",
+                new SqlCommand("SELECT TOP(5) id,Unit_name,Shift,Shift_date,Total_Census,Received,Admission,Transfer_In,Transfer_Out from Endorsement_UnitsDashboard where Unit_id = @Unit_id and Hide = 'False' order by id desc",
                     con)
         )
         {
@@ -129,12 +129,26 @@ public partial class _UnitDetials : System.Web.UI.Page
                     Unit_name = Convert.ToString(idr["Unit_name"]),
                     Shift = Convert.ToString(idr["Shift"]),
                     Shift_date = Convert.ToDateTime(idr["Shift_date"]),
-                    Total_Census = idr["Total_Census"] != DBNull.Value ? Convert.ToInt32(idr["Total_Census"]) : 0,
-                    Received = idr["Received"] != DBNull.Value ? Convert.ToInt32(idr["Received"]) : 0,
-                    Admission = idr["Admission"] != DBNull.Value ? Convert.ToInt32(idr["Admission"]) : 0,
-                    Transfer_In = idr["Transfer_In"] != DBNull.Value ? Convert.ToInt32(idr["Transfer_In"]) : 0,
-                    Transfer_Out = idr["Transfer_Out"] != DBNull.Value ? Convert.ToInt32(idr["Transfer_Out"]) : 0,
-
+                    Total_Census =
+                        idr["Total_Census"] != DBNull.Value
+                            ? Convert.ToInt32(idr["Total_Census"])
+                            : 0,
+                    Received =
+                        idr["Received"] != DBNull.Value
+                            ? Convert.ToInt32(idr["Received"])
+                            : 0,
+                    Admission =
+                        idr["Admission"] != DBNull.Value
+                            ? Convert.ToInt32(idr["Admission"])
+                            : 0,
+                    Transfer_In =
+                        idr["Transfer_In"] != DBNull.Value
+                            ? Convert.ToInt32(idr["Transfer_In"])
+                            : 0,
+                    Transfer_Out =
+                        idr["Transfer_Out"] != DBNull.Value
+                            ? Convert.ToInt32(idr["Transfer_Out"])
+                            : 0
                 });
         }
 
@@ -150,7 +164,9 @@ public partial class _UnitDetials : System.Web.UI.Page
         public string Unit_name { get; set; }
 
         public string Shift { get; set; }
+
         public DateTime Shift_date { get; set; }
+
         public int? Total_Census { get; set; }
 
         public int? Received { get; set; }
@@ -260,5 +276,58 @@ public partial class _UnitDetials : System.Web.UI.Page
         public string Specialty { get; set; }
 
         public string Date_Birth { get; set; }
+    }
+
+    // delete shift
+    [WebMethod]
+    public static string deletedShift(ShiftHide detail)
+    {
+        string config =
+            Convert.ToString(ConfigurationManager.ConnectionStrings["dbcon"]);
+
+        List<ShiftHide> ShiftHide = new List<ShiftHide>();
+
+        SqlConnection con = new SqlConnection(config);
+
+        con.Open();
+
+        using (
+            SqlCommand cmd =
+                new SqlCommand("update Endorsement_UnitsDashboard set Hide=@Hide where id = @id;",
+                    con)
+        )
+        {
+            cmd.Parameters.AddWithValue("@id", detail.id);
+            cmd.Parameters.AddWithValue("@Hide", detail.Hide);
+
+            cmd.ExecuteNonQuery();
+        }
+
+        con.Close();
+
+        return JsonConvert.SerializeObject(ShiftHide);
+    }
+
+    public static List<ShiftHide>
+    populateShiftHideLisst(SqlDataReader idr, SqlConnection con)
+    {
+        List<ShiftHide> ShiftHideI = new List<ShiftHide>();
+
+        while (idr.Read())
+        {
+            ShiftHideI
+                .Add(new ShiftHide {
+                    id = Convert.ToInt32(idr["id"]),
+                    Hide = Convert.ToBoolean(idr["Hide"])
+                });
+        }
+        return ShiftHideI;
+    }
+
+    public class ShiftHide
+    {
+        public int? id { get; set; }
+
+        public Boolean Hide { get; set; }
     }
 }
