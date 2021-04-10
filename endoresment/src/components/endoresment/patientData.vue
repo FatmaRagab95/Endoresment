@@ -70,7 +70,13 @@
           <i v-if="stat > 1" class="close fa fa-close pull-right" @click="stat = 1"></i>
           <div class="row">
             <div class="col-sm-4 mb-1">
-              <button class="btn btn-block btn-primary shadow-sm btn-sm">Transfer</button>
+              <button
+                class="btn btn-block btn-primary shadow-sm btn-sm"
+                data-toggle="modal"
+                data-target="#exampleModalCenter"
+              >
+                Transfer
+              </button>
             </div>
 
             <div class="col-sm-4 mb-1">
@@ -146,7 +152,7 @@
     </div>
 
     <div class="container-fluid mt-2 bg-white pt-3 pb-3 card">
-      <div class="container" v-if="shiftData">
+      <div class="container" v-if="shiftData && viewedShift">
         <div class="row mt-4 text-left">
           <div class="col-md-8">
             <div class="form-group bg-white border p-3 shadow-sm">
@@ -439,6 +445,104 @@
         </router-link>
       </div>
     </div>
+    <!-- start transfer Modal -->
+    <div
+      class="modal fade"
+      id="exampleModalCenter"
+      tabindex="-1"
+      role="dialog"
+      aria-labelledby="exampleModalCenterTitle"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLongTitle">Transfer To</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body overflow-auto" style="height: 450px">
+            <form @submit.prevent="transform">
+              <div class="custom-form pt-1">
+                <div class="cu-container">
+                  <div class="cu-form-group special" style="max-width: 900px">
+                    <div class="cu-field" v-if="Units.length > 0">
+                      <div>{{ shiftData }}</div>
+                      <h3 class="cu-label">
+                        <label>Unit :</label>
+                      </h3>
+                      <div class="f-select">
+                        <select
+                          class="form-control form-control-sm"
+                          v-model="Unit"
+                          required
+                        >
+                          <option
+                            v-for="unit in Units"
+                            :value="unit.U_id"
+                            :key="unit.U_name"
+                          >
+                            {{ unit.U_name }}
+                          </option>
+                        </select>
+                      </div>
+                    </div>
+
+                    <div class="cu-field" v-if="Rooms.length > 0">
+                      <h3 class="cu-label">
+                        <label>Room :</label>
+                      </h3>
+                      <div class="f-select">
+                        <select
+                          class="form-control form-control-sm"
+                          v-model="Room"
+                          required
+                        >
+                          <option
+                            v-for="room in Rooms"
+                            :value="room.id"
+                            :key="room.Room_name"
+                          >
+                            {{ room.Room_name }}
+                          </option>
+                        </select>
+                      </div>
+                    </div>
+
+                    <div class="cu-field" v-if="Beds.length > 0">
+                      <h3 class="cu-label">
+                        <label>Bed :</label>
+                      </h3>
+                      <div class="f-select">
+                        <select
+                          class="form-control form-control-sm"
+                          v-model="Bed_id"
+                          required
+                        >
+                          <option v-for="bed in Beds" :value="bed.id" :key="bed.id">
+                            {{ bed.Bed_name }}
+                          </option>
+                        </select>
+                      </div>
+                    </div>
+                    <div class="text-center">
+                      <button class="special-btn btn-sm">Submit</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">
+              Close
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- end transfer Modal -->
   </div>
 </template>
 
@@ -449,6 +553,9 @@ export default {
   data() {
     return {
       apiUrl: this.link,
+      Units: [],
+      Rooms: [],
+      Beds: [],
       patientData: null,
       shiftData: null,
       id: this.$route.params.id,
@@ -458,9 +565,197 @@ export default {
       today: "",
       dischargeDate: "",
       deathDate: "",
+
+      Unit: "",
+      Room: "",
+      Bed_id: 0,
     };
   },
+
+  watch: {
+    Unit: function () {
+      let Unit = this.Unit,
+        that = this;
+
+      //get Rooms
+      $.ajax({
+        type: "POST",
+        url: that.apiUrl + "endoresment/patientData.aspx/getRoomsData",
+        data: JSON.stringify({ unit: { U_id: Unit } }),
+        contentType: "application/json; charset=utf-8",
+        dataType: "json",
+        success: function (data) {
+          that.Rooms = JSON.parse(data.d);
+        },
+      });
+    },
+    Room: function () {
+      let Room = this.Room,
+        that = this;
+
+      //get Beds
+      $.ajax({
+        type: "POST",
+        url: that.apiUrl + "endoresment/patientData.aspx/getBedsData",
+        data: JSON.stringify({ room: { id: Room } }),
+        contentType: "application/json; charset=utf-8",
+        dataType: "json",
+        success: function (data) {
+          that.Beds = JSON.parse(data.d);
+        },
+      });
+    },
+  },
   methods: {
+    LOS(date) {
+      let length = Math.round(
+        (new Date() - new Date(date.trim())) / (1000 * 60 * 60 * 24)
+      );
+      return length == 0 ? "Today" : length == 1 ? length + " Day" : length + " Days";
+    },
+    transform: function () {
+      let dataObj = null;
+
+      if ($("form").is(":valid")) {
+        let that = this,
+          updatedTransform = {
+            id: this.id,
+            Unit: this.Units.filter((x) => x.U_id == this.Unit)[0].U_name,
+            Room: this.Rooms.filter((x) => x.id == this.Room)[0].Room_name,
+            Bed_id: this.Bed_id,
+          };
+
+        swal({
+          title: "Are you sure?",
+          buttons: true,
+        }).then((confirm) => {
+          if (confirm) {
+            // 1- update patientData table
+            $.ajax({
+              type: "POST",
+              url: that.apiUrl + "endoresment/patientData.aspx/updateTransform",
+              data: JSON.stringify({ detail: updatedTransform }),
+              contentType: "application/json; charset=utf-8",
+              dataType: "json",
+              success: function () {
+                // 2- update followUp table
+                if (that.shiftData.length > 0) {
+                  dataObj = that.shiftData.filter(
+                    (x) => x.id == Math.Max(...that.shiftData((z) => z.id))
+                  )[0];
+                } else {
+                  dataObj = {
+                    Patient_id: that.patientData.id,
+                    Insert_Nurse: 0,
+                    Insert_Nurse_Name: "",
+                    Insert_Nurse_Time: 0,
+                    Insert_Doctor: 0,
+                    Insert_Doctor_Name: "",
+                    Insert_Doctor_Time: 0,
+                  };
+                }
+                let currentShift = new Date().getHours() >= 20 ? "Night" : "Day";
+                dataObj.Transfer_From = that.patientData.Unit;
+                dataObj.Transfer_To = that.Units.filter(
+                  (x) => x.U_id == that.Unit
+                )[0].U_name;
+                dataObj.Shift = currentShift;
+
+                if (
+                  dataObj.id &&
+                  that.LOS(dataObj.Entry_date) == "Today" &&
+                  dataObj.Shift.trim() == currentShift
+                ) {
+                  // update follow up by nurse
+                  if (that.user.Role_id == 12 || that.user.Role_id == 17) {
+                    dataObj.Update_Nurse = that.user.Emp_id;
+                    dataObj.Update_Nurse_Name = that.user.FullName;
+                    dataObj.Update_Nurse_Time = moment(new Date()).format(
+                      "DD-MM-YYYY A HH-mm"
+                    );
+
+                    UpdateData();
+                  } else if (that.user.Role_id == 10) {
+                    // update follow up by doctor
+
+                    dataObj.Update_Doctor = that.user.Emp_id;
+                    dataObj.Update_Doctor_Name = that.user.FullName;
+                    dataObj.Update_Doctor_Time = moment(new Date()).format(
+                      "DD-MM-YYYY A HH-mm"
+                    );
+
+                    UpdateData();
+                  }
+                } else {
+                  // insert into follow up by nurse
+                  if (that.user.Role_id == 12 || that.user.Role_id == 17) {
+                    dataObj.Insert_Nurse = that.user.Emp_id;
+                    dataObj.Insert_Nurse_Name = that.user.FullName;
+                    dataObj.Insert_Nurse_Time = moment(new Date()).format(
+                      "DD-MM-YYYY A HH-mm"
+                    );
+                    dataObj.Insert_Doctor = 0;
+
+                    InsertData();
+                  } else if (that.user.Role_id == 10) {
+                    // insert into follow up by doctor
+                    dataObj.Insert_Doctor = that.user.Emp_id;
+                    dataObj.Insert_Doctor_Name = that.user.FullName;
+                    dataObj.Insert_Doctor_Time = moment(new Date()).format(
+                      "DD-MM-YYYY A HH-mm"
+                    );
+                    dataObj.Insert_Nurse = 0;
+
+                    InsertData();
+                  }
+                }
+
+                //3- update roomsDashboard table
+                let id = this.patientData.filter((x) => x.id == this.id)[0].Bed_id;
+                $.ajax({
+                  type: "POST",
+                  url: that.apiUrl + "endoresment/patientData.aspx/updateRoom",
+                  data: JSON.stringify({
+                    detail: { id: id, Status_id: 1, Status_name: "Empty" },
+                  }),
+                  contentType: "application/json; charset=utf-8",
+                  dataType: "json",
+                });
+
+                // old bed = Empty
+                // new bed = Full
+              },
+            });
+          }
+        });
+      } else {
+        swal({
+          icon: "warning",
+          dangerMode: true,
+          text: "Please Fill All Fields!",
+        });
+      }
+
+      function InsertData() {
+        $.ajax({
+          type: "POST",
+          url: that.apiUrl + "endoresment/patientData.aspx/insertFollowUpData",
+          data: JSON.stringify({ patient: dataObj }),
+          contentType: "application/json; charset=utf-8",
+          dataType: "json",
+        });
+      }
+
+      function UpdateData() {
+        $.ajax({
+          type: "POST",
+          url: that.apiUrl + "endoresment/patientData.aspx/updateFollowUpData",
+          data: JSON.stringify({ patient: dataObj }),
+          contentType: "application/json; charset=utf-8",
+          dataType: "json",
+        });
+      }
+    },
     updateStat(stat, Id) {
       if (this.dischargeDate || this.deathDate) {
         let that = this;
@@ -518,6 +813,18 @@ export default {
   created() {
     let that = this;
     that.today = moment(new Date()).format("YYYY-MM-DD");
+
+    //get Units
+    $.ajax({
+      type: "POST",
+      url: that.apiUrl + "endoresment/patientData.aspx/getUnitsData",
+      data: JSON.stringify({ branch: { id: that.user.Branch_ID } }),
+      contentType: "application/json; charset=utf-8",
+      dataType: "json",
+      success: function (data) {
+        that.Units = JSON.parse(data.d);
+      },
+    });
 
     // get patient data
     $.ajax({
