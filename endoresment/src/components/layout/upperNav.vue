@@ -137,7 +137,11 @@
                         <div class="p-0 userName"><span>{{username}}</span></div>
                     </div>
                     <ul class="list-unstyled sub-menu profile-menu">
-                        <li><a href="../Security/forgot_password.aspx"><i class="fa fa-user-circle"></i><span>Profile</span></a></li>
+                        <li>
+                            <router-link :to="{name:'Profile'}">
+                                <i class="fa fa-user-circle"></i><span>Profile</span>
+                            </router-link>
+                        </li>
                         <li><a href="#"><i class="fa fa-gear"></i><span>Settings</span></a></li>
                         <li>
                             <input type="submit" @click.prevent="Button_LogOut" value="Log Out">

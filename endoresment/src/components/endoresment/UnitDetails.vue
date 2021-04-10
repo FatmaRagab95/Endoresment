@@ -16,7 +16,6 @@
             <div class="card bg-white shadow">
               <h4><i class="fa fa-table"></i> Latest Shifts</h4>
 
-              <div>{{ UnitDash }}</div>
               <div class="table-card overflow-auto">
                 <table class="table text-center">
                   <thead>
