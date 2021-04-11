@@ -141,6 +141,8 @@ public partial class _Units : System.Web.UI.Page
                     Admission = idr["Admission"] != DBNull.Value ? Convert.ToInt32(idr["Admission"]) : 0,
                     Transfer_In = idr["Transfer_In"] != DBNull.Value ? Convert.ToInt32(idr["Transfer_In"]) : 0,
                     Transfer_Out = idr["Transfer_Out"] != DBNull.Value ? Convert.ToInt32(idr["Transfer_Out"]) : 0,
+                    Discharge = idr["Discharge"] != DBNull.Value ? Convert.ToInt32(idr["Discharge"]) : 0,
+                    Death = idr["Death"] != DBNull.Value ? Convert.ToInt32(idr["Death"]) : 0,
 
                 });
         }
@@ -165,6 +167,8 @@ public partial class _Units : System.Web.UI.Page
         public int? Transfer_In { get; set; }
 
         public int? Transfer_Out { get; set; }
+        public int? Discharge { get; set; }
+        public int? Death { get; set; }
     }
 
     // get patients data

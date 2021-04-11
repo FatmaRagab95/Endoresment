@@ -56,6 +56,52 @@ public partial class _patientData : System.Web.UI.Page
         return JsonConvert.SerializeObject(Endorsement_PatientData);
     }
 
+    // update unitsDashboard data
+    [WebMethod]
+    public static string updateUnitsData(UnitsDash unit)
+    {
+        string config =
+            Convert.ToString(ConfigurationManager.ConnectionStrings["dbcon"]);
+        List<UnitsDash> UnitsDash =
+            new List<UnitsDash>();
+
+        SqlConnection con = new SqlConnection(config);
+
+        con.Open();
+
+        using (
+            SqlCommand cmd =
+                new SqlCommand("update Endorsement_UnitsDashboard set Total_Census = Total_Census - 1, Discharge = Discharge + @Discharge, Death = Death + @Death where Unit_name = @Unit_name and Shift = @Shift and Shift_date >= DATEADD(day,-2, GETDATE()) ",
+                    con)
+        )
+        {
+            cmd.Parameters.Add("@Unit_name", SqlDbType.VarChar).Value = unit.Unit_name;
+            cmd.Parameters.Add("@Shift", SqlDbType.VarChar).Value = unit.Shift;
+            cmd.Parameters.Add("@Shift_date", SqlDbType.VarChar).Value = unit.Shift_date;
+            cmd.Parameters.Add("@Death", SqlDbType.Int).Value =
+                unit.Death;
+            cmd.Parameters.Add("@Discharge", SqlDbType.Int).Value =
+                unit.Discharge;
+            SqlDataReader idr = cmd.ExecuteReader();
+        }
+
+        con.Close();
+
+        return JsonConvert.SerializeObject(UnitsDash);
+    }
+
+        public class UnitsDash
+    {
+        public string Unit_name { get; set; }
+
+        public string Shift { get; set; }
+        public string Shift_date { get; set; }
+
+        public int? Death { get; set; }
+
+        public int? Discharge { get; set; }
+    }
+
     // update room dashboard
     [WebMethod]
     public static string updateRoomData(RoomDetails room)

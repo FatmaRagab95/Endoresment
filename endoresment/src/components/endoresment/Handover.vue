@@ -67,7 +67,8 @@
                 <td colspan="6"><span>Admission:</span> {{ unit.Admission }}</td>
                 <td><span>Transfer In:</span> {{ unit.Transfer_In }}</td>
                 <td><span>Transfer Out:</span> {{ unit.Transfer_Out }}</td>
-                <td colspan="4"><span>Discharged:</span> 0</td>
+                <td colspan="2"><span>Discharged:</span> {{ unit.Discharge }}</td>
+                <td colspan="2"><span>Death:</span> {{ unit.Death }}</td>
               </tr>
               <tr class="seperated">
                 <th><span>Room</span></th>
@@ -124,6 +125,7 @@
                 </td>
                 <td class="bigText">
                   <textarea
+                    :class="user.Role_id == 12 || user.Role_id == 17 ? 'bg-grey' : ''"
                     :disabled="user.Role_id == 12 || user.Role_id == 17 ? 'disabled' : ''"
                     v-if="patient.edit"
                     v-model="FollowData(patient.id).DR_Diagnosis"
@@ -132,6 +134,7 @@
                 </td>
                 <td class="bigText">
                   <textarea
+                    :class="user.Role_id == 12 || user.Role_id == 17 ? 'bg-grey' : ''"
                     :disabled="user.Role_id == 12 || user.Role_id == 17 ? 'disabled' : ''"
                     v-if="patient.edit"
                     v-model="FollowData(patient.id).DR_ProgressNotes"
@@ -253,6 +256,7 @@
                 </td>
                 <td class="bigText">
                   <textarea
+                    :class="user.Role_id == 12 || user.Role_id == 17 ? 'bg-grey' : ''"
                     :disabled="user.Role_id == 12 || user.Role_id == 17 ? 'disabled' : ''"
                     v-if="patient.edit"
                     type="text"

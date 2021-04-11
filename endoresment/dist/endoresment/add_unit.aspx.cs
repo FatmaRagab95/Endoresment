@@ -28,7 +28,7 @@ public partial class _addUnit : System.Web.UI.Page
 		SqlConnection con = new SqlConnection(config);
 
 		con.Open();
-        using (SqlCommand cmd1 = new SqlCommand("insert into Endorsement_UnitsDashboard (Unit_id,Branch_id, Unit_name, Shift,Shift_date,Total_Census,Received,Admission,Transfer_In,Transfer_Out,Endorsing_ChargeNurse,Endorsing_ChargeNurse_id,Receive_ChargeNurse,Receive_ChargeNurse_id, Confirm) values (@Unit_id,@Branch_id, @Unit_name, @Shift,@Shift_date,@Received,@Received,@Admission,@Transfer_In,@Transfer_Out,@Endorsing_ChargeNurse,@Endorsing_ChargeNurse_id,@Receive_ChargeNurse,@Receive_ChargeNurse_id, 'True')", con))
+        using (SqlCommand cmd1 = new SqlCommand("insert into Endorsement_UnitsDashboard (Unit_id,Branch_id, Unit_name, Shift,Shift_date,Total_Census,Received,Admission,Transfer_In,Transfer_Out,Endorsing_ChargeNurse,Endorsing_ChargeNurse_id,Receive_ChargeNurse,Receive_ChargeNurse_id, Confirm) values (@Unit_id,@Branch_id, @Unit_name, @Shift,@Shift_date,@Received,@Received,@Admission,@Transfer_In,@Transfer_Out,@Endorsing_ChargeNurse,@Endorsing_ChargeNurse_id,@Receive_ChargeNurse,@Receive_ChargeNurse_id, @Confirm)", con))
 
         {
             cmd1.Parameters.Add("@Unit_id", SqlDbType.Int).Value  = data.Unit_id;
@@ -45,6 +45,7 @@ public partial class _addUnit : System.Web.UI.Page
             cmd1.Parameters.Add("@Endorsing_ChargeNurse_id", SqlDbType.Int).Value  = data.Endorsing_ChargeNurse_id;
             cmd1.Parameters.Add("@Receive_ChargeNurse", SqlDbType.VarChar).Value   = data.Receive_ChargeNurse;
             cmd1.Parameters.Add("@Receive_ChargeNurse_id", SqlDbType.Int).Value  = data.Receive_ChargeNurse_id;
+            cmd1.Parameters.Add("@Confirm", SqlDbType.Bit).Value  = data.Confirm;
 
             cmd1.ExecuteNonQuery();
 
@@ -95,6 +96,7 @@ public partial class _addUnit : System.Web.UI.Page
         public int? Endorsing_ChargeNurse_id { get; set; }
         public string Receive_ChargeNurse { get; set; }
         public int? Receive_ChargeNurse_id { get; set; }
+        public Boolean Confirm { get; set; }
     }
 
             // get Endorsement_Nursing_schedule

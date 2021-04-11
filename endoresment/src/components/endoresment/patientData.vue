@@ -95,7 +95,6 @@
                   class="form-control"
                   type="date"
                   :max="today"
-                  :min="today"
                   v-model="dischargeDate"
                 />
                 <button
@@ -122,7 +121,6 @@
                   class="form-control"
                   type="date"
                   :max="today"
-                  :min="today"
                   v-model="deathDate"
                 />
                 <button
@@ -804,6 +802,26 @@ export default {
                   type: "POST",
                   url: that.apiUrl + "endoresment/patientData.aspx/updateRoomData",
                   data: JSON.stringify({ room: bed }),
+                  contentType: "application/json; charset=utf-8",
+                  dataType: "json",
+                });
+
+                // update unitsdashboard
+                let currentShift = new Date().getHours() >= 20 ? "Night" : "Day";
+                let currentDate  = that.dischargeDate ? that.dischargeDate : that.deathDate;
+
+                let Unitobj = {
+                  Unit_name: that.patientData.Unit,
+                  Shift: currentShift,
+                  Shift_date: currentDate,
+                  Death: stat == 3 ? 1 : 0,
+                  Discharge: stat == 2 ? 1 : 0
+                };
+
+                $.ajax({
+                  type: "POST",
+                  url: that.apiUrl + "endoresment/patientData.aspx/updateUnitsData",
+                  data: JSON.stringify({ unit: Unitobj }),
                   contentType: "application/json; charset=utf-8",
                   dataType: "json",
                 });

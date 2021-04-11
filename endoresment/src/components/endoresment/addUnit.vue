@@ -123,9 +123,9 @@
                   <div class="modal-body">
                       <form @submit.prevent='submitUnit()'>
                           <ul class='shift-info list-unstyled'>
-                              <li class='pb-3' v-if='currentShift.handNurse.length > 0'>
+                              <li class='pb-3' v-if='currentShift.otherNurses.length > 0'>
                                     <v-select
-                                    :items="currentShift.handNurse"
+                                    :items="currentShift.otherNurses.filter(x => x.Emp_ID != user.Emp_id)"
                                     item-text="FullName"
                                     :item-value="'Emp_ID'"
                                     label="Handover To"
@@ -135,7 +135,7 @@
                               </li>
                               <li class='pb-3' v-else>
                                     <v-select
-                                    :items="currentShift.EndoresingNurse"
+                                    :items="currentShift.handNurse"
                                     item-text="FullName"
                                     :item-value="'Emp_ID'"
                                     label="Handover To"
@@ -149,8 +149,13 @@
                               </li>
                               <li class='p-3 cu-flex'>
                                   <span class='keyWords'>Shift Date:</span>
-                                  <span class='values text-secondary'>{{currentShift.handoverDate}}</span>
-                                  <span class='values text-secondary'>
+                                  <span class='values text-secondary' v-if='currentShift.otherNurses.length > 0'>{{currentShift.Date}}</span>
+                                  <span class='values text-secondary' v-else>{{currentShift.handoverDate}}</span>
+                                  <span class='values text-secondary' v-if='currentShift.otherNurses.length > 0'>
+                                      {{currentShift.Shift.trim()}}
+                                      <span class='text-success'><i :class="currentShift.Shift.trim() == 'Day' ? 'fa fa-sun-o' : 'fa fa-moon-o'"></i></span>
+                                  </span>
+                                  <span class='values text-secondary' v-else>
                                       {{currentShift.Shift.trim() == 'Day' ? 'Night' : 'Day'}}
                                       <span class='text-success'><i :class="currentShift.Shift.trim() == 'Day' ? 'fa fa-moon-o' : 'fa fa-sun-o'"></i></span>
                                   </span>
@@ -214,6 +219,7 @@ export default {
         that.newUnit.Unit_id = that.currentShift.Unit_id;
         that.newUnit.Unit_name = that.currentShift.Unit_name;
         that.newUnit.Received = that.currentShift.patientsNum;
+        that.newUnit.Confirm = true;
 
         //insert Unit dashboard details
         $.ajax({
@@ -245,15 +251,24 @@ export default {
       if ($(".modal.show form").is(":valid")) {
         let that = this;
 
-        that.newUnit.Shift = that.currentShift.Shift.trim() == 'Day' ? 'Night' : 'Day';
-        that.newUnit.Shift_date = that.currentShift.handoverDate;
-        that.newUnit.Branch_id = that.user.Branch_ID;
-        that.newUnit.Endorsing_ChargeNurse_id = that.user.Emp_id;
-        that.newUnit.Endorsing_ChargeNurse = that.user.FullName;
-        that.newUnit.Receive_ChargeNurse = that.currentShift.handNurse.filter(x => x.Emp_ID == that.newUnit.Receive_ChargeNurse_id)[0].FullName;
-        that.newUnit.Unit_id = that.currentShift.Unit_id;
-        that.newUnit.Unit_name = that.currentShift.Unit_name;
-        that.newUnit.Received = that.currentShift.patientsNum;
+          that.newUnit.Branch_id = that.user.Branch_ID;
+          that.newUnit.Endorsing_ChargeNurse_id = that.user.Emp_id;
+          that.newUnit.Unit_id = that.currentShift.Unit_id;
+          that.newUnit.Unit_name = that.currentShift.Unit_name;
+          that.newUnit.Received = that.currentShift.patientsNum;
+          that.newUnit.Confirm = false;
+
+        if (that.currentShift.otherNurses.length > 0) {
+          that.newUnit.Shift = that.currentShift.Shift.trim();
+          that.newUnit.Shift_date = that.currentShift.Date;
+          that.newUnit.Endorsing_ChargeNurse = that.user.FullName;
+          that.newUnit.Receive_ChargeNurse = that.currentShift.otherNurses.filter(x => x.Emp_ID == that.newUnit.Receive_ChargeNurse_id)[0].FullName;
+        } else {
+          that.newUnit.Shift = that.currentShift.Shift.trim() == 'Day' ? 'Night' : 'Day';
+          that.newUnit.Shift_date = that.currentShift.handoverDate;
+          that.newUnit.Endorsing_ChargeNurse = that.user.FullName;
+          that.newUnit.Receive_ChargeNurse = that.currentShift.handNurse.filter(x => x.Emp_ID == that.newUnit.Receive_ChargeNurse_id)[0].FullName;
+        }
 
         //insert Unit dashboard details
         $.ajax({
@@ -351,6 +366,8 @@ export default {
             }
 
             // if there is scheduled shift get endorsing and receiving charge nurse at the same unit
+
+            // get nurses of the previous shift
             for (let i = 0; i < that.scheduleShifts.length; i++) {
 
                 let shift = that.scheduleShifts[i].Shift.trim() == 'Day' ? 'Night' : 'Day';
@@ -361,10 +378,23 @@ export default {
 
             }
 
+            // // get nurses of the next shift
             for (let i = 0; i < that.scheduleShifts.length; i++) {
 
                 let shift = that.scheduleShifts[i].Shift.trim() == 'Day' ? 'Night' : 'Day';
                 let scheduleDate = that.scheduleShifts[i].Shift == 'Day' ? that.scheduleShifts[i].Date : moment(that.scheduleShifts[i].Date.trim()).add(1, "day").format('YYYY-MM-DD');
+                getNurse(shift,scheduleDate, i);
+
+            }
+
+            // get nurses at the same shift
+            for (let i = 0; i < that.scheduleShifts.length; i++) {
+
+                let shift = that.scheduleShifts[i].Shift.trim();
+                let scheduleDate = that.scheduleShifts[i].Date;
+                that.scheduleShifts[i].EndoresingNurse = [];
+                that.scheduleShifts[i].handNurse = [];
+                that.scheduleShifts[i].otherNurses = [];
                 getNurse(shift,scheduleDate, i);
 
             }
@@ -380,8 +410,20 @@ export default {
                   dataType: "json",
                   success: function (data) {
                       let endCurrentShift = shift == 'Night' ? ' 7:59' : ' 19:59';
-                      let endOtherShift = shift == 'Night' ? ' 19:59' : ' 7:59';
-                      if (moment(that.scheduleShifts[i].Date.trim() + endCurrentShift).add(12,'Hour') < moment(scheduleDate + endOtherShift).add(12,'Hour')) {
+                      let endOtherShift = shift == 'Night' ? ' 19:59' : ' 7:59'; 
+                      let endOfDay = shift == 'Day' ? scheduleDate : moment(scheduleDate).add(1, "day").format('YYYY-MM-DD');
+                      
+                      // nurses at the same shift
+                      if (moment(endOfDay + endCurrentShift) >
+                      moment(new Date())) {
+                          if (JSON.parse(data.d).length > 0) {
+                            that.scheduleShifts[i].otherNurses.push(JSON.parse(data.d));
+                            that.scheduleShifts[i].otherNurses = that.scheduleShifts[i].otherNurses.flat();
+                          }
+                      } 
+                      // nurses at the next shift
+                      else if (moment(that.scheduleShifts[i].Date.trim() + endCurrentShift).add(12,'Hour') < moment(scheduleDate + endOtherShift).add(12,'Hour') && moment(that.scheduleShifts[i].Date.trim() + endCurrentShift) <=
+                      moment(new Date())) {
 
                           if (JSON.parse(data.d).length > 0) {
                             that.scheduleShifts[i].handNurse.push(JSON.parse(data.d));
@@ -390,8 +432,9 @@ export default {
                             that.scheduleShifts[i].handNurse.push({FullName:'Unknown', Emp_ID: 0})
                           }
 
-                      } else {
-
+                      } 
+                      // nurses at the previous shift
+                      else {
                           if (JSON.parse(data.d).length > 0) {
                             that.scheduleShifts[i].EndoresingNurse.push(JSON.parse(data.d));
                             that.scheduleShifts[i].EndoresingNurse = that.scheduleShifts[i].EndoresingNurse.flat();
