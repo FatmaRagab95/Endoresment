@@ -460,7 +460,7 @@ export default {
       PatientsData: [],
       PatientFollow: [],
 
-      month: new Date().toISOString().slice(0, 10).substring(0, 7),
+      month: "",
       Special: 40,
       doctorType: "Resident",
       Branch: 1,
@@ -524,6 +524,7 @@ export default {
   created() {
     let that = this;
     that.today = moment(new Date()).format("YYYY-MM-DD");
+    that.month = new Date().toISOString().substr(0, 10);
 
     //get Branches
     $.ajax({

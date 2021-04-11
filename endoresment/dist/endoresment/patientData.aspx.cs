@@ -348,17 +348,15 @@ public partial class _patientData : System.Web.UI.Page
                 patient.Update_Nurse;
             cmd.Parameters.Add("@Update_Nurse_Name", SqlDbType.VarChar).Value =
                 patient.Update_Nurse_Name;
-            cmd.Parameters.Add("@Update_Nurse_Time", SqlDbType.DateTime).Value =
+            cmd.Parameters.Add("@Update_Nurse_Time", SqlDbType.VarChar).Value =
                 patient.Update_Nurse_Time;
 
             cmd.Parameters.Add("@Update_Doctor", SqlDbType.Int).Value =
                 patient.Update_Doctor;
             cmd.Parameters.Add("@Update_Doctor_Name", SqlDbType.VarChar).Value =
                 patient.Update_Doctor_Name;
-            cmd
-                .Parameters
-                .Add("@Update_Doctor_Time", SqlDbType.DateTime)
-                .Value = patient.Update_Doctor_Time;
+            cmd.Parameters.Add("@Update_Doctor_Time", SqlDbType.VarChar).Value =
+                patient.Update_Doctor_Time;
             cmd.Parameters.Add("@Transfer_From", SqlDbType.VarChar).Value =
                 patient.Transfer_From;
             cmd.Parameters.Add("@Transfer_To", SqlDbType.VarChar).Value =
@@ -494,7 +492,7 @@ public partial class _patientData : System.Web.UI.Page
                         idr["Consultaion"] != DBNull.Value
                             ? Convert.ToInt32(idr["Consultaion"])
                             : 0,
-                    Entry_date = Convert.ToDateTime(idr["Entry_date"])
+                    Entry_date = Convert.ToString(idr["Entry_date"])
                 });
         }
 
@@ -567,7 +565,7 @@ public partial class _patientData : System.Web.UI.Page
 
         public string Transfer_To { get; set; }
 
-        public DateTime Entry_date { get; set; }
+        public string Entry_date { get; set; }
     }
 
     public class branches
