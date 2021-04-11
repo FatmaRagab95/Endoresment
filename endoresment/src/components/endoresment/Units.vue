@@ -34,7 +34,7 @@
           <div class="">
             <div class="outer">
               <div class="inner bg-white shadow text-center">
-                <span class="num">{{ sumDash("Admission") }}</span>
+                <span class="num">{{ sumDash("Discharge") }}</span>
                 Discharge
               </div>
             </div>
@@ -42,7 +42,7 @@
           <div class="">
             <div class="outer">
               <div class="inner bg-white shadow text-center">
-                <span class="num">{{ sumDash("Transfer_Out") }}</span>
+                <span class="num">{{ sumDash("Death") }}</span>
                 Death
               </div>
             </div>

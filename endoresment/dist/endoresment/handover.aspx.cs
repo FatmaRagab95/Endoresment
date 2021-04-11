@@ -167,6 +167,8 @@ public partial class _Handover : System.Web.UI.Page
                     Transfer_In = idr["Transfer_In"] != DBNull.Value ? Convert.ToInt32(idr["Transfer_In"]) : 0,
                     Confirm = idr["Confirm"] != DBNull.Value ? Convert.ToBoolean(idr["Confirm"]) : false,
                     Completed = idr["Completed"] != DBNull.Value ? Convert.ToInt32(idr["Completed"]) : 0,
+                    Discharge = idr["Discharge"] != DBNull.Value ? Convert.ToInt32(idr["Discharge"]) : 0,
+                    Death = idr["Death"] != DBNull.Value ? Convert.ToInt32(idr["Death"]) : 0,
 
                 });
         }
@@ -213,6 +215,8 @@ public partial class _Handover : System.Web.UI.Page
         public int? Transfer_Out { get; set; }
         public Boolean Confirm { get; set; }
         public int? Completed { get; set; }
+        public int? Discharge { get; set; }
+        public int? Death { get; set; }
     }
 
     // update patients data
