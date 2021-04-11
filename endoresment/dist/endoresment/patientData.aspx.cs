@@ -269,6 +269,114 @@ public partial class _patientData : System.Web.UI.Page
     }
 
     /***********************************************************/
+    // insert follow up data
+    [WebMethod]
+    public static string insertFollowUpData(Endorsement_shiftData patient)
+    {
+        string config =
+            Convert.ToString(ConfigurationManager.ConnectionStrings["dbcon"]);
+        List<Endorsement_shiftData> Endorsement_shiftData =
+            new List<Endorsement_shiftData>();
+
+        SqlConnection con = new SqlConnection(config);
+
+        con.Open();
+
+        using (
+            SqlCommand cmd =
+                new SqlCommand("insert into Endorsement_PatientFollow  (Patient_id,Insert_Nurse,Insert_Nurse_Name,Insert_Nurse_Time,Insert_Doctor,Insert_Doctor_Name,Insert_Doctor_Time, Transfer_From, Transfer_To, Shift) values(@Patient_id, @Insert_Nurse,@Insert_Nurse_Name, @Insert_Nurse_Time,@Insert_Doctor,@Insert_Doctor_Name, @Insert_Doctor_Time, @Transfer_From, @Transfer_To, @Shift ) ",
+                    con)
+        )
+        {
+            cmd.Parameters.Add("@Patient_id", SqlDbType.Int).Value =
+                patient.Patient_id;
+
+            cmd.Parameters.Add("@Insert_Nurse", SqlDbType.Int).Value =
+                patient.Insert_Nurse;
+            cmd.Parameters.Add("@Insert_Nurse_Name", SqlDbType.VarChar).Value =
+                patient.Insert_Nurse_Name;
+            cmd.Parameters.Add("@Insert_Nurse_Time", SqlDbType.VarChar).Value =
+                patient.Insert_Nurse_Time;
+
+            cmd.Parameters.Add("@Insert_Doctor", SqlDbType.Int).Value =
+                patient.Insert_Doctor;
+            cmd.Parameters.Add("@Insert_Doctor_Name", SqlDbType.VarChar).Value =
+                patient.Insert_Doctor_Name;
+            cmd.Parameters.Add("@Insert_Doctor_Time", SqlDbType.VarChar).Value =
+                patient.Insert_Doctor_Time;
+            cmd.Parameters.Add("@Transfer_From", SqlDbType.VarChar).Value =
+                patient.Transfer_From;
+            cmd.Parameters.Add("@Transfer_To", SqlDbType.VarChar).Value =
+                patient.Transfer_To;
+            cmd.Parameters.Add("@Shift", SqlDbType.VarChar).Value =
+                patient.Shift;
+            SqlDataReader idr = cmd.ExecuteReader();
+
+            if (idr.HasRows)
+            {
+                Endorsement_shiftData =
+                    populateEndorsement_shiftDataLisst(idr, con);
+            }
+        }
+
+        con.Close();
+
+        return JsonConvert.SerializeObject(Endorsement_shiftData);
+    }
+
+    // update follow up data
+    [WebMethod]
+    public static string updateFollowUpData(Endorsement_shiftData patient)
+    {
+        string config =
+            Convert.ToString(ConfigurationManager.ConnectionStrings["dbcon"]);
+        List<Endorsement_shiftData> Endorsement_shiftData =
+            new List<Endorsement_shiftData>();
+
+        SqlConnection con = new SqlConnection(config);
+
+        con.Open();
+
+        using (
+            SqlCommand cmd =
+                new SqlCommand("update Endorsement_PatientFollow set Update_Nurse = @Update_Nurse, Update_Nurse_Name = @Update_Nurse_Name, Update_Nurse_Time = @Update_Nurse_Time, Update_Doctor = @Update_Doctor,Update_Doctor_Name = @Update_Doctor_Name,Update_Doctor_Time = @Update_Doctor_Time, Transfer_From = @Transfer_From, Transfer_To = @Transfer_To  where id = @id ",
+                    con)
+        )
+        {
+            cmd.Parameters.Add("@id", SqlDbType.Int).Value = patient.id;
+            cmd.Parameters.Add("@Update_Nurse", SqlDbType.Int).Value =
+                patient.Update_Nurse;
+            cmd.Parameters.Add("@Update_Nurse_Name", SqlDbType.VarChar).Value =
+                patient.Update_Nurse_Name;
+            cmd.Parameters.Add("@Update_Nurse_Time", SqlDbType.DateTime).Value =
+                patient.Update_Nurse_Time;
+
+            cmd.Parameters.Add("@Update_Doctor", SqlDbType.Int).Value =
+                patient.Update_Doctor;
+            cmd.Parameters.Add("@Update_Doctor_Name", SqlDbType.VarChar).Value =
+                patient.Update_Doctor_Name;
+            cmd
+                .Parameters
+                .Add("@Update_Doctor_Time", SqlDbType.DateTime)
+                .Value = patient.Update_Doctor_Time;
+            cmd.Parameters.Add("@Transfer_From", SqlDbType.VarChar).Value =
+                patient.Transfer_From;
+            cmd.Parameters.Add("@Transfer_To", SqlDbType.VarChar).Value =
+                patient.Transfer_To;
+            SqlDataReader idr = cmd.ExecuteReader();
+
+            if (idr.HasRows)
+            {
+                Endorsement_shiftData =
+                    populateEndorsement_shiftDataLisst(idr, con);
+            }
+        }
+
+        con.Close();
+
+        return JsonConvert.SerializeObject(Endorsement_shiftData);
+    }
+
     // get follow up data
     [WebMethod]
     public static string getShiftData(Endorsement_shiftData data)
@@ -460,5 +568,253 @@ public partial class _patientData : System.Web.UI.Page
         public string Transfer_To { get; set; }
 
         public DateTime Entry_date { get; set; }
+    }
+
+    public class branches
+    {
+        public int? id { get; set; }
+
+        public string Branch_EName { get; set; }
+    }
+
+    // get units
+    [WebMethod]
+    public static string getUnitsData(branches branch)
+    {
+        string config =
+            Convert.ToString(ConfigurationManager.ConnectionStrings["dbcon"]);
+        List<branches> branches = new List<branches>();
+        List<Units> Units = new List<Units>();
+
+        SqlConnection con = new SqlConnection(config);
+
+        con.Open();
+
+        using (
+            SqlCommand cmd =
+                new SqlCommand("select * from Units where Branch_id = @Branch_id and Show = 1",
+                    con)
+        )
+        {
+            cmd.Parameters.Add("@Branch_id", SqlDbType.Int).Value = branch.id;
+            SqlDataReader idr = cmd.ExecuteReader();
+
+            if (idr.HasRows)
+            {
+                Units = populateUnitsLisst(idr, con);
+            }
+        }
+
+        con.Close();
+
+        return JsonConvert.SerializeObject(Units);
+    }
+
+    public static List<Units>
+    populateUnitsLisst(SqlDataReader idr, SqlConnection con)
+    {
+        List<Units> UnitsI = new List<Units>();
+
+        while (idr.Read())
+        {
+            UnitsI
+                .Add(new Units {
+                    U_id =
+                        idr["U_id"] != DBNull.Value
+                            ? Convert.ToInt32(idr["U_id"])
+                            : 0,
+                    U_name = Convert.ToString(idr["U_name"])
+                });
+        }
+
+        return UnitsI;
+    }
+
+    public class Units
+    {
+        public int? U_id { get; set; }
+
+        public string U_name { get; set; }
+    }
+
+    // get rooms
+    [WebMethod]
+    public static string getRoomsData(Units unit)
+    {
+        string config =
+            Convert.ToString(ConfigurationManager.ConnectionStrings["dbcon"]);
+        List<Units> Units = new List<Units>();
+        List<Rooms> Rooms = new List<Rooms>();
+
+        SqlConnection con = new SqlConnection(config);
+
+        con.Open();
+
+        using (
+            SqlCommand cmd =
+                new SqlCommand("select * from Endorsement_Rooms where Unit_id = @Unit_id and id in (select Room_id from Endorsement_RoomsDashboard where Status_id = 1)",
+                    con)
+        )
+        {
+            cmd.Parameters.Add("@Unit_id", SqlDbType.Int).Value = unit.U_id;
+            SqlDataReader idr = cmd.ExecuteReader();
+
+            if (idr.HasRows)
+            {
+                Rooms = populateRoomsLisst(idr, con);
+            }
+        }
+
+        con.Close();
+
+        return JsonConvert.SerializeObject(Rooms);
+    }
+
+    public static List<Rooms>
+    populateRoomsLisst(SqlDataReader idr, SqlConnection con)
+    {
+        List<Rooms> RoomsI = new List<Rooms>();
+
+        while (idr.Read())
+        {
+            RoomsI
+                .Add(new Rooms {
+                    id =
+                        idr["id"] != DBNull.Value
+                            ? Convert.ToInt32(idr["id"])
+                            : 0,
+                    Room_name = Convert.ToString(idr["Room_name"])
+                });
+        }
+
+        return RoomsI;
+    }
+
+    public class Rooms
+    {
+        public int? id { get; set; }
+
+        public string Room_name { get; set; }
+    }
+
+    // get beds
+    [WebMethod]
+    public static string getBedsData(Rooms room)
+    {
+        string config =
+            Convert.ToString(ConfigurationManager.ConnectionStrings["dbcon"]);
+        List<Rooms> Rooms = new List<Rooms>();
+        List<Beds> Beds = new List<Beds>();
+
+        SqlConnection con = new SqlConnection(config);
+
+        con.Open();
+
+        using (
+            SqlCommand cmd =
+                new SqlCommand("select * from Endorsement_RoomsDashboard where Room_id = @Room_id and Status_id = 1",
+                    con)
+        )
+        {
+            cmd.Parameters.Add("@Room_id", SqlDbType.Int).Value = room.id;
+            SqlDataReader idr = cmd.ExecuteReader();
+
+            if (idr.HasRows)
+            {
+                Beds = populateBedsLisst(idr, con);
+            }
+        }
+
+        con.Close();
+
+        return JsonConvert.SerializeObject(Beds);
+    }
+
+    public static List<Beds>
+    populateBedsLisst(SqlDataReader idr, SqlConnection con)
+    {
+        List<Beds> BedsI = new List<Beds>();
+
+        while (idr.Read())
+        {
+            BedsI
+                .Add(new Beds {
+                    id =
+                        idr["id"] != DBNull.Value
+                            ? Convert.ToInt32(idr["id"])
+                            : 0,
+                    Bed_name = Convert.ToString(idr["Bed_name"])
+                });
+        }
+
+        return BedsI;
+    }
+
+    public class Beds
+    {
+        public int? id { get; set; }
+
+        public string Bed_name { get; set; }
+    }
+
+    // update transform patient data table
+    [WebMethod]
+    public static string updateTransform(TranstDetails detail)
+    {
+        string config =
+            Convert.ToString(ConfigurationManager.ConnectionStrings["dbcon"]);
+
+        List<TranstDetails> TranstDetails = new List<TranstDetails>();
+
+        SqlConnection con = new SqlConnection(config);
+
+        con.Open();
+
+        using (
+            SqlCommand cmd =
+                new SqlCommand("update Endorsement_PatientData set Unit=@Unit, Room=@Room, Bed_id=@Bed_id where id = @id;",
+                    con)
+        )
+        {
+            cmd.Parameters.AddWithValue("@id", detail.id);
+            cmd.Parameters.AddWithValue("@Unit", detail.Unit);
+            cmd.Parameters.AddWithValue("@Room", detail.Room);
+            cmd.Parameters.AddWithValue("@Bed_id", detail.Bed_id);
+
+            cmd.ExecuteNonQuery();
+        }
+
+        con.Close();
+
+        return JsonConvert.SerializeObject(TranstDetails);
+    }
+
+    public static List<TranstDetails>
+    populateTranstDetailsLisst(SqlDataReader idr, SqlConnection con)
+    {
+        List<TranstDetails> TranstDetailsI = new List<TranstDetails>();
+
+        while (idr.Read())
+        {
+            TranstDetailsI
+                .Add(new TranstDetails {
+                    id = Convert.ToInt32(idr["id"]),
+                    Unit = Convert.ToString(idr["Unit"]),
+                    Room = Convert.ToString(idr["Room"]),
+                    Bed_id = Convert.ToInt32(idr["Bed_id"])
+                });
+        }
+        return TranstDetailsI;
+    }
+
+    public class TranstDetails
+    {
+        public int? id { get; set; }
+
+        public string Unit { get; set; }
+
+        public string Room { get; set; }
+
+        public int? Bed_id { get; set; }
     }
 }
