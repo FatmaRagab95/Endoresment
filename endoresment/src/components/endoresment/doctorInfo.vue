@@ -180,11 +180,12 @@
                     PatientsData.filter(
                       (x) =>
                         x.Consultant_id == doctor.Dr_Code &&
-                        new Date(x.Addmission_date.trim()) <= new Date(month)
+                        new Date(x.Addmission_date.trim()) <= new Date(month + '-30')
                     ).length > 0 ||
                     PatientFollow.filter(
                       (x) =>
-                        new Date(x.Entry_date) <= new Date(month) &&
+                      new Date(x.Entry_date) <= new Date(month + '-30') &&
+                      new Date(month + '-01') <= new Date(x.Entry_date) &&
                         x.Consultaion == doctor.Dr_Code
                     ).length > 0 ||
                     Doctors_Shifts.filter((x) => x.Doctor_id == doctor.Dr_Code).length > 0
@@ -537,7 +538,7 @@ export default {
   created() {
     let that = this;
     that.today = moment(new Date()).format("YYYY-MM-DD");
-    that.month = new Date().toISOString().substr(0, 10);
+    that.month = new Date().toISOString().substr(0, 7);
 
     //get Branches
     $.ajax({
