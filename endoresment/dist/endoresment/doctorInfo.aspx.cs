@@ -532,7 +532,7 @@ public partial class doctorInfo : System.Web.UI.Page
 
         using (
             SqlCommand cmd =
-                new SqlCommand("select * from Endorsement_PatientFollow", con)
+                new SqlCommand("select * from Endorsement_PatientFollow where Consultaion > 0", con)
         )
         {
             SqlDataReader idr = cmd.ExecuteReader();
@@ -586,7 +586,7 @@ public partial class doctorInfo : System.Web.UI.Page
                         idr["Insert_Doctor_Time"] != DBNull.Value
                             ? Convert.ToString(idr["Insert_Doctor_Time"])
                             : String.Empty,
-                    Entry_date = Convert.ToString(idr["Entry_date"])
+                    Entry_date = Convert.ToDateTime(idr["Entry_date"])
                 });
         }
 
@@ -611,6 +611,6 @@ public partial class doctorInfo : System.Web.UI.Page
 
         public string Insert_Doctor_Time { get; set; }
 
-        public string Entry_date { get; set; }
+        public DateTime Entry_date { get; set; }
     }
 }

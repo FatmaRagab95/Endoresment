@@ -54,6 +54,38 @@ public partial class _Units : System.Web.UI.Page
         return JsonConvert.SerializeObject(Units);
     }
 
+
+    [WebMethod]
+    public static string getTotalData(Units unit)
+    {
+        string config =
+            Convert.ToString(ConfigurationManager.ConnectionStrings["dbcon"]);
+        List<Units> Units = new List<Units>();
+
+        SqlConnection con = new SqlConnection(config);
+
+        con.Open();
+
+        using (
+            SqlCommand cmd =
+                new SqlCommand("SELECT COUNT(Endorsement_PatientData.id) AS  total from Endorsement_PatientData where Patient_Status = 1 and Unit = @U_name",
+                    con)
+        )
+        {
+            cmd.Parameters.Add("@U_name", SqlDbType.VarChar).Value = unit.U_name;
+            SqlDataReader idr = cmd.ExecuteReader();
+
+            if (idr.HasRows)
+            {
+                Units = populateUnitsTotalLisst(idr, con);
+            }
+        }
+
+        con.Close();
+
+        return JsonConvert.SerializeObject(Units);
+    }
+
     public static List<Units>
     populateUnitsLisst(SqlDataReader idr, SqlConnection con)
     {
@@ -71,11 +103,31 @@ public partial class _Units : System.Web.UI.Page
                     RoomsNum =
                         idr["RoomsNum"] != DBNull.Value
                             ? Convert.ToInt32(idr["RoomsNum"])
-                            : 0
+                            : 0,
                 });
         }
 
         return UnitsI;
+    }
+
+
+    public static List<Units>
+    populateUnitsTotalLisst(SqlDataReader idr, SqlConnection con)
+    {
+        List<Units> TotalI = new List<Units>();
+
+        while (idr.Read())
+        {
+            TotalI
+                .Add(new Units {
+                    Total =
+                        idr["Total"] != DBNull.Value
+                            ? Convert.ToInt32(idr["Total"])
+                            : 0,
+                });
+        }
+
+        return TotalI;
     }
 
     public class Units
@@ -85,6 +137,7 @@ public partial class _Units : System.Web.UI.Page
         public string U_name { get; set; }
 
         public int? RoomsNum { get; set; }
+        public int? Total { get; set; }
     }
 
     // get units dashboard

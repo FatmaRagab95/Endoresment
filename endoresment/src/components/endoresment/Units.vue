@@ -18,7 +18,7 @@
           <div class="">
             <div class="outer">
               <div class="inner bg-white shadow text-center">
-                <span class="num">{{ sumDash("Total_Census") }}</span>
+                <span class="num">{{ Total_Census }}</span>
                 Total Census
               </div>
             </div>
@@ -85,7 +85,7 @@
               <span class="Census badge badge-light border font-weight-normal">
                 Total Census:
                 <span class="text-danger"
-                  >{{ filterDash("Total_Census", unit.U_id) }}
+                  >{{ unit.Total }}
                 </span>
               </span>
 
@@ -134,6 +134,7 @@ export default {
       UnitsDash: [],
       search: "",
       filtered: [],
+      Total_Census:0,
 
       Shift: "",
       apiUrl: this.link,
@@ -171,7 +172,26 @@ export default {
       dataType: "json",
       success: function (data) {
         that.Units = JSON.parse(data.d);
-        that.filtered = that.Units;
+        that.filtered = JSON.parse(data.d);
+        for (let i = 0; i < that.Units.length; i++) {
+              $.ajax({
+                type: "POST",
+                url: that.apiUrl + "endoresment/Units.aspx/getTotalData",
+                data: JSON.stringify({ unit: { U_name: that.Units[i].U_name } }),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (data) {
+                  that.Units[i].Total = JSON.parse(data.d)[0].Total;
+                  that.filtered[i].Total = JSON.parse(data.d)[0].Total;
+                  that.Total_Census += JSON.parse(data.d)[0].Total;
+                  if (i == that.Units.length - 1) {
+                    that.filtered = that.filtered.sort(function(a, b){
+                      return (a.Total < b.Total) ? 1 : -1;
+                    });
+                  }
+                }
+              });
+        }
       },
     });
 

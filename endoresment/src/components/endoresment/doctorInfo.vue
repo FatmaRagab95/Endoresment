@@ -180,14 +180,11 @@
                     PatientsData.filter(
                       (x) =>
                         x.Consultant_id == doctor.Dr_Code &&
-                        x.Addmission_date.split('-')[0] == month.split('-')[0] &&
-                        x.Addmission_date.split('-')[1] == month.split('-')[1]
+                        new Date(x.Addmission_date.trim()) <= new Date(month)
                     ).length > 0 ||
                     PatientFollow.filter(
                       (x) =>
-                        new Date(x.Entry_date).toISOString().slice(0, 10).split('-')[1] ==
-                          month.split('-')[1] &&
-                        x.Entry_date.split(' ')[0].split('/')[2] == month.split('-')[0] &&
+                        new Date(x.Entry_date) <= new Date(month) &&
                         x.Consultaion == doctor.Dr_Code
                     ).length > 0 ||
                     Doctors_Shifts.filter((x) => x.Doctor_id == doctor.Dr_Code).length > 0
@@ -573,6 +570,7 @@ export default {
       dataType: "json",
       success: function (data) {
         that.PatientFollow = JSON.parse(data.d);
+        that.PatientFollow.map(x => x.Entry_date =  moment(x.Entry_date.substr(0,10)).format('YYYY-MM-DD'));
 
         /*  that.PatientFollow.map((z) => {
           if (z.Insert_Doctor_Time.length > 0 && z.Insert_Nurse_Time.length > 0) {
