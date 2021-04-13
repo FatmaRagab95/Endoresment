@@ -176,6 +176,22 @@
                     selectedName.toLowerCase()
                   )"
                   :key="doctor.Dr_Code"
+                  v-if="
+                    PatientsData.filter(
+                      (x) =>
+                        x.Consultant_id == doctor.Dr_Code &&
+                        x.Addmission_date.split('-')[0] == month.split('-')[0] &&
+                        x.Addmission_date.split('-')[1] == month.split('-')[1]
+                    ).length > 0 ||
+                    PatientFollow.filter(
+                      (x) =>
+                        new Date(x.Entry_date).toISOString().slice(0, 10).split('-')[1] ==
+                          month.split('-')[1] &&
+                        x.Entry_date.split(' ')[0].split('/')[2] == month.split('-')[0] &&
+                        x.Consultaion == doctor.Dr_Code
+                    ).length > 0 ||
+                    Doctors_Shifts.filter((x) => x.Doctor_id == doctor.Dr_Code).length > 0
+                  "
                 >
                   <!-- doctor name and speciality -->
                   <div class="row">

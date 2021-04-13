@@ -51,7 +51,10 @@
                         ></i>
                       </td>
                       <td
-                        v-else-if="UnitDash.filter((x) => x.Unit_id == unitId).length > 0"
+                        v-else-if="
+                          UnitDash.filter((x) => x.Unit_id == unitId).length > 0 &&
+                          user.Role_id == 17
+                        "
                       >
                         <span
                           v-if="

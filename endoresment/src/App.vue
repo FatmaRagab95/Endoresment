@@ -67,7 +67,7 @@ export default {
   data() {
     return {
       user: JSON.parse(localStorage.getItem("user")),
-      link: "",
+      link: `http://localhost:${51026}/endoresment/dist/`,
       Units: [],
       NursesPatients: [], // if the user is a nurse
       DoctorPatients: [], // if the user is a doctor

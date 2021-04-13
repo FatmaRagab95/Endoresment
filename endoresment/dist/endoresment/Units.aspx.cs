@@ -136,14 +136,34 @@ public partial class _Units : System.Web.UI.Page
                     Unit_name = Convert.ToString(idr["Unit_name"]),
                     Shift = Convert.ToString(idr["Shift"]),
                     Shift_date = Convert.ToDateTime(idr["Shift_date"]),
-                    Total_Census = idr["Total_Census"] != DBNull.Value ? Convert.ToInt32(idr["Total_Census"]) : 0,
-                    Received = idr["Received"] != DBNull.Value ? Convert.ToInt32(idr["Received"]) : 0,
-                    Admission = idr["Admission"] != DBNull.Value ? Convert.ToInt32(idr["Admission"]) : 0,
-                    Transfer_In = idr["Transfer_In"] != DBNull.Value ? Convert.ToInt32(idr["Transfer_In"]) : 0,
-                    Transfer_Out = idr["Transfer_Out"] != DBNull.Value ? Convert.ToInt32(idr["Transfer_Out"]) : 0,
-                    Discharge = idr["Discharge"] != DBNull.Value ? Convert.ToInt32(idr["Discharge"]) : 0,
-                    Death = idr["Death"] != DBNull.Value ? Convert.ToInt32(idr["Death"]) : 0,
-
+                    Total_Census =
+                        idr["Total_Census"] != DBNull.Value
+                            ? Convert.ToInt32(idr["Total_Census"])
+                            : 0,
+                    Received =
+                        idr["Received"] != DBNull.Value
+                            ? Convert.ToInt32(idr["Received"])
+                            : 0,
+                    Admission =
+                        idr["Admission"] != DBNull.Value
+                            ? Convert.ToInt32(idr["Admission"])
+                            : 0,
+                    Transfer_In =
+                        idr["Transfer_In"] != DBNull.Value
+                            ? Convert.ToInt32(idr["Transfer_In"])
+                            : 0,
+                    Transfer_Out =
+                        idr["Transfer_Out"] != DBNull.Value
+                            ? Convert.ToInt32(idr["Transfer_Out"])
+                            : 0,
+                    Discharge =
+                        idr["Discharge"] != DBNull.Value
+                            ? Convert.ToInt32(idr["Discharge"])
+                            : 0,
+                    Death =
+                        idr["Death"] != DBNull.Value
+                            ? Convert.ToInt32(idr["Death"])
+                            : 0
                 });
         }
 
@@ -157,7 +177,9 @@ public partial class _Units : System.Web.UI.Page
         public string Unit_name { get; set; }
 
         public string Shift { get; set; }
+
         public DateTime Shift_date { get; set; }
+
         public int? Total_Census { get; set; }
 
         public int? Received { get; set; }
@@ -167,7 +189,9 @@ public partial class _Units : System.Web.UI.Page
         public int? Transfer_In { get; set; }
 
         public int? Transfer_Out { get; set; }
+
         public int? Discharge { get; set; }
+
         public int? Death { get; set; }
     }
 

@@ -126,7 +126,7 @@
                 <td class="bigText">
                   <textarea
                     :class="user.Role_id == 12 || user.Role_id == 17 ? 'bg-grey' : ''"
-                    :disabled="user.Role_id == 12 || user.Role_id == 17 ? 'disabled' : ''"
+                    disabled
                     v-if="patient.edit"
                     v-model="FollowData(patient.id).DR_Diagnosis"
                   ></textarea>
@@ -134,8 +134,9 @@
                 </td>
                 <td class="bigText">
                   <textarea
+                    class="bg-danger"
                     :class="user.Role_id == 12 || user.Role_id == 17 ? 'bg-grey' : ''"
-                    :disabled="user.Role_id == 12 || user.Role_id == 17 ? 'disabled' : ''"
+                    disabled
                     v-if="patient.edit"
                     v-model="FollowData(patient.id).DR_ProgressNotes"
                   ></textarea>
@@ -257,7 +258,7 @@
                 <td class="bigText">
                   <textarea
                     :class="user.Role_id == 12 || user.Role_id == 17 ? 'bg-grey' : ''"
-                    :disabled="user.Role_id == 12 || user.Role_id == 17 ? 'disabled' : ''"
+                    disabled
                     v-if="patient.edit"
                     type="text"
                     v-model="FollowData(patient.id).DR_Consultaion_Progress"
@@ -322,7 +323,6 @@
                 </td>
                 <td class="bigText">
                   <textarea
-                    :disabled="user.Role_id == 12 || user.Role_id == 17 ? 'disabled' : ''"
                     v-if="patient.edit"
                     v-model="FollowData(patient.id).DR_Diagnosis"
                   ></textarea>
@@ -330,7 +330,6 @@
                 </td>
                 <td class="bigText">
                   <textarea
-                    :disabled="user.Role_id == 12 || user.Role_id == 17 ? 'disabled' : ''"
                     v-if="patient.edit"
                     v-model="FollowData(patient.id).DR_ProgressNotes"
                   ></textarea>
@@ -451,7 +450,6 @@
                 </td>
                 <td class="bigText">
                   <textarea
-                    :disabled="user.Role_id == 12 || user.Role_id == 17 ? 'disabled' : ''"
                     v-if="patient.edit"
                     type="text"
                     v-model="FollowData(patient.id).DR_Consultaion_Progress"
