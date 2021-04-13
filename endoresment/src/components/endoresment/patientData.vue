@@ -466,7 +466,6 @@
                 <div class="cu-container">
                   <div class="cu-form-group special" style="max-width: 900px">
                     <div class="cu-field" v-if="Units.length > 0">
-                      <div>{{ shiftData }}</div>
                       <h3 class="cu-label">
                         <label>Unit :</label>
                       </h3>
@@ -531,11 +530,6 @@
                 </div>
               </div>
             </form>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-dismiss="modal">
-              Close
-            </button>
           </div>
         </div>
       </div>
@@ -612,16 +606,16 @@ export default {
       return length == 0 ? "Today" : length == 1 ? length + " Day" : length + " Days";
     },
     transform: function () {
-      let dataObj = null;
+      let dataObj = null,
+        that = this;
 
       if ($("form").is(":valid")) {
-        let that = this,
-          updatedTransform = {
-            id: this.id,
-            Unit: this.Units.filter((x) => x.U_id == this.Unit)[0].U_name,
-            Room: this.Rooms.filter((x) => x.id == this.Room)[0].Room_name,
-            Bed_id: this.Bed_id,
-          };
+        let updatedTransform = {
+          id: this.id,
+          Unit: this.Units.filter((x) => x.U_id == this.Unit)[0].U_name,
+          Room: this.Rooms.filter((x) => x.id == this.Room)[0].Room_name,
+          Bed_id: this.Bed_id,
+        };
 
         swal({
           title: "Are you sure?",
@@ -639,7 +633,7 @@ export default {
                 // 2- update followUp table
                 if (that.shiftData.length > 0) {
                   dataObj = that.shiftData.filter(
-                    (x) => x.id == Math.Max(...that.shiftData((z) => z.id))
+                    (x) => x.id == Math.max(...that.shiftData.map((z) => z.id))
                   )[0];
                 } else {
                   dataObj = {
@@ -709,19 +703,41 @@ export default {
                 }
 
                 //3- update roomsDashboard table
-                let id = this.patientData.filter((x) => x.id == this.id)[0].Bed_id;
-                $.ajax({
-                  type: "POST",
-                  url: that.apiUrl + "endoresment/patientData.aspx/updateRoom",
-                  data: JSON.stringify({
-                    detail: { id: id, Status_id: 1, Status_name: "Empty" },
-                  }),
-                  contentType: "application/json; charset=utf-8",
-                  dataType: "json",
-                });
+                let updatedBeds = [
+                  {
+                    id: that.patientData.Bed_id,
+                    Status_id: 1,
+                    Status_name: "Empty",
+                  },
+                  {
+                    id: that.Bed_id,
+                    Status_id: 2,
+                    Status_name: "Full",
+                  },
+                ];
+                for (let i = 0; i < updatedBeds.length; i++) {
+                  $.ajax({
+                    type: "POST",
+                    url: that.apiUrl + "endoresment/patientData.aspx/updateRoomData",
+                    data: JSON.stringify({
+                      room: {
+                        id: updatedBeds[i].id,
+                        Status_id: updatedBeds[i].Status_id,
+                        Status_name: updatedBeds[i].Status_name,
+                      },
+                    }),
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                  });
+                }
 
-                // old bed = Empty
-                // new bed = Full
+                swal({
+                  title: "Sweet!",
+                  text: "You successfully submit transfer ...",
+                  icon: "success",
+                  dangerMode: true,
+                });
+                //location.reload();
               },
             });
           }

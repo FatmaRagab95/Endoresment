@@ -1,46 +1,6 @@
 <template>
   <div class="display_schdule">
     <div class="internal-page">
-      <!-- <form @submit.prevent="InsertPatient">
-        <div class="custom-form">
-          <div class="cu-container">
-            <div class="cu-form-group special" style="max-width: 900px">
-              <div class="title">
-                <span>
-                  <i class="fa fa-hospital-o mainColor mr-1"></i>Display Nursing
-                  Schedule</span
-                >
-              </div>
-
-              <div class="cu-field">
-                <v-select
-                  :items="Units"
-                  item-text="U_name"
-                  :item-value="'U_id'"
-                  label="Select Unit"
-                  name="unit"
-                  v-model="unit"
-                ></v-select>
-              </div>
-
-              <v-row justify="center" class="mt-3">
-                <v-date-picker
-                  class="bg-primary shadow m-auto"
-                  v-model="month"
-                  type="month"
-                ></v-date-picker>
-              </v-row>
-
-              <div class="text-center">
-                <button class="special-btn shadow" @click.prevent="monthDays">
-                  Display Nursing Schedule
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </form>-->
-
       <form>
         <div class="container-fluid pt-5">
           <div class="card shadow">
@@ -108,7 +68,7 @@
               color="green accent-3"
               data-toggle="modal"
               data-target="#exampleModalCenter"
-              v-if='user.Role_id == 19'
+              v-if="user.Role_id == 19"
             >
               <v-icon dark> mdi-pencil </v-icon>
             </v-btn>

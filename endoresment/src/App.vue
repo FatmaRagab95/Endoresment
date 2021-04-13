@@ -67,7 +67,7 @@ export default {
   data() {
     return {
       user: JSON.parse(localStorage.getItem("user")),
-      link: `http://localhost:${49638}/endoresment/dist/`,
+      link: `http://localhost:${51026}/endoresment/dist/`,
       Units: [],
       NursesPatients: [], // if the user is a nurse
       DoctorPatients: [], // if the user is a doctor
@@ -119,7 +119,9 @@ export default {
             if (data.d.length > 0) {
               that.edits = true;
               that.Units = JSON.parse(data.d);
-              that.Units = that.Units.filter((v,i,a)=>a.findIndex(t=>(t.Unit_id === v.Unit_id))===i);
+              that.Units = that.Units.filter(
+                (v, i, a) => a.findIndex((t) => t.Unit_id === v.Unit_id) === i
+              );
             }
           },
         });

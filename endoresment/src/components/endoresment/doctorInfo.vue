@@ -176,6 +176,22 @@
                     selectedName.toLowerCase()
                   )"
                   :key="doctor.Dr_Code"
+                  v-if="
+                    PatientsData.filter(
+                      (x) =>
+                        x.Consultant_id == doctor.Dr_Code &&
+                        x.Addmission_date.split('-')[0] == month.split('-')[0] &&
+                        x.Addmission_date.split('-')[1] == month.split('-')[1]
+                    ).length > 0 ||
+                    PatientFollow.filter(
+                      (x) =>
+                        new Date(x.Entry_date).toISOString().slice(0, 10).split('-')[1] ==
+                          month.split('-')[1] &&
+                        x.Entry_date.split(' ')[0].split('/')[2] == month.split('-')[0] &&
+                        x.Consultaion == doctor.Dr_Code
+                    ).length > 0 ||
+                    Doctors_Shifts.filter((x) => x.Doctor_id == doctor.Dr_Code).length > 0
+                  "
                 >
                   <!-- doctor name and speciality -->
                   <div class="row">
@@ -460,7 +476,7 @@ export default {
       PatientsData: [],
       PatientFollow: [],
 
-      month: new Date().toISOString().slice(0, 10).substring(0, 7),
+      month: "",
       Special: 40,
       doctorType: "Resident",
       Branch: 1,
@@ -524,6 +540,7 @@ export default {
   created() {
     let that = this;
     that.today = moment(new Date()).format("YYYY-MM-DD");
+    that.month = new Date().toISOString().substr(0, 10);
 
     //get Branches
     $.ajax({

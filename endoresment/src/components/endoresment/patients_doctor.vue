@@ -684,8 +684,8 @@ export default {
           that.Shift = "Day";
           that.Shifts = that.Shifts.filter(
             (x) =>
-              x.Shift_date.substr(0, 10) == moment(new Date()).format("DD/MM/YYYY") &&
-              x.Shift.trim() == "Day"
+              moment(new Date(x.Shift_date)).format("MM/DD/YYYY") ==
+                moment(new Date()).format("MM/DD/YYYY") && x.Shift.trim() == "Day"
           );
         } else {
           that.Shift = "Night";
