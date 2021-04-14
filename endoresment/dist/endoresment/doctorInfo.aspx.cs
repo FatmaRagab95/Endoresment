@@ -238,6 +238,10 @@ public partial class doctorInfo : System.Web.UI.Page
                         idr["Type"] != DBNull.Value
                             ? Convert.ToString(idr["Type"])
                             : String.Empty,
+                    Spcy_Description =
+                        idr["Spcy_Description"] != DBNull.Value
+                            ? Convert.ToString(idr["Spcy_Description"])
+                            : String.Empty,
                     Spcy_id =
                         idr["Spcy_id"] != DBNull.Value
                             ? Convert.ToInt32(idr["Spcy_id"])
@@ -259,6 +263,7 @@ public partial class doctorInfo : System.Web.UI.Page
         public string DR_Name { get; set; }
 
         public string Type { get; set; }
+        public string Spcy_Description { get; set; }
 
         public int? Spcy_id { get; set; }
     }

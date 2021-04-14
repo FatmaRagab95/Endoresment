@@ -60,8 +60,8 @@
         {{ DoctorData.Spcy_Description }} patients list
       </h1>
 
-      <div class="row" v-if="patients.length > 0">
-        <div class="col-md-4" v-for="patient in patients" :key="patient.id">
+      <div class="row" v-if="DoctorPatients.length > 0">
+        <div class="col-md-4" v-for="patient in DoctorPatients" :key="patient.id">
           <div class="details">
             <div class="inner shadow">
               <h3 class="pb-2">
@@ -421,7 +421,7 @@
 <script>
 export default {
   name: "viewPatients",
-  props: ["link", "user"],
+  props: ["link", "user", "DoctorPatients"],
   data() {
     return {
       DoctorData: null,
@@ -624,22 +624,10 @@ export default {
             contentType: "application/json; charset=utf-8",
             dataType: "json",
             success: function (data) {
-              that.patients = JSON.parse(data.d);
+              that.patients.push(JSON.parse(data.d)[0]);
             },
           });
         } else {
-          $.ajax({
-            type: "POST",
-            url: that.apiUrl + "endoresment/viewPatients.aspx/getPatientsData2",
-            data: JSON.stringify({
-              data: { Spcy_Description: that.DoctorData.Spcy_Description },
-            }),
-            contentType: "application/json; charset=utf-8",
-            dataType: "json",
-            success: function (data) {
-              that.patients = JSON.parse(data.d);
-            },
-          });
 
           // get doctors
           $.ajax({
@@ -658,18 +646,6 @@ export default {
       },
     });
 
-    // get consultation cases
-    $.ajax({
-      type: "POST",
-      url: that.apiUrl + "endoresment/viewPatients.aspx/getConsultationsData",
-      data: JSON.stringify({ data: { Dr_Code: that.user.Emp_id } }),
-      contentType: "application/json; charset=utf-8",
-      dataType: "json",
-      success: function (data) {
-        that.patients = JSON.parse(data.d);
-      },
-    });
-
     // getShiftsData
     $.ajax({
       type: "POST",
@@ -684,8 +660,8 @@ export default {
           that.Shift = "Day";
           that.Shifts = that.Shifts.filter(
             (x) =>
-              moment(new Date(x.Shift_date)).format("MM/DD/YYYY") ==
-                moment(new Date()).format("MM/DD/YYYY") && x.Shift.trim() == "Day"
+              x.Shift_date.trim().substr(0,10) ==
+                moment(new Date()).format("DD/MM/YYYY") && x.Shift.trim() == "Day"
           );
         } else {
           that.Shift = "Night";

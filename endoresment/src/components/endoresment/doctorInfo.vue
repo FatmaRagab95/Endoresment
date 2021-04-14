@@ -166,6 +166,7 @@
                   <span class="text-dark"> {{ month }}</span>
                 </h1>
                 <hr />
+                
                 <div
                   class="p-4 bg-light mb-3 shadow-sm card"
                   v-for="doctor in filterNames(
@@ -209,19 +210,16 @@
                       >
                     </span>
                   </div>
-
                   <div class="row">
                     <div class="col-md-12">
                       <div>
                         <!-- display Primary patients (patient data table)------------------------------------------>
-
                         <div
                           v-if="
                             PatientsData.filter(
                               (x) =>
                                 x.Consultant_id == doctor.Dr_Code &&
-                                x.Addmission_date.split('-')[0] == month.split('-')[0] &&
-                                x.Addmission_date.split('-')[1] == month.split('-')[1]
+                                new Date(x.Addmission_date.trim()) <= new Date(month + '-30')
                             ).length > 0
                           "
                         >
@@ -267,12 +265,8 @@
                           v-if="
                             PatientFollow.filter(
                               (x) =>
-                                new Date(x.Entry_date)
-                                  .toISOString()
-                                  .slice(0, 10)
-                                  .split('-')[1] == month.split('-')[1] &&
-                                x.Entry_date.split(' ')[0].split('/')[2] ==
-                                  month.split('-')[0] &&
+                                new Date(x.Entry_date) <= new Date(month + '-30') &&
+                                new Date(month + '-01') <= new Date(x.Entry_date) &&
                                 x.Consultaion == doctor.Dr_Code
                             ).length > 0
                           "
@@ -298,12 +292,8 @@
                               <tr
                                 v-for="(pat, i) in PatientFollow.filter(
                                   (x) =>
-                                    new Date(x.Entry_date)
-                                      .toISOString()
-                                      .slice(0, 10)
-                                      .split('-')[1] == month.split('-')[1] &&
-                                    x.Entry_date.split(' ')[0].split('/')[2] ==
-                                      month.split('-')[0] &&
+                                    new Date(x.Entry_date) <= new Date(month + '-30') &&
+                                    new Date(month + '-01') <= new Date(x.Entry_date) &&
                                     x.Consultaion == doctor.Dr_Code
                                 )"
                                 :key="pat.id"
@@ -384,7 +374,6 @@
                             </tbody>
                           </table>
                         </div>
-
                         <!-- Shifts patients in Resident doctors-->
                         <div
                           v-if="
@@ -420,9 +409,9 @@
                                       <th scope="col">Room</th>
                                     </tr>
                                   </thead>
-                                  <tbody>
+                                  <tbody v-if='PatientsData.filter(x => x.Specialty.trim() == Specialities.filter(x => x.Spcy_id == Special)[0].Spcy_name_En).length > 0'>
                                     <tr
-                                      v-for="(patient, i) in PatientsData"
+                                      v-for="(patient, i) in PatientsData.filter(x => x.Specialty.trim() == Specialities.filter(x => x.Spcy_id == Special)[0].Spcy_name_En)"
                                       :key="patient.id"
                                       v-if="
                                         new Date(shift.Shift_date.trim()) <
@@ -437,6 +426,9 @@
                                       <td>{{ patient.Age }}</td>
                                       <td>{{ patient.Room }}</td>
                                     </tr>
+                                  </tbody>
+                                  <tbody v-else>
+                                    <div class='alert card text-danger text-center'>There is no patients at this specialty!</div>
                                   </tbody>
                                 </table>
                               </div>

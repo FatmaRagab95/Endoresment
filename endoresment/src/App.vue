@@ -174,6 +174,7 @@ export default {
                 dataType: "json",
                 success: function (data) {
                   that.DoctorPatients = JSON.parse(data.d);
+
                   if (that.DoctorPatients.length > 0) {
                     that.DoctorPatients.map((x) => that.$set(x, "edit", false));
                     for (let i = 0; i < that.DoctorPatients.length; i++) {
@@ -196,6 +197,17 @@ export default {
                 dataType: "json",
                 success: function (data) {
                   that.DoctorPatients = JSON.parse(data.d);
+                  // get consultation cases
+                  $.ajax({
+                    type: "POST",
+                    url: that.link + "endoresment/viewPatients.aspx/getConsultationsData",
+                    data: JSON.stringify({ data: { Dr_Code: that.user.Emp_id } }),
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function (data) {
+                      that.DoctorPatients.push(JSON.parse(data.d)[0]);
+                    },
+                  });
                   if (that.DoctorPatients.length > 0) {
                     that.DoctorPatients.map((x) => that.$set(x, "edit", false));
                     for (let i = 0; i < that.DoctorPatients.length; i++) {
