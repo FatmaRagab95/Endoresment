@@ -108,7 +108,7 @@ public partial class _editPatients : System.Web.UI.Page
 
     // get patients data
     [WebMethod]
-    public static string getPatientsData()
+    public static string getPatientsData(Endorsement_PatientData data)
     {
         string config =
             Convert.ToString(ConfigurationManager.ConnectionStrings["dbcon"]);
@@ -121,10 +121,12 @@ public partial class _editPatients : System.Web.UI.Page
 
         using (
             SqlCommand cmd =
-                new SqlCommand("select * from Endorsement_PatientData WHERE Patient_Status = 1",
+                new SqlCommand("select * from Endorsement_PatientData WHERE Patient_Status = 1 and Branch_id = @Branch_id and Unit in (select U_name from Units where U_id in (select Area_id from adminusers where Emp_ID = @Unit))",
                     con)
         )
         {
+            cmd.Parameters.Add("@Unit", SqlDbType.Int).Value = data.Unit;
+            cmd.Parameters.Add("@Branch_id", SqlDbType.Int).Value = data.Branch_id;
             SqlDataReader idr = cmd.ExecuteReader();
 
             if (idr.HasRows)
@@ -153,6 +155,10 @@ public partial class _editPatients : System.Web.UI.Page
                         idr["id"] != DBNull.Value
                             ? Convert.ToInt32(idr["id"])
                             : 0,
+                    Branch_id =
+                        idr["Branch_id"] != DBNull.Value
+                            ? Convert.ToInt32(idr["Branch_id"])
+                            : 0,
                     Patient_FullName =
                         idr["Patient_FullName"] != DBNull.Value
                             ? Convert.ToString(idr["Patient_FullName"])
@@ -161,7 +167,7 @@ public partial class _editPatients : System.Web.UI.Page
                         idr["Bed_id"] != DBNull.Value
                             ? Convert.ToInt32(idr["Bed_id"])
                             : 0,
-                    Room = Convert.ToString(idr["Room"]),
+                    Room = Convert.ToString(idr["Room"]), 
                     Gender = Convert.ToString(idr["Gender"]),
                     Medical_Number =
                         idr["Medical_Number"] != DBNull.Value
@@ -184,11 +190,13 @@ public partial class _editPatients : System.Web.UI.Page
     public class Endorsement_PatientData
     {
         public int? id { get; set; }
+        public int? Branch_id { get; set; }
 
         public string Patient_FullName { get; set; }
 
         public int? Bed_id { get; set; }
 
+        public int? Unit { get; set; }
         public string Room { get; set; }
 
         public string Gender { get; set; }

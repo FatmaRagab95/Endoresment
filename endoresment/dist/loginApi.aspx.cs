@@ -113,6 +113,10 @@ public partial class Login : System.Web.UI.Page
                         idr["Branch_ID"] != DBNull.Value
                             ? Convert.ToInt32(idr["Branch_ID"])
                             : 0,
+                    Area_id =
+                        idr["Area_id"] != DBNull.Value
+                            ? Convert.ToInt32(idr["Area_id"])
+                            : 0,
                     Role_id =
                         idr["Role_id"] != DBNull.Value
                             ? Convert.ToInt32(idr["Role_id"])
@@ -149,6 +153,7 @@ public partial class Login : System.Web.UI.Page
         public string Mobile_2 { get; set; }
 
         public int? Branch_ID { get; set; }
+        public int? Area_id { get; set; }
         public int? Role_id { get; set; }
     }
 }

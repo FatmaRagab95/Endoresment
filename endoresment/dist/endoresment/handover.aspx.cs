@@ -165,6 +165,7 @@ public partial class _Handover : System.Web.UI.Page
                     Received = idr["Received"] != DBNull.Value ? Convert.ToInt32(idr["Received"]) : 0,
                     Admission = idr["Admission"] != DBNull.Value ? Convert.ToInt32(idr["Admission"]) : 0,
                     Transfer_In = idr["Transfer_In"] != DBNull.Value ? Convert.ToInt32(idr["Transfer_In"]) : 0,
+                    Transfer_Out = idr["Transfer_Out"] != DBNull.Value ? Convert.ToInt32(idr["Transfer_Out"]) : 0,
                     Confirm = idr["Confirm"] != DBNull.Value ? Convert.ToBoolean(idr["Confirm"]) : false,
                     Completed = idr["Completed"] != DBNull.Value ? Convert.ToInt32(idr["Completed"]) : 0,
                     Discharge = idr["Discharge"] != DBNull.Value ? Convert.ToInt32(idr["Discharge"]) : 0,
@@ -362,7 +363,7 @@ public partial class _Handover : System.Web.UI.Page
 
         con.Open();
 
-        using (SqlCommand cmd = new SqlCommand("insert into Endorsement_PatientFollow  (Patient_id,Shift,Diet_id, Diet_Name, Pain, P_Isolation, Fall, Allergy,Investegation_ToDo, Investegation_FollowUp,Contraptions_Infusions, Routise_PlanOfCare,Surgury_Procedures,DR_Diagnosis,DR_ProgressNotes, DR_Consultaion_Progress,Insert_Nurse,Insert_Nurse_Name,Insert_Nurse_Time,Insert_Doctor,Insert_Doctor_Name,Insert_Doctor_Time) values(@Patient_id, @Shift,@Diet_id,@Diet_Name,@Pain,@P_Isolation,@Fall, @Allergy,@Investegation_ToDo, @Investegation_FollowUp, @Contraptions_Infusions, @Routise_PlanOfCare, @Surgury_Procedures, @DR_Diagnosis, @DR_ProgressNotes, @DR_Consultaion_Progress, @Insert_Nurse,@Insert_Nurse_Name,@Insert_Nurse_Time,@Insert_Doctor,@Insert_Doctor_Name, @Insert_Doctor_Time ) ", con))
+        using (SqlCommand cmd = new SqlCommand("insert into Endorsement_PatientFollow  (Patient_id,Shift,Diet_id, Diet_Name, Pain, P_Isolation, Fall, Allergy,Investegation_ToDo, Investegation_FollowUp,Contraptions_Infusions, Routise_PlanOfCare,Surgury_Procedures,DR_Diagnosis,DR_ProgressNotes, DR_Consultaion_Progress,Consultaion,Insert_Nurse,Insert_Nurse_Name,Insert_Nurse_Time,Insert_Doctor,Insert_Doctor_Name,Insert_Doctor_Time) values(@Patient_id, @Shift,@Diet_id,@Diet_Name,@Pain,@P_Isolation,@Fall, @Allergy,@Investegation_ToDo, @Investegation_FollowUp, @Contraptions_Infusions, @Routise_PlanOfCare, @Surgury_Procedures, @DR_Diagnosis, @DR_ProgressNotes, @DR_Consultaion_Progress,@Consultaion, @Insert_Nurse,@Insert_Nurse_Name,@Insert_Nurse_Time,@Insert_Doctor,@Insert_Doctor_Name, @Insert_Doctor_Time ) ", con))
         {
             cmd.Parameters.Add("@Patient_id", SqlDbType.Int).Value = patient.Patient_id;
             cmd.Parameters.Add("@Shift", SqlDbType.VarChar).Value = patient.Shift;
@@ -380,6 +381,7 @@ public partial class _Handover : System.Web.UI.Page
             cmd.Parameters.Add("@DR_Diagnosis", SqlDbType.VarChar).Value = patient.DR_Diagnosis;
             cmd.Parameters.Add("@DR_ProgressNotes", SqlDbType.VarChar).Value = patient.DR_ProgressNotes;
             cmd.Parameters.Add("@DR_Consultaion_Progress", SqlDbType.VarChar).Value = patient.DR_Consultaion_Progress;
+            cmd.Parameters.Add("@Consultaion", SqlDbType.Int).Value = patient.Consultaion;
             cmd.Parameters.Add("@Insert_Nurse", SqlDbType.Int).Value = patient.Insert_Nurse;
             cmd.Parameters.Add("@Insert_Nurse_Name", SqlDbType.VarChar).Value = patient.Insert_Nurse_Name;
             cmd.Parameters.Add("@Insert_Nurse_Time", SqlDbType.VarChar).Value = patient.Insert_Nurse_Time;
@@ -410,7 +412,7 @@ public partial class _Handover : System.Web.UI.Page
 
         con.Open();
 
-        using (SqlCommand cmd = new SqlCommand("update Endorsement_PatientFollow set Shift = @Shift,Diet_id = @Diet_id, Diet_Name = @Diet_Name, Pain = @Pain, P_Isolation=@P_Isolation, Fall = @Fall, Allergy= @Allergy,Investegation_ToDo = @Investegation_ToDo, Investegation_FollowUp = @Investegation_FollowUp,Contraptions_Infusions = @Contraptions_Infusions, Routise_PlanOfCare=@Routise_PlanOfCare,Surgury_Procedures = @Surgury_Procedures,DR_Diagnosis = @DR_Diagnosis,DR_ProgressNotes = @DR_ProgressNotes, DR_Consultaion_Progress = @DR_Consultaion_Progress, Update_Nurse = @Update_Nurse, Update_Nurse_Name = @Update_Nurse_Name, Update_Nurse_Time = @Update_Nurse_Time, Update_Doctor = @Update_Doctor, Update_Doctor_Name=@Update_Doctor_Name,Update_Doctor_Time = @Update_Doctor_Time where id = @id ", con))
+        using (SqlCommand cmd = new SqlCommand("update Endorsement_PatientFollow set Shift = @Shift,Diet_id = @Diet_id, Diet_Name = @Diet_Name, Pain = @Pain, P_Isolation=@P_Isolation, Fall = @Fall, Allergy= @Allergy,Investegation_ToDo = @Investegation_ToDo, Investegation_FollowUp = @Investegation_FollowUp,Contraptions_Infusions = @Contraptions_Infusions, Routise_PlanOfCare=@Routise_PlanOfCare,Surgury_Procedures = @Surgury_Procedures,DR_Diagnosis = @DR_Diagnosis,DR_ProgressNotes = @DR_ProgressNotes, DR_Consultaion_Progress = @DR_Consultaion_Progress,Consultaion=@Consultaion, Update_Nurse = @Update_Nurse, Update_Nurse_Name = @Update_Nurse_Name, Update_Nurse_Time = @Update_Nurse_Time, Update_Doctor = @Update_Doctor, Update_Doctor_Name=@Update_Doctor_Name,Update_Doctor_Time = @Update_Doctor_Time where id = @id ", con))
         {
             cmd.Parameters.Add("@id", SqlDbType.Int).Value = patient.id;
             cmd.Parameters.Add("@Shift", SqlDbType.VarChar).Value = patient.Shift;
@@ -428,6 +430,7 @@ public partial class _Handover : System.Web.UI.Page
             cmd.Parameters.Add("@DR_Diagnosis", SqlDbType.VarChar).Value = patient.DR_Diagnosis;
             cmd.Parameters.Add("@DR_ProgressNotes", SqlDbType.VarChar).Value = patient.DR_ProgressNotes;
             cmd.Parameters.Add("@DR_Consultaion_Progress", SqlDbType.VarChar).Value = patient.DR_Consultaion_Progress;
+            cmd.Parameters.Add("@Consultaion", SqlDbType.Int).Value = patient.Consultaion;
             cmd.Parameters.Add("@Update_Nurse", SqlDbType.VarChar).Value = patient.Update_Nurse;
             cmd.Parameters.Add("@Update_Nurse_Name", SqlDbType.VarChar).Value = patient.Update_Nurse_Name;
             cmd.Parameters.Add("@Update_Nurse_Time", SqlDbType.VarChar).Value = patient.Update_Nurse_Time;
@@ -484,7 +487,7 @@ public partial class _Handover : System.Web.UI.Page
         {
             Endorsement_shiftDataI
                 .Add(new Endorsement_shiftData {
-                    id       = idr["id"] != DBNull.Value ? Convert.ToInt32(idr["id"]) : 0,
+                    id          = idr["id"] != DBNull.Value ? Convert.ToInt32(idr["id"]) : 0,
 					Shift       = Convert.ToString(idr["Shift"]),
                     Patient_id  = idr["Patient_id"] != DBNull.Value ? Convert.ToInt32(idr["Patient_id"]) : 0,
                     Diet_id     = idr["Diet_id"] != DBNull.Value ? Convert.ToInt32(idr["Diet_id"]) : 0,
@@ -502,6 +505,7 @@ public partial class _Handover : System.Web.UI.Page
 					DR_Diagnosis            = Convert.ToString(idr["DR_Diagnosis"]),
 					DR_ProgressNotes        = Convert.ToString(idr["DR_ProgressNotes"]),
 					DR_Consultaion_Progress = Convert.ToString(idr["DR_Consultaion_Progress"]),
+					Consultaion             = idr["Consultaion"] != DBNull.Value ? Convert.ToInt32(idr["Consultaion"]) : 0,
                     
                     
                     Insert_Nurse       = idr["Insert_Nurse"] != DBNull.Value ? Convert.ToInt32(idr["Insert_Nurse"]) : 0,
@@ -519,8 +523,6 @@ public partial class _Handover : System.Web.UI.Page
                     Update_Doctor      = idr["Update_Doctor"] != DBNull.Value ? Convert.ToInt32(idr["Update_Doctor"]) : 0,
                     Update_Doctor_Name = Convert.ToString(idr["Update_Doctor_Name"]),
                     Update_Doctor_Time = Convert.ToString(idr["Update_Doctor_Time"]),
-
-                    Consultaion        = idr["Consultaion"] != DBNull.Value ? Convert.ToInt32(idr["Consultaion"]) : 0,
 
                     Entry_date = Convert.ToDateTime(idr["Entry_date"]),
                 });
@@ -548,6 +550,7 @@ public partial class _Handover : System.Web.UI.Page
         public string DR_Diagnosis { get; set; }
         public string DR_ProgressNotes { get; set; }
         public string DR_Consultaion_Progress { get; set; }
+        public int? Consultaion { get; set; }
         public int? Update_Nurse { get; set; }
         public string Update_Nurse_Name { get; set; }
         public string Update_Nurse_Time { get; set; }
@@ -560,7 +563,6 @@ public partial class _Handover : System.Web.UI.Page
         public int? Insert_Doctor { get; set; }
         public string Insert_Doctor_Name { get; set; }
         public string Insert_Doctor_Time { get; set; }
-        public int? Consultaion { get; set; }
         public string Transfer_From { get; set; }
         public string Transfer_To { get; set; }
         public DateTime Entry_date { get; set; }

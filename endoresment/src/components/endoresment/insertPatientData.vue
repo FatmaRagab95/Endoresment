@@ -419,7 +419,7 @@ export default {
                             title: "Updated!",
                             icon: "success",
                         });
-                        that.$route.push('/patientData/${id}')
+                        that.$router.push({ path:'/Endorsement'});
                     }
                 });
             }
@@ -436,6 +436,7 @@ export default {
                           title: "Updated!",
                           icon: "success",
                       });
+                      that.$router.push({ path:'/Endorsement'});
                   }
                 });
               }

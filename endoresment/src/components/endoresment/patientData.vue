@@ -702,7 +702,45 @@ export default {
                   }
                 }
 
-                //3- update roomsDashboard table
+                // update units dashboard
+                if (that.patientData.Unit != updatedTransform.Unit) {
+                  let currentShift = new Date().getHours() >= 20 ? "Night" : "Day";
+                  let currentDate = new Date();
+                  let updatedUnit = [
+                    {
+                      Unit_name: that.patientData.Unit,
+                      Transfer_In: 0,
+                      Transfer_Out: 1,
+                      Shift:currentShift,
+                      Shift_date:currentDate,
+                      Total_Census: -1
+                    },
+                    {
+                      Unit_name: updatedTransform.Unit,
+                      Transfer_In: 1,
+                      Transfer_Out: 0,
+                      Shift:currentShift,
+                      Shift_date:currentDate,
+                      Total_Census:1
+                    },
+                  ];
+                  $.ajax({
+                    type: "POST",
+                    url: that.apiUrl + "endoresment/patientData.aspx/updateUnitsTransferOut",
+                    data: JSON.stringify({ unit: updatedUnit[0] }),
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                  });
+                  $.ajax({
+                    type: "POST",
+                    url: that.apiUrl + "endoresment/patientData.aspx/updateUnitsTransferIn",
+                    data: JSON.stringify({ unit: updatedUnit[1] }),
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                  });
+                }
+
+                //4- update roomsDashboard table
                 let updatedBeds = [
                   {
                     id: that.patientData.Bed_id,
@@ -736,8 +774,9 @@ export default {
                   text: "You successfully submit transfer ...",
                   icon: "success",
                   dangerMode: true,
+                }).then(x => {
+                  location.reload();
                 });
-                location.reload();
               },
             });
           }

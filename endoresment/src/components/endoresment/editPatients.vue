@@ -113,7 +113,7 @@
 <script>
 export default {
   name: "editPatients",
-  props: ["link"],
+  props: ["link", "user"],
   data() {
     return {
       Units: [],
@@ -283,6 +283,7 @@ export default {
       type: "POST",
       url: that.apiUrl + "endoresment/editPatients.aspx/getPatientsData",
       contentType: "application/json; charset=utf-8",
+      data: JSON.stringify({data: {Unit:that.path, Branch_id: that.user.Branch_ID}}),
       dataType: "json",
       success: function (data) {
         that.patients = JSON.parse(data.d);

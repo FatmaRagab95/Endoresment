@@ -67,7 +67,7 @@ export default {
   data() {
     return {
       user: JSON.parse(localStorage.getItem("user")),
-      link: `http://localhost:${51026}/endoresment/dist/`,
+      link: `http://localhost:${49638}/endoresment/dist/`,
       Units: [],
       NursesPatients: [], // if the user is a nurse
       DoctorPatients: [], // if the user is a doctor
@@ -91,6 +91,14 @@ export default {
           success: function (data) {
             if (new Date().getHours() < 20 && new Date().getHours() >= 8) {
               that.Units = JSON.parse(data.d).filter((x) => x.Shift.trim() == "Day");
+              that.Units = that.Units.filter((x) => {
+                let checkDate =
+                  x.Shift_date.substr(3, 3) +
+                  x.Shift_date.substr(0, 3) +
+                  x.Shift_date.substr(6, 4);
+
+                return moment(checkDate).format('DD-MM-YYYY') == moment(new Date()).format('DD-MM-YYYY');
+              });
             } else {
               that.Units = JSON.parse(data.d).filter((x) => {
                 let checkDate =

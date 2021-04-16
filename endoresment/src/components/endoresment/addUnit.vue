@@ -409,18 +409,20 @@ export default {
                   contentType: "application/json; charset=utf-8",
                   dataType: "json",
                   success: function (data) {
-                      let endCurrentShift = shift == 'Night' ? ' 7:59' : ' 19:59';
-                      let endOtherShift = shift == 'Night' ? ' 19:59' : ' 7:59'; 
+                      let endCurrentShift = shift == 'Night' ? ' 7:00' : ' 19:00';
+                      let endOtherShift = shift == 'Night' ? ' 19:00' : ' 7:00'; 
                       let endOfDay = shift == 'Day' ? scheduleDate : moment(scheduleDate).add(1, "day").format('YYYY-MM-DD');
                       
                       // nurses at the same shift
                       if (moment(endOfDay + endCurrentShift) >
-                      moment(new Date())) {
+                      moment(new Date()) && moment(endOfDay + endCurrentShift) < 
+                      moment(that.scheduleShifts[i].Date.trim() + endCurrentShift).add(12,'Hour')) {
                           if (JSON.parse(data.d).length > 0) {
                             that.scheduleShifts[i].otherNurses.push(JSON.parse(data.d));
                             that.scheduleShifts[i].otherNurses = that.scheduleShifts[i].otherNurses.flat();
                           }
-                      } 
+                      }
+ 
                       // nurses at the next shift
                       else if (moment(that.scheduleShifts[i].Date.trim() + endCurrentShift).add(12,'Hour') < moment(scheduleDate + endOtherShift).add(12,'Hour') && moment(that.scheduleShifts[i].Date.trim() + endCurrentShift) <=
                       moment(new Date())) {
@@ -433,6 +435,7 @@ export default {
                           }
 
                       } 
+
                       // nurses at the previous shift
                       else {
                           if (JSON.parse(data.d).length > 0) {

@@ -78,7 +78,7 @@
                 <th class="bg-warning"><span>Diagnosis</span></th>
                 <th class="bg-warning"><span>Progress Notes</span></th>
                 <th><span>Diet</span></th>
-                <th><span>Consultant Name</span></th>
+                <th><span>Consultantion</span></th>
                 <th><span>Pain</span></th>
                 <th><span>Allergy</span></th>
                 <th><span>Isolation</span></th>
@@ -145,7 +145,6 @@
                   ></textarea>
                   <span v-else>{{ FollowData(patient.id).DR_ProgressNotes }}</span>
                 </td>
-
                 <td>
                   <select
                     v-if="patient.edit"
@@ -163,12 +162,23 @@
                   <span v-else>{{ FollowData(patient.id, "Diet_Name").Diet_Name }}</span>
                 </td>
                 <td>
-                  <input
+                  <select
                     v-if="patient.edit"
-                    type="text"
-                    v-model="patient.Consultant_Name"
-                  />
-                  <span v-else>{{ patient.Consultant_Name }}</span>
+                    v-model="FollowData(patient.id, 'Consultation').Consultaion"
+                  >
+                    <option
+                      v-for="speciality in Specialities.filter(x => patient.Specialty.trim() != x.Spcy_name_En.trim())"
+                      :key="speciality.Spcy_id"
+                      :value="speciality.Spcy_id"
+                      @click="(FollowData(patient.id).Consultaion = speciality.Spcy_id), 'Consultation'"
+                    >
+                      {{ speciality.Spcy_name_En }}
+                    </option>
+                  </select>
+                  <span v-else-if='Specialities.filter(x => x.Spcy_id == 
+                    FollowData(patient.id, "Consultation").Consultaion).length > 0'>
+                    {{ Specialities.filter(x => x.Spcy_id == 
+                    FollowData(patient.id, "Consultation").Consultaion)[0].Spcy_name_En }}</span>
                 </td>
                 <td>
                   <select v-if="patient.edit" v-model="FollowData(patient.id).Pain">
@@ -524,6 +534,7 @@ export default {
       Shift: "",
       today: "",
       thisday: "",
+      Specialities: [],
     };
   },
   methods: {
@@ -854,6 +865,17 @@ export default {
       dataType: "json",
       success: function (data) {
         that.Rooms = JSON.parse(data.d);
+      },
+    });
+
+    //get Specialities
+    $.ajax({
+      type: "POST",
+      url: that.apiUrl + "endoresment/add_patient.aspx/getSpecialitiesData",
+      contentType: "application/json; charset=utf-8",
+      dataType: "json",
+      success: function (data) {
+        that.Specialities = JSON.parse(data.d);
       },
     });
   },

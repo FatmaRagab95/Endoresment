@@ -70,41 +70,6 @@ public partial class _Nurses : System.Web.UI.Page
         public string U_name { get; set; }
     }
 
-    // get Endoresment_Nurses_Units
-    [WebMethod]
-    public static string
-    getEndoresment_Nurses_UnitsData(Endoresment_Nurses_Units nurse)
-    {
-        string config =
-            Convert.ToString(ConfigurationManager.ConnectionStrings["dbcon"]);
-        List<Endoresment_Nurses_Units> Endoresment_Nurses_Units =
-            new List<Endoresment_Nurses_Units>();
-
-        SqlConnection con = new SqlConnection(config);
-
-        con.Open();
-
-        using (
-            SqlCommand cmd =
-                new SqlCommand("select * from Endoresment_Nurses_Units where Active = 1 and Unit_id = @Unit_id",
-                    con)
-        )
-        {
-            cmd.Parameters.Add("@Unit_id", SqlDbType.Int).Value = nurse.Unit_id;
-            SqlDataReader idr = cmd.ExecuteReader();
-
-            if (idr.HasRows)
-            {
-                Endoresment_Nurses_Units =
-                    populateEndoresment_Nurses_UnitsLisst(idr, con);
-            }
-        }
-
-        con.Close();
-
-        return JsonConvert.SerializeObject(Endoresment_Nurses_Units);
-    }
-
     public static List<Endoresment_Nurses_Units>
     populateEndoresment_Nurses_UnitsLisst(SqlDataReader idr, SqlConnection con)
     {
@@ -156,7 +121,7 @@ public partial class _Nurses : System.Web.UI.Page
 
     // get admin users data
     [WebMethod]
-    public static string getadminusersData()
+    public static string getadminusersData(adminusers user)
     {
         string config =
             Convert.ToString(ConfigurationManager.ConnectionStrings["dbcon"]);
@@ -168,10 +133,12 @@ public partial class _Nurses : System.Web.UI.Page
 
         using (
             SqlCommand cmd =
-                new SqlCommand("select * from adminusers where Role_id = 12 or Role_id = 17",
+                new SqlCommand("select * from adminusers where Role_id = 12 and Area_id = @Area_id and Branch_ID = @Branch_ID",
                     con)
         )
         {
+            cmd.Parameters.Add("@Area_id", SqlDbType.Int).Value = user.Area_id;
+            cmd.Parameters.Add("@Branch_ID", SqlDbType.Int).Value = user.Branch_ID;
             SqlDataReader idr = cmd.ExecuteReader();
 
             if (idr.HasRows)
@@ -209,6 +176,10 @@ public partial class _Nurses : System.Web.UI.Page
                     Branch_ID =
                         idr["Branch_ID"] != DBNull.Value
                             ? Convert.ToInt32(idr["Branch_ID"])
+                            : 0,
+                    Area_id =
+                        idr["Area_id"] != DBNull.Value
+                            ? Convert.ToInt32(idr["Area_id"])
                             : 0
                 });
         }
@@ -225,6 +196,7 @@ public partial class _Nurses : System.Web.UI.Page
         public string FullName { get; set; }
 
         public int? Branch_ID { get; set; }
+        public int? Area_id { get; set; }
     }
 
     // get Endorsement Nurse patients

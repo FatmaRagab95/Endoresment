@@ -12,17 +12,20 @@
           <span class="badge bg-primary text-white">{{ getRoomsData.length }} Rooms</span>
         </h1>
 
-        <v-combobox
-          v-model="selectedUnit"
-          :items="getUnitsData"
-          item-text="U_name"
-          :item-value="'U_name'"
-          name="unit"
-          label="Unit"
-          outlined
-          dense
-          style="max-width: 200px; margin: 30px auto 0 auto"
-        ></v-combobox>
+        <div v-if='user.Role_id != 12 && user.Role_id != 17'>
+            <v-combobox 
+            v-model="selectedUnit"
+            :items="getUnitsData"
+            item-text="U_name"
+            :item-value="'U_name'"
+            name="unit"
+            label="Unit"
+            outlined
+            dense
+            style="max-width: 200px; margin: 30px auto 0 auto"
+          ></v-combobox>
+        </div>
+        
       </div>
     </div>
     <!-- end unit title -->
@@ -1036,7 +1039,13 @@ export default {
       dataType: "json",
       success: function (data) {
         that.getUnitsData = JSON.parse(data.d);
-        that.selectedUnit = JSON.parse(data.d).length > 0 ? that.getUnitsData[0] : null;
+        if (that.user.Role_id == 17 || that.user.Role_id == 12) {
+          that.selectedUnit = JSON.parse(data.d).length > 0 ? 
+          that.getUnitsData.filter(x => x.U_id == that.user.Area_id)[0] : null;
+        } else {
+          that.selectedUnit = JSON.parse(data.d).length > 0 ? that.getUnitsData[0] : null;
+        }
+        
         that.RoomsInfo();
       },
     });

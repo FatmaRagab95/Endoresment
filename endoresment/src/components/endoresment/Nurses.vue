@@ -22,7 +22,7 @@
       <div class="nurses-container border bg-white shadow rounded row">
         <div
           class="mb-3 card bg-light col-md-6 nurse-card"
-          v-for="nurse in Endoresment_Nurses_Units"
+          v-for="nurse in users"
           :key="nurse.Id"
         >
           <div class="row">
@@ -30,7 +30,7 @@
               <i class="fa fa-user-md mr-1 text-primary" aria-hidden="true"></i>
               Nurse Name:
               <span class="text-dark">{{
-                users.filter((x) => x.Emp_id == nurse.Nurse_id)[0].FullName
+                nurse.FullName
               }}</span>
             </span>
             <span class="col-lg-4 text-right">
@@ -38,25 +38,12 @@
                 v-if="user.Role_id != 12"
                 class="text-danger text-right"
                 style="text-decoration: underline"
-                :to="{ name: 'Nurses Pdf', params: { id: nurse.Nurse_id } }"
+                :to="{ name: 'Nurses Pdf', params: { id: nurse.Emp_id } }"
                 >nurses details PDF</router-link
               >
             </span>
           </div>
           <div class="row pt-3">
-            <span
-              class="col-lg-12 text-secondary"
-              v-if="users.filter((x) => x.Emp_id == nurse.Entry_user).length > 0"
-            >
-              <i class="fa fa-edit mr-1 text-primary" aria-hidden="true"></i>
-              Assigned by :
-              <span class="text-dark">
-                {{ users.filter((x) => x.Emp_id == nurse.Entry_user)[0].FullName }}
-              </span>
-            </span>
-            <span class="col-lg-12" v-else>
-              Assigned by : <span class="text-dark">no avalible data</span>
-            </span>
             <span class="col-lg-12 text-right">
               <a
                 class="open-pop btn btn-primary text-white shadow patient-view-btn"
@@ -99,7 +86,7 @@
                     style="text-decoration: underline"
                   >
                     {{
-                      users.filter((x) => x.Emp_id == patientDetails.Nurse_id)[0].FullName
+                      patientDetails.FullName
                     }}
                   </h4>
                   <div class="text-right mt-3" v-if="editCharge">
@@ -108,7 +95,7 @@
                       style="width: 200px"
                       :to="{
                         name: 'Edit Patients',
-                        params: { id: patientDetails.Nurse_id },
+                        params: { id: patientDetails.Emp_id },
                       }"
                       ><i class="fa fa-pencil-square-o mr-3" aria-hidden="true"></i>Edit
                       patients List</router-link
@@ -119,7 +106,7 @@
                     class="table table-striped table-bordered shadow mt-3"
                     v-if="
                       Endorsement_Nurse_patients.filter(
-                        (x) => x.Nurse_id == patientDetails.Nurse_id
+                        (x) => x.Nurse_id == patientDetails.Emp_id
                       ).length > 0
                     "
                   >
@@ -136,7 +123,7 @@
                     <tbody>
                       <tr
                         v-for="(patient, i) in Endorsement_Nurse_patients.filter(
-                          (x) => x.Nurse_id == patientDetails.Nurse_id
+                          (x) => x.Nurse_id == patientDetails.Emp_id
                         )"
                         :key="patient.id"
                       >
@@ -268,23 +255,12 @@ export default {
       },
     });
 
-    //get Endoresment Nurses Units
-    $.ajax({
-      type: "POST",
-      url: that.apiUrl + "endoresment/Nurses.aspx/getEndoresment_Nurses_UnitsData",
-      data: JSON.stringify({ nurse: { Unit_id: that.path } }),
-      contentType: "application/json; charset=utf-8",
-      dataType: "json",
-      success: function (data) {
-        that.Endoresment_Nurses_Units = JSON.parse(data.d);
-      },
-    });
-
     //get admin users
     $.ajax({
       type: "POST",
       url: that.apiUrl + "endoresment/Nurses.aspx/getadminusersData",
       contentType: "application/json; charset=utf-8",
+      data: JSON.stringify({ user: { Area_id: that.path, Branch_ID: that.user.Branch_ID } }),
       dataType: "json",
       success: function (data) {
         that.users = JSON.parse(data.d);

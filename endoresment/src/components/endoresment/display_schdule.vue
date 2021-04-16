@@ -98,7 +98,7 @@
                 </thead>
                 <tbody v-if="displayed.length > 0">
                   <tr
-                    v-for="(nurse, i) in displayed.sort((a, b) => a.Role_id < b.Role_id)"
+                    v-for="(nurse, i) in displayed"
                     :key="nurse.Nurse_id"
                   >
                     <td v-if="nurse.Role_id == 17" style="background-color: #fff7c1">
@@ -265,6 +265,7 @@ export default {
       monthCalendar: [],
       selectedMonth: [],
       dialog: false,
+      modal:false
     };
   },
   methods: {
@@ -330,7 +331,7 @@ export default {
       // 2- push all shift data for 30 days for each nurse
       let that = this;
 
-      this.Nurses.map((x, n) => {
+      that.Nurses.map((x, n) => {
         x.shifts = [];
         x.Total = 0;
         x.Nurse_name = x.FullName;
@@ -361,8 +362,9 @@ export default {
           x.shifts.push(obj);
         });
 
-        if (n == this.Nurses.length - 1) {
-          this.displayed = this.Nurses;
+        if (n == that.Nurses.length - 1) {
+          that.displayed = that.Nurses.sort((a, b) => a.Role_id < b.Role_id);
+          that.filterTable()
         }
       });
 
@@ -370,7 +372,7 @@ export default {
     },
     filterTable() {
       if (this.filtered == "All") {
-        this.displayed = this.Nurses;
+        this.displayed = this.Nurses.sort((a, b) => a.Role_id < b.Role_id);
       } else if (this.filtered == "Nurses") {
         this.displayed = this.Nurses.filter((x) => x.Nurse_role == 12);
       } else {
