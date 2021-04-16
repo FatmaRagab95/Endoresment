@@ -72,7 +72,8 @@ public partial class _Nurses : System.Web.UI.Page
 
     // get Endoresment_Nurses_Units
     [WebMethod]
-    public static string getEndoresment_Nurses_UnitsData(Endoresment_Nurses_Units nurse)
+    public static string
+    getEndoresment_Nurses_UnitsData(Endoresment_Nurses_Units nurse)
     {
         string config =
             Convert.ToString(ConfigurationManager.ConnectionStrings["dbcon"]);
@@ -197,6 +198,10 @@ public partial class _Nurses : System.Web.UI.Page
                         idr["Emp_id"] != DBNull.Value
                             ? Convert.ToInt32(idr["Emp_id"])
                             : 0,
+                    Role_id =
+                        idr["Role_id"] != DBNull.Value
+                            ? Convert.ToInt32(idr["Role_id"])
+                            : 0,
                     FullName =
                         idr["FullName"] != DBNull.Value
                             ? Convert.ToString(idr["FullName"])
@@ -214,6 +219,8 @@ public partial class _Nurses : System.Web.UI.Page
     public class adminusers
     {
         public int? Emp_id { get; set; }
+
+        public int? Role_id { get; set; }
 
         public string FullName { get; set; }
 

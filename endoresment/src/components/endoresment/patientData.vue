@@ -737,7 +737,7 @@ export default {
                   icon: "success",
                   dangerMode: true,
                 });
-                //location.reload();
+                location.reload();
               },
             });
           }
@@ -808,14 +808,16 @@ export default {
 
                 // update unitsdashboard
                 let currentShift = new Date().getHours() >= 20 ? "Night" : "Day";
-                let currentDate  = that.dischargeDate ? that.dischargeDate : that.deathDate;
+                let currentDate = that.dischargeDate
+                  ? that.dischargeDate
+                  : that.deathDate;
 
                 let Unitobj = {
                   Unit_name: that.patientData.Unit,
                   Shift: currentShift,
                   Shift_date: currentDate,
                   Death: stat == 3 ? 1 : 0,
-                  Discharge: stat == 2 ? 1 : 0
+                  Discharge: stat == 2 ? 1 : 0,
                 };
 
                 $.ajax({

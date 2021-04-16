@@ -269,7 +269,7 @@ public partial class _addPatient : System.Web.UI.Page
 
         using (
             SqlCommand cmd =
-                new SqlCommand("select * from Endorsement_Rooms where Unit_id = @Unit_id and id in (select Room_id from Endorsement_RoomsDashboard where Status_id = 1)",
+                new SqlCommand("select * from Endorsement_Rooms where Unit_id = @Unit_id and id in (select Room_id from Endorsement_RoomsDashboard where Status_id = 1) order by Room_name ",
                     con)
         )
         {

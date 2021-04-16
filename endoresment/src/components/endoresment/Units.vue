@@ -77,16 +77,19 @@
         </div>
       </div>
       <div class="row">
-        <div class="col-lg-4 col-md-6" v-for="unit in filtered" :key="unit.U_id">
+        <div
+          class="col-lg-4 col-md-6"
+          v-for="unit in filtered"
+          :key="unit.U_id"
+          v-if="unit.Total > 0"
+        >
           <div class="details">
             <div class="inner shadow">
               <h3 class="pb-2">{{ unit.U_name }}</h3>
 
               <span class="Census badge badge-light border font-weight-normal">
                 Total Census:
-                <span class="text-danger"
-                  >{{ unit.Total }}
-                </span>
+                <span class="text-danger">{{ unit.Total }} </span>
               </span>
 
               <span class="Admission badge font-weight-normal">
@@ -134,7 +137,7 @@ export default {
       UnitsDash: [],
       search: "",
       filtered: [],
-      Total_Census:0,
+      Total_Census: 0,
 
       Shift: "",
       apiUrl: this.link,
@@ -174,23 +177,23 @@ export default {
         that.Units = JSON.parse(data.d);
         that.filtered = JSON.parse(data.d);
         for (let i = 0; i < that.Units.length; i++) {
-              $.ajax({
-                type: "POST",
-                url: that.apiUrl + "endoresment/Units.aspx/getTotalData",
-                data: JSON.stringify({ unit: { U_name: that.Units[i].U_name } }),
-                contentType: "application/json; charset=utf-8",
-                dataType: "json",
-                success: function (data) {
-                  that.Units[i].Total = JSON.parse(data.d)[0].Total;
-                  that.filtered[i].Total = JSON.parse(data.d)[0].Total;
-                  that.Total_Census += JSON.parse(data.d)[0].Total;
-                  if (i == that.Units.length - 1) {
+          $.ajax({
+            type: "POST",
+            url: that.apiUrl + "endoresment/Units.aspx/getTotalData",
+            data: JSON.stringify({ unit: { U_name: that.Units[i].U_name } }),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+              that.Units[i].Total = JSON.parse(data.d)[0].Total;
+              that.filtered[i].Total = JSON.parse(data.d)[0].Total;
+              that.Total_Census += JSON.parse(data.d)[0].Total;
+              /* if (i == that.Units.length - 1) {
                     that.filtered = that.filtered.sort(function(a, b){
                       return (a.Total < b.Total) ? 1 : -1;
                     });
-                  }
-                }
-              });
+                  }*/
+            },
+          });
         }
       },
     });
@@ -228,9 +231,10 @@ export default {
             );
           });
         }
-        
-        that.UnitsDash = that.UnitsDash.filter((v,i,a)=>a.findIndex(t=>(t.Unit_id === v.Unit_id))===i);
 
+        that.UnitsDash = that.UnitsDash.filter(
+          (v, i, a) => a.findIndex((t) => t.Unit_id === v.Unit_id) === i
+        );
       },
     });
   },

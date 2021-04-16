@@ -53,23 +53,30 @@
             </h3>
             <div class="card overflow-auto p-3 shadow rounded" style="height: 500px">
               <div
-                class="pt-2 pb-2 border-bottom"
+                class="p-2 border-bottom d-flex justify-content-between"
                 v-for="(nurse, i) in filterNames(users, selectedName.toLowerCase())"
                 :key="i + 'f'"
               >
-                <span
-                  ><input
-                    style="width: 20px; height: 20px"
-                    class="rounded bg-dark"
-                    :id="nurse.Emp_id"
-                    type="checkbox"
-                    name="role"
-                    :value="{ id: nurse.Emp_id, name: nurse.FullName }"
-                    v-model="selectedNurse"
-                /></span>
-                <span class="ml-3"
-                  ><label :for="nurse.Emp_id">{{ nurse.FullName }}</label></span
+                <span class="w-50"
+                  ><span
+                    ><input
+                      style="width: 20px; height: 20px"
+                      class="rounded bg-dark"
+                      :id="nurse.Emp_id"
+                      type="checkbox"
+                      name="role"
+                      :value="{ id: nurse.Emp_id, name: nurse.FullName }"
+                      v-model="selectedNurse"
+                  /></span>
+                  <span class="ml-3"
+                    ><label :for="nurse.Emp_id">{{ nurse.FullName }}</label></span
+                  ></span
                 >
+
+                <span class="text-secondary text-left"
+                  ><span class="text-info">ID : </span>{{ nurse.Emp_id }}
+                </span>
+
                 <span
                   class="pull-right text-success"
                   v-if="

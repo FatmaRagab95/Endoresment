@@ -334,6 +334,7 @@ export default {
         dataType: "json",
         success: function (data) {
           that.Rooms = JSON.parse(data.d);
+          that.Rooms = that.Rooms.sort((a, b) => a.Room_name > a.Room_name);
         },
       });
     },
