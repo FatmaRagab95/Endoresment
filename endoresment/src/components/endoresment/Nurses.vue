@@ -1,72 +1,74 @@
 <template>
   <div class="Nurses text-capitalize pt-5">
-      <div class="container">
-        <div class="card shadow m-auto">
-          <div class="row align-items-center p-3">
-            <div class="col-lg-6">
-              <h1 style="text-decoration: underline">
-                {{ Units.filter((x) => x.U_id == path)[0].U_name }}
-              </h1>
-            </div>
-            <div class="col-md-6 p-4" v-if="editCharge">
+    <div class="container">
+      <div class="card shadow m-auto">
+        <div class="row align-items-center p-3">
+          <div class="col-lg-6">
+            <h1 style="text-decoration: underline">
+              {{ Units.filter((x) => x.U_id == path)[0].U_name }}
+            </h1>
+          </div>
+          <div class="col-md-6 p-4" v-if="editCharge">
+            <router-link
+              class="btn btn-primary shadow pull-right mt-3"
+              style="width: 150px"
+              :to="{ name: 'Edit Nurses', params: { id: path } }"
+              ><i class="fa fa-pencil-square-o mr-3" aria-hidden="true"></i>Edit Nurses
+              List</router-link
+            >
+          </div>
+        </div>
+      </div>
+      <div class="nurses-container border bg-white shadow rounded row">
+        <div
+          class="mb-3 card bg-light col-md-6 nurse-card"
+          v-for="nurse in Endoresment_Nurses_Units"
+          :key="nurse.Id"
+        >
+          <div class="row">
+            <span class="col-md-8 text-secondary">
+              <i class="fa fa-user-md mr-1 text-primary" aria-hidden="true"></i>
+              Nurse Name:
+              <span class="text-dark">{{
+                users.filter((x) => x.Emp_id == nurse.Nurse_id)[0].FullName
+              }}</span>
+            </span>
+            <span class="col-lg-4 text-right">
               <router-link
-                class="btn btn-primary shadow pull-right mt-3"
-                style="width: 150px"
-                :to="{ name: 'Edit Nurses', params: { id: path } }"
-                ><i class="fa fa-pencil-square-o mr-3" aria-hidden="true"></i>Edit Nurses
-                List</router-link
+                v-if="user.Role_id != 12"
+                class="text-danger text-right"
+                style="text-decoration: underline"
+                :to="{ name: 'Nurses Pdf', params: { id: nurse.Nurse_id } }"
+                >nurses details PDF</router-link
               >
-            </div>
+            </span>
+          </div>
+          <div class="row pt-3">
+            <span
+              class="col-lg-12 text-secondary"
+              v-if="users.filter((x) => x.Emp_id == nurse.Entry_user).length > 0"
+            >
+              <i class="fa fa-edit mr-1 text-primary" aria-hidden="true"></i>
+              Assigned by :
+              <span class="text-dark">
+                {{ users.filter((x) => x.Emp_id == nurse.Entry_user)[0].FullName }}
+              </span>
+            </span>
+            <span class="col-lg-12" v-else>
+              Assigned by : <span class="text-dark">no avalible data</span>
+            </span>
+            <span class="col-lg-12 text-right">
+              <a
+                class="open-pop btn btn-primary text-white shadow patient-view-btn"
+                data-pop-name="patient-popup"
+                v-on:click.prevent="popUp(nurse, 'patientPop')"
+              >
+                View patients
+              </a>
+            </span>
           </div>
         </div>
-        <div class="nurses-container border bg-white shadow rounded row">
-          <div
-            class="mb-3 card bg-light col-md-6 nurse-card"
-            v-for="nurse in Endoresment_Nurses_Units"
-            :key="nurse.Id"
-          >
-            <div class="row">
-              <span class="col-md-8 text-secondary">
-                <i class="fa fa-user-md mr-1 text-primary" aria-hidden="true"></i>
-                Nurse Name:
-                <span class='text-dark'>{{ users.filter((x) => x.Emp_id == nurse.Nurse_id)[0].FullName }}</span>
-              </span>
-              <span class="col-lg-4 text-right">
-                <router-link v-if='user.Role_id != 12'
-                  class="text-danger text-right"
-                  style="text-decoration: underline"
-                  :to="{ name: 'Nurses Pdf', params: { id: nurse.Nurse_id } }"
-                  >nurses details PDF</router-link
-                >
-              </span>
-            </div>
-            <div class="row pt-3">
-              <span
-                class="col-lg-12 text-secondary"
-                v-if="users.filter((x) => x.Emp_id == nurse.Entry_user).length > 0">
-                <i class="fa fa-edit mr-1 text-primary" aria-hidden="true"></i>
-                Assigned by :
-                <span class="text-dark">
-                  {{
-                  users.filter((x) => x.Emp_id == nurse.Entry_user)[0].FullName
-                  }}
-                </span>
-              </span>
-              <span class="col-lg-12" v-else>
-                Assigned by : <span class="text-dark">no avalible data</span>
-              </span>
-              <span class="col-lg-12 text-right">
-                <a
-                  class="open-pop btn btn-primary text-white shadow patient-view-btn"
-                  data-pop-name="patient-popup"
-                  v-on:click.prevent="popUp(nurse, 'patientPop')">
-                  View patients
-                </a>
-              </span>
-            </div>
-          </div>
-        </div>
-      
+      </div>
     </div>
     <!-- start patients list popup-->
     <div v-if="patientDetails">
@@ -270,7 +272,7 @@ export default {
     $.ajax({
       type: "POST",
       url: that.apiUrl + "endoresment/Nurses.aspx/getEndoresment_Nurses_UnitsData",
-      data:JSON.stringify({"nurse": {"Unit_id": that.path}}),
+      data: JSON.stringify({ nurse: { Unit_id: that.path } }),
       contentType: "application/json; charset=utf-8",
       dataType: "json",
       success: function (data) {
@@ -306,18 +308,18 @@ export default {
 <style scoped>
 .Nurses {
   padding-bottom: 60px;
-  min-height:100vh;
-  background-color:#f6f8fb;
-  background:#fff url('../../assets/layout/img/backgrounds/bg9.svg') center no-repeat;
+  min-height: 100vh;
+  background-color: #f6f8fb;
+  background: #fff url("../../assets/layout/img/backgrounds/bg9.svg") center no-repeat;
 }
 .Nurses .nurses-container {
-  margin-top:60px;
-  padding:30px 15px;
+  margin-top: 60px;
+  padding: 30px 15px;
 }
 .Nurses .nurses-container .nurse-card {
-  padding:30px;
+  padding: 30px;
 }
 .Nurses .card .patient-view-btn {
-  font-size:14px;
+  font-size: 14px;
 }
 </style>

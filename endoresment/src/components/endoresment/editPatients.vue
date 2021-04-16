@@ -2,18 +2,19 @@
   <div class="editPatients">
     <div class="container-fluid">
       <div class="card bg-light select-form p-4 text-left shadow">
-        <div class="row">
-          <span class="col-md-6"
-            ><h3>
+        <div class="row mt-5">
+          <span class="col-md-10"
+            ><h3 class="text-center" style="text-decoration: underline">
+              <span class="text-success">Patient List For / </span>
               {{ users.filter((x) => x.Emp_id == path)[0].FullName }}
             </h3>
           </span>
-          <span class="col-md-6">
+          <span class="col-md-2">
             <button class="btn btn-primary pull-right shadow" @click.prevent="OnSubmit">
               Submit selection
             </button>
           </span>
-          <span class="col-md-6 mt-4">
+          <span class="col-md-6 mt-0">
             <form class="form-inline">
               <input
                 class="form-control mr-sm-2"
@@ -32,7 +33,7 @@
               </span>
             </form>
           </span>
-          <span class="col-md-6 row mt-4">
+          <span class="col-md-6 row mt-0">
             <span class="col-md-3 text-right p-0 m-0" style="line-height: 2.1"
               >Updated Date:</span
             >

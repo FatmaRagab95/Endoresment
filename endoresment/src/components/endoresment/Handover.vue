@@ -73,10 +73,10 @@
               <tr class="seperated">
                 <th><span>Room</span></th>
                 <th><span>Patient's Name &amp; MR</span></th>
+                <th><span>Age</span></th>
                 <th><span>DOA &amp; LOS</span></th>
                 <th class="bg-warning"><span>Diagnosis</span></th>
                 <th class="bg-warning"><span>Progress Notes</span></th>
-                <th><span>Age</span></th>
                 <th><span>Diet</span></th>
                 <th><span>Consultant Name</span></th>
                 <th><span>Pain</span></th>
@@ -114,9 +114,14 @@
                   <span v-else>{{ patient.Patient_FullName }}</span>
                 </td>
                 <td>
+                  <input v-if="patient.edit" type="text" v-model="patient.Age" />
+                  <span v-else>{{ patient.Age }}</span>
+                </td>
+                <td>
                   <input
                     v-if="patient.edit"
                     type="date"
+                    :max="thisday"
                     v-model="patient.Addmission_date"
                   />
                   <span v-else>{{ patient.Addmission_date }}</span>
@@ -125,8 +130,6 @@
                 </td>
                 <td class="bigText">
                   <textarea
-                    :class="user.Role_id == 12 || user.Role_id == 17 ? 'bg-grey' : ''"
-                    disabled
                     v-if="patient.edit"
                     v-model="FollowData(patient.id).DR_Diagnosis"
                   ></textarea>
@@ -142,10 +145,7 @@
                   ></textarea>
                   <span v-else>{{ FollowData(patient.id).DR_ProgressNotes }}</span>
                 </td>
-                <td>
-                  <input v-if="patient.edit" type="text" v-model="patient.Age" />
-                  <span v-else>{{ patient.Age }}</span>
-                </td>
+
                 <td>
                   <select
                     v-if="patient.edit"
@@ -312,9 +312,14 @@
                   <span v-else>{{ patient.Patient_FullName }}</span>
                 </td>
                 <td>
+                  <input v-if="patient.edit" type="text" v-model="patient.Age" />
+                  <span v-else>{{ patient.Age }}</span>
+                </td>
+                <td>
                   <input
                     v-if="patient.edit"
                     type="date"
+                    :max="thisday"
                     v-model="patient.Addmission_date"
                   />
                   <span v-else>{{ patient.Addmission_date }}</span>
@@ -335,10 +340,7 @@
                   ></textarea>
                   <span v-else>{{ FollowData(patient.id).DR_ProgressNotes }}</span>
                 </td>
-                <td>
-                  <input v-if="patient.edit" type="text" v-model="patient.Age" />
-                  <span v-else>{{ patient.Age }}</span>
-                </td>
+
                 <td>
                   <select
                     v-if="patient.edit"
@@ -521,6 +523,7 @@ export default {
       Rooms: [],
       Shift: "",
       today: "",
+      thisday: "",
     };
   },
   methods: {
@@ -822,6 +825,7 @@ export default {
     let that = this;
 
     that.today = moment(new Date()).format("DD-MM-YYYY");
+    that.thisday = moment(new Date()).format("YYYY-MM-DD");
 
     that.getChargeUnits();
 

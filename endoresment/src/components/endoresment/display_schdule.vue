@@ -97,7 +97,10 @@
                   </tr>
                 </thead>
                 <tbody v-if="displayed.length > 0">
-                  <tr v-for="(nurse, i) in displayed" :key="nurse.Nurse_id">
+                  <tr
+                    v-for="(nurse, i) in displayed.sort((a, b) => a.Role_id < b.Role_id)"
+                    :key="nurse.Nurse_id"
+                  >
                     <td v-if="nurse.Role_id == 17" style="background-color: #fff7c1">
                       {{ i + 1 }}
                     </td>

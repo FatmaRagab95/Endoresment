@@ -62,8 +62,7 @@ public partial class _patientData : System.Web.UI.Page
     {
         string config =
             Convert.ToString(ConfigurationManager.ConnectionStrings["dbcon"]);
-        List<UnitsDash> UnitsDash =
-            new List<UnitsDash>();
+        List<UnitsDash> UnitsDash = new List<UnitsDash>();
 
         SqlConnection con = new SqlConnection(config);
 
@@ -75,11 +74,12 @@ public partial class _patientData : System.Web.UI.Page
                     con)
         )
         {
-            cmd.Parameters.Add("@Unit_name", SqlDbType.VarChar).Value = unit.Unit_name;
+            cmd.Parameters.Add("@Unit_name", SqlDbType.VarChar).Value =
+                unit.Unit_name;
             cmd.Parameters.Add("@Shift", SqlDbType.VarChar).Value = unit.Shift;
-            cmd.Parameters.Add("@Shift_date", SqlDbType.VarChar).Value = unit.Shift_date;
-            cmd.Parameters.Add("@Death", SqlDbType.Int).Value =
-                unit.Death;
+            cmd.Parameters.Add("@Shift_date", SqlDbType.VarChar).Value =
+                unit.Shift_date;
+            cmd.Parameters.Add("@Death", SqlDbType.Int).Value = unit.Death;
             cmd.Parameters.Add("@Discharge", SqlDbType.Int).Value =
                 unit.Discharge;
             SqlDataReader idr = cmd.ExecuteReader();
@@ -90,11 +90,12 @@ public partial class _patientData : System.Web.UI.Page
         return JsonConvert.SerializeObject(UnitsDash);
     }
 
-        public class UnitsDash
+    public class UnitsDash
     {
         public string Unit_name { get; set; }
 
         public string Shift { get; set; }
+
         public string Shift_date { get; set; }
 
         public int? Death { get; set; }
@@ -696,7 +697,7 @@ public partial class _patientData : System.Web.UI.Page
 
         using (
             SqlCommand cmd =
-                new SqlCommand("select * from Endorsement_Rooms where Unit_id = @Unit_id and id in (select Room_id from Endorsement_RoomsDashboard where Status_id = 1)",
+                new SqlCommand("select * from Endorsement_Rooms where Unit_id = @Unit_id and id in (select Room_id from Endorsement_RoomsDashboard where Status_id = 1) order by Room_name",
                     con)
         )
         {
