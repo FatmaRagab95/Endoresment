@@ -646,6 +646,7 @@ export default {
                     Insert_Doctor_Time: 0,
                   };
                 }
+                console.log(dataObj);
                 let currentShift = new Date().getHours() >= 20 ? "Night" : "Day";
                 dataObj.Transfer_From = that.patientData.Unit;
                 dataObj.Transfer_To = that.Units.filter(

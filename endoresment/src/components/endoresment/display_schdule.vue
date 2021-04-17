@@ -28,7 +28,7 @@
               </div>
               <!-- end calender -->
               <!-- start select unit -->
-              <div class="col-lg-4 col-md-6">
+              <div class="col-lg-4 col-md-6" v-if='user.Role_id != 17'>
                 <div class="cu-field">
                   <v-select
                     :items="Units"
@@ -68,7 +68,7 @@
               color="green accent-3"
               data-toggle="modal"
               data-target="#exampleModalCenter"
-              v-if="user.Role_id == 19"
+              v-if="user.Role_id == 19 || user.Role_id == 18 || user.Role_id == 17"
             >
               <v-icon dark> mdi-pencil </v-icon>
             </v-btn>
@@ -189,7 +189,32 @@
                       </tr>
                     </thead>
                     <tbody v-show="displayed.length > 0">
-                      <tr v-for="(nurse, i) in displayed" :key="'i' + nurse.Nurse_id">
+
+                      <!-- edit by manager -->
+                      <tr v-if='user.Role_id == 19 || user.Role_id == 18' v-for="(nurse, i) in displayed" :key="'i' + nurse.Nurse_id">
+                        <td>{{ i + 1 }}</td>
+                        <td style="min-width: 120px">{{ nurse.Nurse_name }}</td>
+                        <td>{{ nurse.Nurse_id }}</td>
+                        <td v-for="shift in nurse.shifts" :key="'i' + shift.fullDate">
+                          <v-select
+                            :class="shift.shift == '' ? 'text-secondary' : 'text-success'"
+                            :items="[
+                              { name: 'Day', val: 'Day' },
+                              { name: 'Night', val: 'Night' },
+                              { name: 'None', val: '' },
+                            ]"
+                            item-text="name"
+                            :item-value="'val'"
+                            v-model="shift.shift"
+                          ></v-select>
+                        </td>
+                        <td class="bg-primary text-white text-center">
+                          {{ nurse.Total }}
+                        </td>
+                      </tr>
+
+                      <!-- edit by a charge nurse -->
+                      <tr v-if='user.Role_id == 17' v-for="(nurse, i) in Nurses.filter((x) => x.Nurse_role == 12)" :key="'i' + nurse.Nurse_id">
                         <td>{{ i + 1 }}</td>
                         <td style="min-width: 120px">{{ nurse.Nurse_name }}</td>
                         <td>{{ nurse.Nurse_id }}</td>
@@ -259,7 +284,7 @@ export default {
       date: "",
 
       month: "",
-      unit: 1,
+      unit: 0,
       shift: "",
 
       monthCalendar: [],
@@ -468,18 +493,6 @@ export default {
     let that = this;
     that.month = new Date().toISOString().substr(0, 10);
 
-    //get Units
-    $.ajax({
-      type: "POST",
-      url: that.apiUrl + "endoresment/display_schdule.aspx/getUnitsData",
-      data: JSON.stringify({ branch: { id: that.user.Branch_ID } }),
-      contentType: "application/json; charset=utf-8",
-      dataType: "json",
-      success: function (data) {
-        that.Units = JSON.parse(data.d);
-      },
-    });
-
     function getMonths(date) {
       var arr = [];
       var start = moment(date, "YYYY-MM");
@@ -495,34 +508,49 @@ export default {
       }
       return arr;
     }
+
     this.monthCalendar = getMonths(this.month);
     this.date = moment(this.month).format("MMMM-YYYY");
 
-    //get getEndorsement_Nursing_scheduleData
+    //get Units
     $.ajax({
       type: "POST",
-      url:
-        that.apiUrl +
-        "endoresment/display_schdule.aspx/getEndorsement_Nursing_scheduleData",
+      url: that.apiUrl + "endoresment/display_schdule.aspx/getUnitsData",
+      data: JSON.stringify({ branch: { id: that.user.Branch_ID } }),
       contentType: "application/json; charset=utf-8",
-      data: JSON.stringify({ unit: { U_id: that.unit } }),
       dataType: "json",
       success: function (data) {
-        that.Endorsement_Nursing_schedule = JSON.parse(data.d);
-        that.selectedMonth = that.Endorsement_Nursing_schedule;
-        that.displayTable = true;
-        //get getadminusersData
+        that.Units = JSON.parse(data.d);
+        that.unit = that.user.Role_id != 17 ? that.Units[0].U_id : that.user.Area_id;
+
+        //get getEndorsement_Nursing_scheduleData
         $.ajax({
           type: "POST",
-          url: that.apiUrl + "endoresment/display_schdule.aspx/getadminusersData",
-          data: JSON.stringify({ data: { Area_id: that.unit } }),
+          url:
+            that.apiUrl +
+            "endoresment/display_schdule.aspx/getEndorsement_Nursing_scheduleData",
           contentType: "application/json; charset=utf-8",
+          data: JSON.stringify({ unit: { U_id: that.unit } }),
           dataType: "json",
           success: function (data) {
-            that.adminusers = JSON.parse(data.d);
-            that.tableData();
+            that.Endorsement_Nursing_schedule = JSON.parse(data.d);
+            that.selectedMonth = that.Endorsement_Nursing_schedule;
+            that.displayTable = true;
+            //get getadminusersData
+            $.ajax({
+              type: "POST",
+              url: that.apiUrl + "endoresment/display_schdule.aspx/getadminusersData",
+              data: JSON.stringify({ data: { Area_id: that.unit } }),
+              contentType: "application/json; charset=utf-8",
+              dataType: "json",
+              success: function (data) {
+                that.adminusers = JSON.parse(data.d);
+                that.tableData();
+              },
+            });
           },
         });
+
       },
     });
   },
