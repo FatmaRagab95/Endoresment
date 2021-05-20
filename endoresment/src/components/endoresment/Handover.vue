@@ -374,12 +374,23 @@
                   <span v-else>{{ FollowData(patient.id, "Diet_Name").Diet_Name }}</span>
                 </td>
                 <td>
-                  <input
+                  <select
                     v-if="patient.edit"
-                    type="text"
-                    v-model="patient.Consultant_Name"
-                  />
-                  <span v-else>{{ patient.Consultant_Name }}</span>
+                    v-model="FollowData(patient.id, 'Consultation').Consultaion"
+                  >
+                    <option
+                      v-for="speciality in Specialities.filter(x => patient.Specialty.trim() != x.Spcy_name_En.trim())"
+                      :key="speciality.Spcy_id"
+                      :value="speciality.Spcy_id"
+                      @click="(FollowData(patient.id).Consultaion = speciality.Spcy_id), 'Consultation'"
+                    >
+                      {{ speciality.Spcy_name_En }}
+                    </option>
+                  </select>
+                  <span v-else-if='Specialities.filter(x => x.Spcy_id == 
+                    FollowData(patient.id, "Consultation").Consultaion).length > 0'>
+                    {{ Specialities.filter(x => x.Spcy_id == 
+                    FollowData(patient.id, "Consultation").Consultaion)[0].Spcy_name_En }}</span>
                 </td>
                 <td>
                   <select v-if="patient.edit" v-model="FollowData(patient.id).Pain">

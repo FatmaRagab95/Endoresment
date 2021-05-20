@@ -401,12 +401,12 @@ public partial class _viewPatients : System.Web.UI.Page
 
         using (
             SqlCommand cmd =
-                new SqlCommand("select * from Endorsement_PatientData where id in (select top(1) Patient_id from Endorsement_PatientFollow where Consultaion = @Consultant_id order by id ASC)",
+                new SqlCommand("select * from Endorsement_PatientData where id in (select top(1) Patient_id from Endorsement_PatientFollow where Consultaion = @Spcy_id order by id ASC)",
                     con)
         )
         {
-            cmd.Parameters.Add("@Consultant_id", SqlDbType.Int).Value =
-                data.Dr_Code;
+            cmd.Parameters.Add("@Spcy_id", SqlDbType.Int).Value =
+                data.Spcy_id;
             SqlDataReader idr = cmd.ExecuteReader();
 
             if (idr.HasRows)

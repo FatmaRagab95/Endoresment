@@ -199,7 +199,7 @@ export default {
                   $.ajax({
                     type: "POST",
                     url: that.link + "endoresment/viewPatients.aspx/getConsultationsData",
-                    data: JSON.stringify({ data: { Dr_Code: that.user.Emp_id } }),
+                    data: JSON.stringify({ data: { Spcy_id: that.DoctorData.Spcy_id } }),
                     contentType: "application/json; charset=utf-8",
                     dataType: "json",
                     success: function (data) {
