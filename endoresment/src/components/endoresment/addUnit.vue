@@ -369,7 +369,7 @@ export default {
 
             // get nurses of the previous shift
             for (let i = 0; i < that.scheduleShifts.length; i++) {
-
+                that.scheduleShifts[i].patientsNum = that.scheduleShifts[i].patientsNum ? that.scheduleShifts[i].patientsNum : 0;
                 let shift = that.scheduleShifts[i].Shift.trim() == 'Day' ? 'Night' : 'Day';
                 let scheduleDate = that.scheduleShifts[i].Shift == 'Night' ? that.scheduleShifts[i].Date : moment(that.scheduleShifts[i].Date.trim()).add(-1, "day").format('YYYY-MM-DD');
                 that.scheduleShifts[i].EndoresingNurse = [];

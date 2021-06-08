@@ -125,6 +125,23 @@ public partial class _addUnit : System.Web.UI.Page
             {
                 Endorsement_Nursing_schedule =
                     populateEndorsement_Nursing_scheduleLisst(idr, con);
+            } else {
+                con.Close();
+                con.Open();
+                using (
+                    SqlCommand cmd1 =
+                        new SqlCommand("SELECT * from Endorsement_Nursing_schedule where Nurse_id = @Nurse_id and Shift_date >=  DATEADD(day,-2, GETDATE()) and Shift_date <  DATEADD(day,0, GETDATE())",con)
+                )
+                {
+                    cmd1.Parameters.Add("@Nurse_id", SqlDbType.Int).Value = data.Nurse_id;
+                    SqlDataReader idr1 = cmd1.ExecuteReader();
+
+                    if (idr1.HasRows)
+                    {
+                        Endorsement_Nursing_schedule =
+                            populateEndorsement_Nursing_scheduleLisst1(idr1, con);
+                    }
+                }
             }
         }
 
@@ -186,6 +203,57 @@ public partial class _addUnit : System.Web.UI.Page
         }
 
         return Endorsement_Nursing_scheduleI;
+    }
+
+        public static List<Endorsement_Nursing_schedule>
+    populateEndorsement_Nursing_scheduleLisst1(
+        SqlDataReader idr,
+        SqlConnection con
+    )
+    {
+        List<Endorsement_Nursing_schedule> Endorsement_Nursing_scheduleI1 =
+            new List<Endorsement_Nursing_schedule>();
+
+        while (idr.Read())
+        {
+            Endorsement_Nursing_scheduleI1
+                .Add(new Endorsement_Nursing_schedule {
+                    Id =
+                        idr["Id"] != DBNull.Value
+                            ? Convert.ToInt32(idr["Id"])
+                            : 0,
+                    Date =
+                        idr["Shift_date"] != DBNull.Value
+                            ? Convert.ToString(idr["Shift_date"])
+                            : String.Empty,
+                    Shift =
+                        idr["Shift"] != DBNull.Value
+                            ? Convert.ToString(idr["Shift"])
+                            : String.Empty,
+                    Unit_id =
+                        idr["Unit_id"] != DBNull.Value
+                            ? Convert.ToInt32(idr["Unit_id"])
+                            : 0,
+                    Unit_name =
+                        idr["Unit_name"] != DBNull.Value
+                            ? Convert.ToString(idr["Unit_name"])
+                            : String.Empty,
+                    Nurse_role =
+                        idr["Nurse_role"] != DBNull.Value
+                            ? Convert.ToInt32(idr["Nurse_role"])
+                            : 0,
+                    Nurse_name =
+                        idr["Nurse_name"] != DBNull.Value
+                            ? Convert.ToString(idr["Nurse_name"])
+                            : String.Empty,
+                    Nurse_id =
+                        idr["Nurse_id"] != DBNull.Value
+                            ? Convert.ToInt32(idr["Nurse_id"])
+                            : 0
+                });
+        }
+
+        return Endorsement_Nursing_scheduleI1;
     }
 
     public class Endorsement_Nursing_schedule
