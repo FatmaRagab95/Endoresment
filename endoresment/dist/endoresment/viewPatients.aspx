@@ -1,2 +1,2 @@
-<%@ Page Title="" Language="C#" MasterPageFile="~/MasterPage.master" AutoEventWireup="true" CodeFile="viewPatients.aspx.cs"  Inherits="_viewPatients" %>
+<%@ Page Title="" Language="C#" AutoEventWireup="true" CodeFile="viewPatients.aspx.cs"  Inherits="_viewPatients" %>
 

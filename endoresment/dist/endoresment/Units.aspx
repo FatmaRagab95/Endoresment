@@ -1,1 +1,1 @@
-<%@ Page Title="" Language="C#" MasterPageFile="~/MasterPage.master" AutoEventWireup="true" CodeFile="Units.aspx.cs"  Inherits="_Units" %>
+<%@ Page Title="" Language="C#" AutoEventWireup="true" CodeFile="Units.aspx.cs"  Inherits="_Units" %>
