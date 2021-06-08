@@ -92,10 +92,20 @@ export default {
             if (new Date().getHours() < 20 && new Date().getHours() >= 8) {
               that.Units = JSON.parse(data.d).filter((x) => x.Shift.trim() == "Day");
               that.Units = that.Units.filter((x) => {
-                return moment(x.Shift_date).format('DD-MM-YYYY') == moment(new Date()).format('DD-MM-YYYY');
+                if (new Date(moment(x.Shift_date)).getMonth() == new Date().getMonth()) {
+                  return moment(x.Shift_date).format('DD-MM-YYYY') == moment(new Date()).format('DD-MM-YYYY');
+                } else {
+                  return moment(x.Shift_date).format('MM-DD-YYYY') == moment(new Date()).format('DD-MM-YYYY');
+                }
               });
             } else {
               that.Units = JSON.parse(data.d).filter((x) => {
+                if (new Date(moment(x.Shift_date)).getMonth() == new Date().getMonth()) {
+                  return moment(moment(x.Shift_date).add(12) > moment(new Date()));
+                } else {
+                  x.Shift_date = moment(x.Shift_date).format('MM-DD-YYYY');
+                  return moment(moment(x.Shift_date).add(12) > moment(new Date()));
+                }
                 return moment(moment(x.Shift_date).add(12) > moment(new Date()));
               });
             }
