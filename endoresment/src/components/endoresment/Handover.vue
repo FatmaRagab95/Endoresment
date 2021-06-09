@@ -130,7 +130,7 @@
                 </td>
                 <td class="bigText">
                   <textarea
-                    v-if="patient.edit && FollowData(patient.id).DR_Diagnosis"
+                    v-if="patient.edit && FollowData(patient.id).DR_Diagnosis && (Insert_Doctor || Update_Doctor)"
                     :class="user.Role_id == 12 || user.Role_id == 17 ? 'bg-grey' : ''"
                     disabled
                     v-model="FollowData(patient.id).DR_Diagnosis"
