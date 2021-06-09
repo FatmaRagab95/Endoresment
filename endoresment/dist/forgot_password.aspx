@@ -1,4 +1,4 @@
-<%@ Page Title="" Language="C#" MasterPageFile="~/MasterPage.master" AutoEventWireup="true"  CodeFile="forgot_password.aspx.cs"  Inherits="_forgot_password" %>
+<%@ Page Title="" Language="C#" AutoEventWireup="true"  CodeFile="forgot_password.aspx.cs"  Inherits="_forgot_password" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="ContentPlaceHolder1" Runat="Server">
 	<style>
 		a:hover, a:focus{

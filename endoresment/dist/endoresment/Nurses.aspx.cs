@@ -18,18 +18,20 @@ public partial class _Nurses : System.Web.UI.Page
 
     // get units
     [WebMethod]
-    public static string getUnitsData()
+    public static string getUnitsData(adminusers user)
     {
         string config =
             Convert.ToString(ConfigurationManager.ConnectionStrings["dbcon"]);
+        List<adminusers> adminusers = new List<adminusers>();
         List<Units> Units = new List<Units>();
 
         SqlConnection con = new SqlConnection(config);
 
         con.Open();
 
-        using (SqlCommand cmd = new SqlCommand("select * from Units", con))
+        using (SqlCommand cmd = new SqlCommand("select * from Units where Branch_id = @Branch_ID", con))
         {
+            cmd.Parameters.Add("@Branch_ID", SqlDbType.Int).Value = user.Branch_ID;
             SqlDataReader idr = cmd.ExecuteReader();
 
             if (idr.HasRows)

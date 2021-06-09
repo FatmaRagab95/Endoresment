@@ -72,7 +72,7 @@ public partial class _editNurses : System.Web.UI.Page
 
     // get admin users data
     [WebMethod]
-    public static string getadminusersData()
+    public static string getadminusersData(adminusers user)
     {
         string config =
             Convert.ToString(ConfigurationManager.ConnectionStrings["dbcon"]);
@@ -84,10 +84,11 @@ public partial class _editNurses : System.Web.UI.Page
 
         using (
             SqlCommand cmd =
-                new SqlCommand("select * from adminusers where Role_id  = 12",
+                new SqlCommand("select * from adminusers where Role_id  = 12 and Branch_ID = @Branch_ID",
                     con)
         )
         {
+            cmd.Parameters.Add("@Branch_ID", SqlDbType.Int).Value = user.Branch_ID;
             SqlDataReader idr = cmd.ExecuteReader();
 
             if (idr.HasRows)

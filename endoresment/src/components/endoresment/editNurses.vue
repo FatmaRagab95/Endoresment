@@ -306,6 +306,7 @@ export default {
     $.ajax({
       type: "POST",
       url: that.apiUrl + "endoresment/editNurses.aspx/getadminusersData",
+      data: JSON.stringify({ user: { Branch_ID: that.user.Branch_ID } }),
       contentType: "application/json; charset=utf-8",
       dataType: "json",
       success: function (data) {

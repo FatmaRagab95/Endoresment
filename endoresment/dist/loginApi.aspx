@@ -1,1 +1,1 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/MasterPage.master" AutoEventWireup="true" CodeFile="loginApi.aspx.cs"  Inherits="Login" %>
+﻿<%@ Page Title="" Language="C#" AutoEventWireup="true" CodeFile="loginApi.aspx.cs"  Inherits="Login" %>
