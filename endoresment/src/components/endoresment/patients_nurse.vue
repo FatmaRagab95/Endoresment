@@ -524,7 +524,10 @@ export default {
                 that.unConfirmedShifts = that.Shifts.filter(x => x.Confirm == 0);
 
                 if (new Date().getHours() < 20 && new Date().getHours() >= 8) {
-                    that.Shifts = that.Shifts.filter(x => x.Shift_date.substr(0,10) == moment(new Date()).format('DD/MM/YYYY') && x.Shift.trim() == 'Day');
+                    that.Shifts = that.Shifts.filter(x => {
+                        
+                        x.Shift_date = moment(x.Shift_date.substr(0,10)).format('DD/MM/YYYY');
+                        return x.Shift_date == moment(new Date()).format('DD/MM/YYYY') && x.Shift.trim() == 'Day'});
                 } else {
                     that.Shifts = that.Shifts.filter(x => x.Shift.trim() == 'Night' 
                     && moment(x.Shift_date.trim() + ' 20:00').add(12,'Hour') >= moment(new Date()));

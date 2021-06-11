@@ -106,7 +106,7 @@ public partial class _Handover : System.Web.UI.Page
 
         con.Open();
 
-        using (SqlCommand cmd1 = new SqlCommand("SELECT * from Endorsement_UnitsDashboard where Shift_date >= DATEADD(day,-2, GETDATE()) and Unit_id in (select TOP(20) Unit_id from Endoresment_Nurses_Units where Nurse_id = @Nurse_id and Shift_date >=   DATEADD(day,-2, GETDATE()) order by id desc) order by id desc", con))
+        using (SqlCommand cmd1 = new SqlCommand("SELECT * from Endorsement_UnitsDashboard where Shift_date >= DATEADD(day,-2, GETDATE()) and Unit_id in (select TOP(20) Unit_id from Endoresment_Nurses_Units where Nurse_id = @Nurse_id and Shift_date >=   DATEADD(day,-2, GETDATE()) or Unit_id in (select Area_id from adminusers where Emp_id =  @Nurse_id) order by id desc) order by id desc", con))
         {
             cmd1.Parameters.Add("@Nurse_id", SqlDbType.Int).Value = id.Emp_id;
             SqlDataReader idr = cmd1.ExecuteReader();
